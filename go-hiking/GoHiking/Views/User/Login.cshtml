@@ -1,0 +1,301 @@
+﻿@model GoHiking.data.User
+@{
+    ViewBag.Title = "Login";
+}
+
+
+
+@if (TempData["AccountCreated"] != null)
+{
+    <!-- 成功建立帳號的 Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 15px; border: none;">
+                <div class="modal-body text-center p-5">
+                    <div class="mb-4">
+                        <i class="fas fa-check-circle text-success" style="font-size: 4em;"></i>
+                    </div>
+                    <h4 class="text-success mb-3">帳號建立成功！</h4>
+                    <p class="text-muted mb-4">歡迎加入 GoHiking 社群<br>請使用您的新帳號登入開始探索</p>
+                    <button type="button" class="btn btn-success btn-lg" data-bs-dismiss="modal" style="border-radius: 10px; padding: 10px 30px;">
+                        <i class="fas fa-sign-in-alt me-2"></i>立即登入
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+            successModal.show();
+        });
+    </script>
+}
+
+<div class="section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <div class="login-card p-5 shadow rounded mt-5" style="background: white;">
+                    <!-- 標題 -->
+                    <div class="text-center mb-4">
+                        <div class="mb-3">
+                            <i class="fas fa-sign-in-alt fa-3x text-primary mb-3"></i>
+                        </div>
+                        <h2 class="heading mb-2" style="color: #2c3e50; font-weight: 600;">歡迎回來</h2>
+                        <p class="text-muted" style="font-size: 16px;">登入您的 GoHiking 帳號</p>
+                        <hr style="width: 60px; height: 3px; background: linear-gradient(45deg, #28a745, #20c997); border: none; margin: 20px auto;">
+                    </div>
+
+                    <!-- 歡迎訊息 -->
+                    <div class="alert alert-primary border-0 mb-4" style="background: linear-gradient(135deg, #e3f2fd, #f8f9ff); border-left: 4px solid #2196f3 !important;">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-mountain text-primary me-3" style="font-size: 1.5em;"></i>
+                            <div>
+                                <strong>準備好探索山林了嗎？</strong><br>
+                                <small class="text-muted">登入您的帳號，繼續您的登山冒險之旅。</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 登入表單 -->
+                    <form action="/User/Login" method="post" id="loginForm" onsubmit="return validateLoginForm()">
+                        <div class="mb-4">
+                            <label for="username" class="form-label" style="font-weight: 500; color: #495057;">
+                                <i class="fas fa-user me-2 text-primary"></i>使用者名稱
+                            </label>
+                            <input type="text"
+                                   class="form-control form-control-lg"
+                                   id="username"
+                                   name="Username"
+                                   placeholder="請輸入您的使用者名稱"
+                                   style="border: 2px solid #e9ecef; border-radius: 10px; padding: 12px 16px; transition: all 0.3s ease;"
+                                   onfocus="this.style.borderColor='#007bff'; this.style.boxShadow='0 0 0 0.2rem rgba(0, 123, 255, 0.25)'"
+                                   onblur="this.style.borderColor='#e9ecef'; this.style.boxShadow='none'; clearError('username')"
+                                   required>
+                            <div id="username-error" class="text-danger small mt-1" style="display: none;"></div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="password" class="form-label" style="font-weight: 500; color: #495057;">
+                                <i class="fas fa-lock me-2 text-primary"></i>密碼
+                            </label>
+                            <div class="input-group" style="border: 2px solid #e9ecef; border-radius: 10px; overflow: hidden;">
+                                <input type="password"
+                                       class="form-control form-control-lg border-0"
+                                       id="password"
+                                       name="Password"
+                                       placeholder="請輸入您的密碼"
+                                       style="padding: 12px 16px; box-shadow: none;"
+                                       onfocus="this.parentNode.style.borderColor='#007bff'; this.parentNode.style.boxShadow='0 0 0 0.2rem rgba(0, 123, 255, 0.25)'"
+                                       onblur="this.parentNode.style.borderColor='#e9ecef'; this.parentNode.style.boxShadow='none'; clearError('password')"
+                                       required>
+                                <button class="btn btn-outline-secondary border-0" type="button" id="togglePassword"
+                                        style="background: none; padding: 0 15px;"
+                                        onclick="togglePasswordVisibility()">
+                                    <i class="fas fa-eye" id="passwordIcon"></i>
+                                </button>
+                            </div>
+                            <div id="password-error" class="text-danger small mt-1" style="display: none;"></div>
+                        </div>
+                        @Html.Hidden("returnUrl", ViewBag.ReturnUrl as string)
+                        @Html.ValidationSummary(true, "", new
+                   {
+                       @class = "alert alert-danger  p-2 mb-2  d-flex align-items-center",
+                       style = "border-radius: 8px;",
+                       role = "alert"
+                   })
+                        <div class="mb-4 d-flex justify-content-between align-items-center">
+                            @*<div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="remember" style="border-radius: 4px;">
+                                    <label class="form-check-label" for="remember" style="color: #6c757d;">
+                                        <i class="fas fa-heart me-1 text-danger" style="font-size: 12px;"></i>記住我
+                                    </label>
+                                </div>*@
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="remember" name="rememberMe" value="true"
+                                       @(ViewBag.RememberMe == true ? "checked" : "") style="border-radius: 4px;">
+                                <input name="rememberMe" type="hidden" value="false" />
+                                <label class="form-check-label" for="remember" style="color: #6c757d;">
+                                    <i class="fas fa-heart me-1 text-danger" style="font-size: 12px;"></i>記住我
+                                </label>
+                            </div>
+                            <a href="#" class="text-decoration-none" style="color: #007bff; font-size: 14px;">
+                                <i class="fas fa-question-circle me-1"></i>忘記密碼？
+                            </a>
+                        </div>
+
+                        <div class="d-grid mb-4">
+                            <button type="submit"
+                                    class="btn btn-primary btn-lg"
+                                    style="background: linear-gradient(45deg, #007bff, #0056b3); border: none; border-radius: 10px; padding: 12px; font-weight: 600; font-size: 16px; transition: all 0.3s ease;"
+                                    onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(0, 123, 255, 0.3)'"
+                                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                                <i class="fas fa-sign-in-alt me-2"></i>立即登入
+                            </button>
+                        </div>
+
+
+
+                        <hr class="my-4" style="border-top: 1px solid #e9ecef;">
+
+                        <div class="text-center">
+                            <p class="mb-0" style="color: #6c757d;">
+                                還沒有帳號？
+                                <a href="/User/Create" class="text-decoration-none" style="color: #28a745; font-weight: 500;">
+                                    立即註冊 <i class="fas fa-user-plus ms-1"></i>
+                                </a>
+                            </p>
+                        </div>
+                    </form>
+
+                    <!-- 底部裝飾 -->
+                    <div class="text-center mt-4">
+                        <div class="d-flex justify-content-center align-items-center text-muted">
+                            <i class="fas fa-mountain me-2"></i>
+                            <small>隨時啟程 • 征服高山</small>
+                            <i class="fas fa-mountain ms-2"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section HeroSection {
+    <div class="img-bg rellax">
+        <img src="/images/backgroup.jpg" alt="Image" class="img-fluid">
+    </div>
+    <div class="container">
+        <div class="row align-items-center justify-content-center">
+            <div class="col-lg-5 text-center">
+                <p data-aos="fade-up" style="color:#FFFFFF; font-size:18px;">
+                    加入 GoHiking，開始您的登山之旅
+                </p>
+                <!-- 白色短線 -->
+                <div style="width: 40px; height: 1px; background-color: #FFFFFF; margin: 1px auto;" data-aos="fade-up"></div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@section MyJS{
+    <style>
+        .validation-summary-errors {
+            font-size: 1rem;
+        }
+
+            .validation-summary-errors ul {
+                margin: 0;
+            }
+    </style>
+
+    <script>
+        // 登入表單驗證
+        function validateLoginForm() {
+            let isValid = true;
+            
+            // 清除所有錯誤訊息
+            clearAllErrors();
+            
+            // 驗證使用者名稱
+            const username = document.getElementById('username').value.trim();
+            if (!username) {
+                showError('username', '請輸入使用者名稱');
+                isValid = false;
+            } else if (username.length < 2) {
+                showError('username', '使用者名稱至少需要2個字符');
+                isValid = false;
+            }
+            
+            // 驗證密碼
+            const password = document.getElementById('password').value.trim();
+            if (!password) {
+                showError('password', '請輸入密碼');
+                isValid = false;
+            } else if (password.length < 4) {
+                showError('password', '密碼至少需要4個字符');
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+        
+        // 顯示錯誤訊息
+        function showError(fieldId, message) {
+            const errorElement = document.getElementById(fieldId + '-error');
+            const inputElement = document.getElementById(fieldId);
+            
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+            }
+            
+            // 將輸入框邊框變紅
+            if (inputElement) {
+                if (inputElement.parentNode.classList.contains('input-group')) {
+                    inputElement.parentNode.style.borderColor = '#dc3545';
+                } else {
+                    inputElement.style.borderColor = '#dc3545';
+                }
+            }
+        }
+        
+        // 清除特定錯誤訊息
+        function clearError(fieldId) {
+            const errorElement = document.getElementById(fieldId + '-error');
+            const inputElement = document.getElementById(fieldId);
+            
+            if (errorElement) {
+                errorElement.style.display = 'none';
+            }
+            
+            // 恢復輸入框邊框顏色
+            if (inputElement) {
+                if (inputElement.parentNode.classList.contains('input-group')) {
+                    inputElement.parentNode.style.borderColor = '#e9ecef';
+                } else {
+                    inputElement.style.borderColor = '#e9ecef';
+                }
+            }
+        }
+        
+        // 清除所有錯誤訊息
+        function clearAllErrors() {
+            const errorElements = document.querySelectorAll('[id$="-error"]');
+            errorElements.forEach(element => {
+                element.style.display = 'none';
+            });
+            
+            // 恢復所有輸入框邊框顏色
+            const inputElements = document.querySelectorAll('#loginForm input');
+            inputElements.forEach(input => {
+                if (input.parentNode.classList.contains('input-group')) {
+                    input.parentNode.style.borderColor = '#e9ecef';
+                } else {
+                    input.style.borderColor = '#e9ecef';
+                }
+            });
+        }
+
+        // 密碼顯示/隱藏功能
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const passwordIcon = document.getElementById('passwordIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordIcon.classList.remove('fa-eye');
+                passwordIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                passwordIcon.classList.remove('fa-eye-slash');
+                passwordIcon.classList.add('fa-eye');
+            }
+        }
+    </script>
+}

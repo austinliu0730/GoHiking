@@ -1,0 +1,378 @@
+﻿@model List<GoHiking.Models.SportsEvent>
+@{
+    ViewBag.Title = "日曆視圖";
+    Layout = "~/Views/Shared/_Layout1.cshtml";
+}
+
+<div class="page-header">
+    <h1><i class="fas fa-calendar-alt"></i> 運動日曆</h1>
+    <div class="calendar-controls">
+        <button class="btn btn-secondary" onclick="previousMonth()">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <span id="currentMonth" class="current-month"></span>
+        <button class="btn btn-secondary" onclick="nextMonth()">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+        <button class="btn btn-primary" onclick="openAddEventModal()">
+            <i class="fas fa-plus"></i> 新增活動
+        </button>
+    </div>
+</div>
+
+<div class="calendar-container">
+    <div class="calendar-grid" id="calendarGrid">
+        <div class="calendar-header">
+            <div class="calendar-day-header">日</div>
+            <div class="calendar-day-header">一</div>
+            <div class="calendar-day-header">二</div>
+            <div class="calendar-day-header">三</div>
+            <div class="calendar-day-header">四</div>
+            <div class="calendar-day-header">五</div>
+            <div class="calendar-day-header">六</div>
+        </div>
+        <div class="calendar-body" id="calendarBody">
+            <!-- 日曆內容將由 JavaScript 生成 -->
+        </div>
+    </div>
+</div>
+
+<!-- 拖放提示區域 -->
+<div class="drag-info">
+    <p><i class="fas fa-hand-rock"></i> 拖拽活動可以移動到不同日期和時間</p>
+</div>
+
+<!-- 新增事件模態框 -->
+<div id="eventModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>新增運動活動</h2>
+            <span class="close" onclick="closeEventModal()">&times;</span>
+        </div>
+        <form id="eventForm">
+
+            <input type="hidden" id="eventId" name="eventId" />
+            <input type="hidden" id="selectedDate" name="selectedDate" />
+
+            <div class="form-group">
+                <label for="title">活動標題 *</label>
+                <input type="text" id="title" name="title" required />
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="eventTime">時間 *</label>
+                    <input type="time" id="eventTime" name="eventTime" required />
+                </div>
+                <div class="form-group">
+                    <label for="sportsType">運動類型 *</label>
+                    <select id="sportsType" name="sportsType" required>
+                        <option value="">選擇運動類型</option>
+                        <option value="跑步">🏃 跑步</option>
+                        <option value="游泳">🏊 游泳</option>
+                        <option value="騎腳踏車">🚴 騎腳踏車</option>
+                        <option value="健身">💪 健身</option>
+                        <option value="瑜伽">🧘 瑜伽</option>
+                        <option value="登山">🥾 登山</option>
+                        <option value="球類運動">⚽ 球類運動</option>
+                        <option value="其他">🎯 其他</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="description">描述</label>
+                <textarea id="description" name="description" rows="3"></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeEventModal()">取消</button>
+                <button type="submit" class="btn btn-primary">儲存</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+    var currentDate = new Date();
+    var events = [];
+    var draggedEvent = null;
+
+    // 初始化日曆
+    document.addEventListener('DOMContentLoaded', function() {
+        loadEvents();
+        renderCalendar();
+
+        // 設置事件委派處理拖放事件
+        document.addEventListener('dragstart', function(e) {
+            if (e.target.classList.contains('event-item')) {
+                handleDragStart(e);
+            }
+        });
+
+        document.addEventListener('dragend', function(e) {
+            if (e.target.classList.contains('event-item')) {
+                handleDragEnd(e);
+            }
+        });
+    });
+
+    // 載入事件數據
+    function loadEvents() {
+        $.ajax({
+            url: '@Url.Action("GetEvents", "TripHelper")',
+            type: 'GET',
+            success: function(data) {
+                events = data;
+                renderCalendar();
+            }
+        });
+    }
+
+    // 渲染日曆
+    function renderCalendar() {
+        var year = currentDate.getFullYear();
+        var month = currentDate.getMonth();
+
+        // 更新月份顯示
+        document.getElementById('currentMonth').textContent = year + '年 ' + (month + 1) + '月';
+
+        // 計算當月第一天和最後一天
+        var firstDay = new Date(year, month, 1);
+        var lastDay = new Date(year, month + 1, 0);
+        var startDate = new Date(firstDay);
+        startDate.setDate(startDate.getDate() - firstDay.getDay());
+
+        var calendarBody = document.getElementById('calendarBody');
+        calendarBody.innerHTML = '';
+
+        // 生成6週的日曆
+        for (var week = 0; week < 6; week++) {
+            var weekDiv = document.createElement('div');
+            weekDiv.className = 'calendar-week';
+
+            for (var day = 0; day < 7; day++) {
+                var cellDate = new Date(startDate);
+                cellDate.setDate(startDate.getDate() + (week * 7) + day);
+
+                var dayDiv = document.createElement('div');
+                dayDiv.className = 'calendar-day';
+                dayDiv.dataset.date = cellDate.toISOString().split('T')[0];
+
+                // 設置拖放事件
+                setupDragAndDrop(dayDiv);
+
+                if (cellDate.getMonth() !== month) {
+                    dayDiv.classList.add('other-month');
+                }
+
+                if (cellDate.toDateString() === new Date().toDateString()) {
+                    dayDiv.classList.add('today');
+                }
+
+                var dateString = cellDate.toISOString().split('T')[0];
+                dayDiv.innerHTML = '<div class="day-number">' + cellDate.getDate() + '</div>' +
+                    '<div class="day-events" ondblclick="openAddEventModal(\'' + dateString + '\')">' +
+                    renderDayEvents(cellDate) +
+                    '</div>';
+
+                weekDiv.appendChild(dayDiv);
+            }
+
+            calendarBody.appendChild(weekDiv);
+        }
+    }
+
+    // 渲染單日事件
+    function renderDayEvents(date) {
+        var dateStr = date.toISOString().split('T')[0];
+        var dayEvents = events.filter(function(event) {
+            return event.start.split('T')[0] === dateStr;
+        });
+
+        return dayEvents.map(function(event) {
+            var eventTime = new Date(event.start).toLocaleTimeString('zh-TW', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
+
+            return '<div class="event-item" draggable="true" data-event-id="' + event.id + '" data-sports-type="' + event.sportsType + '">' +
+                '<div class="event-time">' + eventTime + '</div>' +
+                '<div class="event-title">' + event.title + '</div>' +
+                '</div>';
+        }).join('');
+    }
+
+    // 設置拖放功能
+    function setupDragAndDrop(dayDiv) {
+        dayDiv.addEventListener('dragover', handleDragOver);
+        dayDiv.addEventListener('dragleave', handleDragLeave);
+        dayDiv.addEventListener('drop', handleDrop);
+    }
+
+    function handleDragStart(e) {
+        console.log('開始拖拽:', e.target);
+        draggedEvent = {
+            id: e.target.dataset.eventId,
+            originalParent: e.target.parentElement
+        };
+        e.target.classList.add('dragging');
+        console.log('拖拽事件:', draggedEvent);
+    }
+
+    function handleDragEnd(e) {
+        e.target.classList.remove('dragging');
+    }
+
+    function handleDragOver(e) {
+        e.preventDefault();
+        e.currentTarget.classList.add('drag-over');
+    }
+
+    function handleDragLeave(e) {
+        if (!e.currentTarget.contains(e.relatedTarget)) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+    }
+
+    function handleDrop(e) {
+        e.preventDefault();
+        e.currentTarget.classList.remove('drag-over');
+        console.log('放下事件:', e.currentTarget.dataset.date);
+
+        if (draggedEvent) {
+            var newDate = e.currentTarget.dataset.date;
+            var eventElement = document.querySelector('[data-event-id="' + draggedEvent.id + '"]');
+            if (eventElement) {
+                var currentTime = eventElement.querySelector('.event-time').textContent;
+                console.log('準備更新事件到新日期:', newDate, '時間:', currentTime);
+
+                updateEventDate(draggedEvent.id, newDate, currentTime);
+            } else {
+                console.error('找不到事件元素:', draggedEvent.id);
+            }
+        } else {
+            console.error('沒有拖拽的事件');
+        }
+    }
+
+    // 更新事件日期
+    function updateEventDate(eventId, newDate, time) {
+        console.log('更新事件:', { eventId: eventId, newDate: newDate, time: time });
+
+        var hours, minutes;
+        if (time.indexOf('上午') !== -1 || time.indexOf('下午') !== -1) {
+            var isPM = time.indexOf('下午') !== -1;
+            var timeOnly = time.replace(/上午|下午/, '');
+            var timeParts = timeOnly.split(':');
+            var hour24 = parseInt(timeParts[0]);
+
+            if (isPM && hour24 !== 12) {
+                hour24 += 12;
+            } else if (!isPM && hour24 === 12) {
+                hour24 = 0;
+            }
+
+            hours = hour24;
+            minutes = parseInt(timeParts[1]);
+        } else {
+            var timeParts = time.split(':');
+            hours = parseInt(timeParts[0]);
+            minutes = parseInt(timeParts[1]);
+        }
+
+        console.log('解析後的時間:', { hours: hours, minutes: minutes });
+
+        $.ajax({
+            url: '@Url.Action("UpdateEvent", "TripHelper")',
+            type: 'POST',
+            data: {
+                id: eventId,
+                newDate: newDate,
+                newHour: hours,
+                newMinute: minutes
+            },
+            success: function(response) {
+                console.log('更新回應:', response);
+                if (response.success) {
+                    loadEvents();
+                } else {
+                    alert('更新失敗：' + (response.message || '請重試'));
+                    renderCalendar();
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX錯誤:', error);
+                alert('網路錯誤，請重試');
+                renderCalendar();
+            }
+        });
+    }
+
+    // 日曆導航
+    function previousMonth() {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        renderCalendar();
+    }
+
+    function nextMonth() {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        renderCalendar();
+    }
+
+    // 模態框控制
+    function openAddEventModal(date) {
+        date = date || new Date().toISOString().split('T')[0];
+        document.getElementById('selectedDate').value = date;
+        document.getElementById('eventForm').reset();
+        document.getElementById('eventModal').style.display = 'block';
+    }
+
+    function closeEventModal() {
+        document.getElementById('eventModal').style.display = 'none';
+    }
+
+    // 表單提交
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('eventForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            var formData = new FormData(this);
+            var selectedDate = formData.get('selectedDate');
+            var eventTime = formData.get('eventTime');
+            var eventDateTime = selectedDate + 'T' + eventTime;
+
+            var eventData = {
+                Title: formData.get('title'),
+                EventDate: eventDateTime,
+                SportsType: formData.get('sportsType'),
+                Description: formData.get('description'),
+                Duration: 60
+            };
+
+            $.ajax({
+                url: '@Url.Action("AddEvent", "TripHelper")',
+                type: 'POST',
+                data: eventData,
+                success: function(response) {
+                    if (response.success) {
+                        closeEventModal();
+                        loadEvents();
+                    } else {
+                        alert('新增失敗，請重試');
+                    }
+                }
+            });
+        });
+    });
+
+    // 移除拖放高亮效果
+    document.addEventListener('dragleave', function(e) {
+        if (e.target.classList.contains('calendar-day')) {
+            e.target.classList.remove('drag-over');
+        }
+    });
+    </script>
+}

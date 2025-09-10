@@ -1,0 +1,238 @@
+﻿@model IEnumerable<GoHiking.ViewModels.CommentViewModel>
+
+@{
+    ViewBag.Title = "Comment";
+
+    var groupMembers = ViewBag.GroupMembers as List<GoHiking.data.UserProfile>;
+    var firstMember = groupMembers?.FirstOrDefault();
+    var mountainName = firstMember?.User?.TripActivities?.FirstOrDefault(m => m.activity_id == firstMember.activity_id)?.mt_name;
+}
+
+
+@section MyCSS{
+    <link href="~/css/mycss/product.css?v=@DateTime.Now.Ticks" rel="stylesheet" />
+    <style>
+
+        .btn.btn-primary {
+            background-color: lightseagreen;
+            color: #fff;
+            border: none;
+        }
+
+            .btn.btn-primary:hover {
+                background-color: #4DD0C7
+            }
+
+        .btn.btn-secondary {
+            background-color: #dc3545; /* Bootstrap 紅色 */
+            color: #fff;
+            border: none;
+            font-size: 12px; /* 文字大小也會影響按鈕整體大小 */
+        }
+
+            .btn.btn-secondary:hover {
+                background-color: #c82333; /* hover 時的深紅色 */
+            }
+    </style>
+}
+
+<div class="section py-5">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-10 col-xl-9">
+                <div class="card p-4 shadow rounded main-card">
+                    <div class="row">
+                        <div class="col-lg-3 pr-lg-5">
+                            <aside class="sidebar d-none d-lg-block">
+                                <h3 class="sidebar-title">@mountainName 行程列表</h3>
+                                <p class="sidebar-subtitle">Trip</p>
+                                <ul class="activity-list">
+                                    <li>
+                                        <a href="@Url.Action("Index", "TripHelper", new { id = Model.FirstOrDefault()?.Activity_Id })" onclick="showEdit()">參與成員</a>
+                                    </li>
+                                    <li class="active">
+                                        <a href="@Url.Action("Comment", "TripHelper", new { id = Model.FirstOrDefault()?.Activity_Id })" onclick="showEdit()">行程討論</a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("Gear", "TripHelper", new { id = Model.FirstOrDefault()?.Activity_Id })" onclick="showEdit()">裝備選擇</a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("CalendarIntegrated", "TripHelper", new { id = Model.FirstOrDefault()?.Activity_Id })">運動規劃</a>
+                                    </li>
+                                    <li>
+                                        <a href="/User/Logout">登出</a>
+                                    </li>
+                                </ul>
+                            </aside>
+                        </div>
+
+                        <div class="col-9 content-section">
+                            <div class="pt-5">
+                                <h3 class="mb-5"> 行程討論區</h3>
+                                <hr />
+                                <ul class="comment-list">
+                                    @foreach (var comment in Model)
+                                    {
+                                        if (!string.IsNullOrWhiteSpace(comment.Content))
+                                        {
+                                            <li class="comment" id="comment-@comment.CommentId">
+                                                <div class="vcard bio">
+                                                    @if (comment.UserId.HasValue)
+                                                    {
+                                                        <img src="@Url.Action("GetProfileImage", "TripHelper", new { userId = comment.UserId.Value })" 
+                                                             alt="@comment.RealName 的頭像" 
+                                                             style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;"
+                                                             onerror="this.src='/images/person_2.jpg';">
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="/images/person_2.jpg" alt="預設頭像" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
+                                                    }
+                                                </div>
+                                                <div class="comment-body">
+                                                    <div class="comment-header d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <h3>@comment.RealName</h3>
+                                                            <div class="meta">@comment.CommentTime.ToString("yyyy年MM月dd日 HH:mm")</div>
+                                                        </div>
+                                                        @if (comment.IsCurrentUserComment)
+                                                        {
+                                                            <button type="button" 
+                                                                    class="btn btn-secondary btn-md text-white" 
+                                                                    data-comment-id="@comment.CommentId" 
+                                                                    data-activity-id="@comment.Activity_Id"
+                                                                    title="刪除此留言">
+                                                                <i class="fas fa-trash"></i> 刪除
+                                                            </button>
+                                                        }
+                                                    </div>
+                                                    <p>@comment.Content</p>
+                                                </div>
+                                            </li>
+                                        }
+                                    }
+                                </ul>
+                                <!-- END comment-list -->
+
+                                <div class="comment-form-wrap pt-5">
+
+                                    <form action="/TripHelper/Comment" method="post">
+                                        @Html.Hidden("Activity_Id", Model.FirstOrDefault()?.Activity_Id)
+                                        @Html.Hidden("RealName", ViewBag.GroupMembers != null && ((List<GoHiking.data.UserProfile>)ViewBag.GroupMembers).Any() ? ((List<GoHiking.data.UserProfile>)ViewBag.GroupMembers).FirstOrDefault()?.RealName : "匿名用戶")
+
+
+                                        <div class="mb-3">
+                                            <label for="Content">留言內容</label>
+                                            <textarea name="Content" id="Content" cols="20" rows="5" class="form-control" required></textarea>
+                                        </div>
+                                        <div class="mb-3 d-flex justify-content-end">
+                                            <input type="submit" value="送出留言" class="btn btn-primary btn-md text-white">
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section HeroSection {
+    <div class="img-bg rellax">
+        <img src="/images/backgroup.jpg" alt="Image" class="img-fluid">
+    </div>
+
+    <div class="container">
+        <div class="row align-items-center justify-content-center">
+            <div class="col-lg-5 text-center">
+                <p data-aos="fade-up" style="color:#FFFFFF; font-size:16px;">
+                    台灣登山行程｜專業媒合團隊
+                </p>
+                <!-- 白色短線 -->
+                <div style="width: 40px; height: 1px; background-color: #FFFFFF; margin: 1px auto;" data-aos="fade-up"></div>
+            </div>
+        </div>
+    </div>
+}
+
+@section MyJS{
+    <script src="~/Scripts/jquery-3.7.1.js"></script>
+    <script>
+        $(() => {
+            $('.activity-list a').hover(function () {
+                $('.activity-list li').removeClass('active');
+                $(this).parent('li').addClass('active');
+            });
+
+            // 刪除留言功能
+            $('.delete-comment-btn').on('click', function() {
+                var commentId = $(this).data('comment-id');
+                var activityId = $(this).data('activity-id');
+                var commentElement = $('#comment-' + commentId);
+                
+                // 確認提示
+                if (confirm('確定要刪除這則留言嗎？刪除後無法復原。')) {
+                    // 顯示載入狀態
+                    $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> 刪除中...');
+                    
+                    // 發送 AJAX 刪除請求
+                    $.ajax({
+                        url: '@Url.Action("DeleteComment", "TripHelper")',
+                        type: 'POST',
+                        data: {
+                            commentId: commentId,
+                            activityId: activityId
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                // 成功刪除，使用動畫效果移除留言
+                                commentElement.fadeOut(500, function() {
+                                    $(this).remove();
+                                });
+                                
+                                // 顯示成功訊息
+                                showMessage('留言已成功刪除', 'success');
+                            } else {
+                                // 刪除失敗，顯示錯誤訊息
+                                showMessage(response.message || '刪除失敗，請稍後再試', 'error');
+                                // 恢復按鈕狀態
+                                $('.delete-comment-btn[data-comment-id="' + commentId + '"]')
+                                    .prop('disabled', false)
+                                    .html('<i class="fas fa-trash"></i> 刪除');
+                            }
+                        },
+                        error: function() {
+                            // AJAX 請求失敗
+                            showMessage('網路錯誤，請檢查網路連線後再試', 'error');
+                            // 恢復按鈕狀態
+                            $('.delete-comment-btn[data-comment-id="' + commentId + '"]')
+                                .prop('disabled', false)
+                                .html('<i class="fas fa-trash"></i> 刪除');
+                        }
+                    });
+                }
+            });
+
+            // 顯示訊息的輔助函數
+            function showMessage(message, type) {
+                var alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+                var alertHtml = '<div class="alert ' + alertClass + ' alert-dismissible fade show" role="alert">' +
+                               message +
+                               '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
+                               '</div>';
+                
+                // 在 comment 列表上方顯示訊息
+                $('.comment-list').before(alertHtml);
+                
+                // 3秒後自動隱藏訊息
+                setTimeout(function() {
+                    $('.alert').fadeOut(500, function() {
+                        $(this).remove();
+                    });
+                }, 3000);
+            }
+        });
+    </script>
+}

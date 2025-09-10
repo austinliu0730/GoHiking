@@ -1,0 +1,506 @@
+﻿@model IEnumerable<GoHiking.data.UserProfile>
+@{
+    ViewBag.Title = "Comment";
+    var activeId = Model.FirstOrDefault().activity_id;
+    var mountainName = Model.FirstOrDefault().User.TripActivities.FirstOrDefault(m => m.activity_id == activeId)?.mt_name;
+}
+@section MyCSS{
+    <link href="~/css/mycss/product.css?v=@DateTime.Now.Ticks" rel="stylesheet" />
+    <style>
+        .hiking-checklist {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .checklist-container {
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            margin-bottom: 24px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .checklist-header {
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            color: white;
+            padding: 24px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .checklist-header::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M20,20 L30,10 L80,60 L70,70 Z" fill="rgba(255,255,255,0.1)"/></svg>') no-repeat center;
+                opacity: 0.1;
+            }
+
+            .checklist-header .icon {
+                display: inline-block;
+                margin-right: 12px;
+                font-size: 28px;
+            }
+
+        .checklist-section {
+            padding: 32px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        }
+
+        .checklist-items {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 改這行：從 repeat(auto-fit, minmax(280px, 1fr)) 變成 repeat(3, 1fr) */
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .checklist-item {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+            .checklist-item::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 4px;
+                height: 100%;
+                background: linear-gradient(45deg, #4a7c59, #2c5530);
+                transform: scaleY(0);
+                transition: transform 0.3s ease;
+            }
+
+            .checklist-item:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(74, 124, 89, 0.15);
+                border-color: #4a7c59;
+            }
+
+                .checklist-item:hover::before {
+                    transform: scaleY(1);
+                }
+
+            .checklist-item input[type="checkbox"] {
+                width: 20px;
+                height: 20px;
+                margin-right: 16px;
+                appearance: none;
+                border: 2px solid #ddd;
+                border-radius: 6px;
+                position: relative;
+                transition: all 0.3s ease;
+                cursor: pointer;
+            }
+
+                .checklist-item input[type="checkbox"]:hover {
+                    border-color: #4a7c59;
+                    transform: scale(1.05);
+                }
+
+                .checklist-item input[type="checkbox"]:checked {
+                    background: linear-gradient(45deg, #4a7c59, #2c5530);
+                    border-color: #4a7c59;
+                }
+
+                    .checklist-item input[type="checkbox"]:checked::after {
+                        content: '✓';
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        color: white;
+                        font-size: 14px;
+                        font-weight: bold;
+                    }
+
+            .checklist-item label {
+                cursor: pointer;
+                font-size: 15px;
+                font-weight: 500;
+                color: #2d3748;
+                line-height: 1.4;
+                flex: 1;
+                transition: color 0.3s ease;
+            }
+
+            .checklist-item:hover label {
+                color: #2c5530;
+            }
+
+            .checklist-item input[type="checkbox"]:checked + label {
+                color: #4a7c59;
+                position: relative;
+            }
+
+                .checklist-item input[type="checkbox"]:checked + label::after {
+                    content: '';
+                    position: absolute;
+                    top: 50%;
+                    left: 0;
+                    width: 100%;
+                    height: 1px;
+                    background: #4a7c59;
+                    transform: translateY(-50%);
+                }
+
+        .checklist-subtitle {
+            text-align: center;
+            font-size: 16px;
+            color: #666;
+            margin: 8px 0 0 0;
+            font-style: italic;
+            padding: 16px;
+            background: rgba(74, 124, 89, 0.05);
+            border-radius: 8px;
+            border-left: 4px solid #4a7c59;
+        }
+
+        .progress-bar {
+            margin-top: 24px;
+            background: #e2e8f0;
+            border-radius: 20px;
+            height: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #4a7c59, #2c5530);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 20px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+}
+<div class="section py-5">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-10 col-xl-9">
+                <div class="card p-4 shadow rounded main-card">
+                    <div class="row">
+                        <div class="col-lg-3 pr-lg-5">
+                            <aside class="sidebar d-none d-lg-block">
+                                <h3 class="sidebar-title">@mountainName 行程列表</h3>
+                                <p class="sidebar-subtitle">Trip</p>
+                                <ul class="activity-list">
+                                    <li>
+                                        <a href="@Url.Action("Index", "TripHelper", new { id = Model.FirstOrDefault()?.activity_id })" onclick="showEdit()">參與成員</a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("Comment", "TripHelper", new { id = Model.FirstOrDefault()?.activity_id })" onclick="showEdit()">行程討論</a>
+                                    </li>
+                                    <li class="active">
+                                        <a href="@Url.Action("Gear", "TripHelper", new { id = Model.FirstOrDefault()?.activity_id })" onclick="showEdit()">裝備選擇</a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("CalendarIntegrated", "TripHelper", new { id = Model.FirstOrDefault()?.activity_id })">運動規劃</a>
+                                    </li>
+                                    <li>
+                                        <a href="/User/Logout">登出</a>
+                                    </li>
+                                </ul>
+                            </aside>
+                        </div>
+                        <div class="col-9 content-section hiking-checklist">
+                            <div class="checklist-container">
+                                <div class="checklist-header">
+                                    <span class="icon">🎒</span>單日輕量行程
+                                </div>
+                                <div class="checklist-section">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="progress-day"></div>
+                                    </div>
+                                    <div class="stats">
+                                        <span id="checked-day">已準備: 0 項</span>
+                                        <span id="total-day">總共: 30 項</span>
+                                    </div>
+                                    <div class="checklist-items">
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="sunshade">
+                                            <label for="sunshade">遮陽/防水帽</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="backpack">
+                                            <label for="backpack">20~30升背包</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="headlamp">
+                                            <label for="headlamp">頭巾</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="rain-cover">
+                                            <label for="rain-cover">背包防水套</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="raincoat">
+                                            <label for="raincoat">風雨衣</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="dry-bag">
+                                            <label for="dry-bag">防水袋</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="rain-pants">
+                                            <label for="rain-pants">雨褲</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="walking-stick">
+                                            <label for="walking-stick">登山杖</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="base-layer">
+                                            <label for="base-layer">貼身排汗衣</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="headlamp2">
+                                            <label for="headlamp2">頭燈</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="moisture-wicking">
+                                            <label for="moisture-wicking">排汗長褲</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="phone">
+                                            <label for="phone">手機（記得先下載離線地圖）</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="down-jacket">
+                                            <label for="down-jacket">羽絨外套</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="power-bank">
+                                            <label for="power-bank">行動電源</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="synthetic-jacket">
+                                            <label for="synthetic-jacket">化纖外套</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="knife">
+                                            <label for="knife">瑞士刀</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="thermal">
+                                            <label for="thermal">保暖內著</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="first-aid">
+                                            <label for="first-aid">急救包與個人藥品</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="gloves">
+                                            <label for="gloves">防水/保暖手套</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="insect-repellent">
+                                            <label for="insect-repellent">防曬用品、防蚊液</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="hiking-shoes">
+                                            <label for="hiking-shoes">登山鞋</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="water-bottle">
+                                            <label for="water-bottle">水壺/保溫瓶</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="hiking-socks">
+                                            <label for="hiking-socks">登山襪</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="dry-food">
+                                            <label for="dry-food">行動乾糧</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="gaiters">
+                                            <label for="gaiters">綁腿</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="toilet-paper">
+                                            <label for="toilet-paper">衛生紙、濕紙巾與快乾毛巾</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="knee-pads">
+                                            <label for="knee-pads">護膝</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="sleeping-bag">
+                                            <label for="sleeping-bag">求生袋</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="spare-clothes">
+                                            <label for="spare-clothes">備用換洗衣物</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="plastic-bags">
+                                            <label for="plastic-bags">塑膠袋（裝垃圾用）</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="checklist-container">
+                                <div class="checklist-header">
+                                    <span class="icon">🏕️</span>多日行程
+                                </div>
+                                <div class="checklist-section">
+                                    <div class="checklist-subtitle">（在輕量行程為基礎加上多日用裝備）</div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="progress-multi"></div>
+                                    </div>
+                                    <div class="stats">
+                                        <span id="checked-multi">已準備: 0 項</span>
+                                        <span id="total-multi">總共: 14 項</span>
+                                    </div>
+                                    <div class="checklist-items">
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="large-backpack">
+                                            <label for="large-backpack">35升以上大型背包</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="tent">
+                                            <label for="tent">帳篷</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="summit-pack">
+                                            <label for="summit-pack">攻頂包</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="sleeping-pad">
+                                            <label for="sleeping-pad">睡墊</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="basic-meal">
+                                            <label for="basic-meal">基本糧食（泡麵/速食飯等）</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="air-pillow">
+                                            <label for="air-pillow">充氣枕頭</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="stove">
+                                            <label for="stove">爐具</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="sleeping-bag2">
+                                            <label for="sleeping-bag2">睡袋</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="gas-canister">
+                                            <label for="gas-canister">瓦斯罐</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="camp-light">
+                                            <label for="camp-light">營燈等燈具</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="cookware">
+                                            <label for="cookware">料理鍋具/炊具組</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="slippers">
+                                            <label for="slippers">拖鞋/涼鞋</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="utensils">
+                                            <label for="utensils">餐具</label>
+                                        </div>
+                                        <div class="checklist-item">
+                                            <input type="checkbox" id="toiletries">
+                                            <label for="toiletries">盥洗用品</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section HeroSection {
+    <div class="img-bg rellax">
+        <img src="/images/backgroup.jpg" alt="Image" class="img-fluid">
+    </div>
+    <div class="container">
+        <div class="row align-items-center justify-content-center">
+            <div class="col-lg-5 text-center">
+                <p data-aos="fade-up" style="color:#FFFFFF; font-size:16px;">
+                    台灣登山行程｜專業媒合團隊
+                </p>
+                <!-- 白色短線 -->
+                <div style="width: 40px; height: 1px; background-color: #FFFFFF; margin: 1px auto;" data-aos="fade-up"></div>
+            </div>
+        </div>
+    </div>
+}
+@section MyJS{
+    <script src="~/Scripts/jquery-3.7.1.js"></script>
+    <script>
+        $(() => {
+            $('.activity-list a').hover(function () {
+                $('.activity-list li').removeClass('active');
+                $(this).parent('li').addClass('active');
+            });
+
+            // 進度條功能
+            function updateProgress() {
+                // 單日行程進度
+                const dayCheckboxes = $('.checklist-container:first .checklist-item input[type="checkbox"]');
+                const dayChecked = dayCheckboxes.filter(':checked').length;
+                const dayTotal = dayCheckboxes.length;
+                const dayPercent = (dayChecked / dayTotal) * 100;
+
+                $('#progress-day').css('width', dayPercent + '%');
+                $('#checked-day').text(`已準備: ${dayChecked} 項`);
+                $('#total-day').text(`總共: ${dayTotal} 項`);
+
+                // 多日行程進度
+                const multiCheckboxes = $('.checklist-container:last .checklist-item input[type="checkbox"]');
+                const multiChecked = multiCheckboxes.filter(':checked').length;
+                const multiTotal = multiCheckboxes.length;
+                const multiPercent = (multiChecked / multiTotal) * 100;
+
+                $('#progress-multi').css('width', multiPercent + '%');
+                $('#checked-multi').text(`已準備: ${multiChecked} 項`);
+                $('#total-multi').text(`總共: ${multiTotal} 項`);
+            }
+
+            // 監聽複選框變化
+            $('.checklist-item input[type="checkbox"]').on('change', updateProgress);
+
+            // 初始化進度
+            updateProgress();
+
+            // 添加一些互動效果
+            $('.checklist-item').on('mouseenter', function () {
+                $(this).find('input[type="checkbox"]').focus();
+            });
+        });
+    </script>
+}

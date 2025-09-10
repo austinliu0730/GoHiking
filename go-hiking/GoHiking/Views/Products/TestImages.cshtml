@@ -1,0 +1,78 @@
+﻿@{
+    ViewBag.Title = "測試圖片顯示";
+}
+
+<h2>測試圖片顯示</h2>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h3>請輸入圖片 ID 進行測試：</h3>
+
+            <!-- 簡單的輸入表單 -->
+            <div class="form-group">
+                <label for="imageId">圖片 ID：</label>
+                <input type="number" id="imageId" class="form-control" style="width: 200px; display: inline-block;" placeholder="例如：1">
+                <button type="button" class="btn btn-primary" onclick="showImage()">顯示圖片</button>
+            </div>
+
+            <hr>
+
+            <!-- 顯示圖片的區域 -->
+            <div id="imageContainer" style="margin-top: 20px;">
+                <p>請輸入圖片 ID 並點擊「顯示圖片」</p>
+            </div>
+
+            <hr>
+
+            <!-- 快速測試連結 -->
+            <h4>快速測試（點擊查看圖片）：</h4>
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-outline-secondary" onclick="testImage(1)">測試 ID: 1</button>
+                <button type="button" class="btn btn-outline-secondary" onclick="testImage(2)">測試 ID: 2</button>
+                <button type="button" class="btn btn-outline-secondary" onclick="testImage(3)">測試 ID: 3</button>
+                <button type="button" class="btn btn-outline-secondary" onclick="testImage(4)">測試 ID: 4</button>
+                <button type="button" class="btn btn-outline-secondary" onclick="testImage(5)">測試 ID: 5</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showImage() {
+    var imageId = document.getElementById('imageId').value;
+    if (!imageId) {
+        alert('請輸入圖片 ID');
+        return;
+    }
+    testImage(imageId);
+}
+
+function testImage(id) {
+    var imageUrl = '@Url.Action("GetGroupImage", "Products")' + '?imageId=' + id;
+    var container = document.getElementById('imageContainer');
+
+    container.innerHTML = `
+        <h5>圖片 ID: ${id}</h5>
+        <p><strong>圖片網址：</strong> <a href="${imageUrl}" target="_blank">${imageUrl}</a></p>
+        <div style="border: 1px solid #ddd; padding: 10px; background-color: #f9f9f9;">
+            <img src="${imageUrl}"
+                 style="max-width: 100%; height: auto; max-height: 400px;"
+                 alt="測試圖片 ${id}"
+                 onload="showSuccess(${id})"
+                 onerror="showError(${id})">
+        </div>
+        <div id="status-${id}" style="margin-top: 10px;"></div>
+    `;
+}
+
+function showSuccess(id) {
+    document.getElementById('status-' + id).innerHTML =
+        '<div class="alert alert-success">✅ 圖片載入成功！</div>';
+}
+
+function showError(id) {
+    document.getElementById('status-' + id).innerHTML =
+        '<div class="alert alert-danger">❌ 圖片載入失敗 - 可能圖片不存在或發生錯誤</div>';
+}
+</script>

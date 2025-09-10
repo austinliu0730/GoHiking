@@ -1,0 +1,604 @@
+﻿@model GoHiking.data.TripActivity
+@{
+    ViewBag.Title = "編輯活動";
+}
+
+@section MyCSS{
+    <link href="~/css/mycss/product.css?v=@DateTime.Now.Ticks" rel="stylesheet" />
+    <style>
+        .carousel-item {
+            aspect-ratio: 900 / 536;
+            background-color: #f8f9fa;
+            border-radius: .375rem;
+            overflow: hidden;
+        }
+
+        .product-carousel-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .carousel-indicators [data-bs-target] {
+            background-color: #0d6efd;
+        }
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            filter: invert(1);
+        }
+    </style>
+}
+
+<div class="product-page-container">
+    <aside class="sidebar d-none d-lg-block">
+        <h3 class="sidebar-title">活動總覽</h3>
+        <p class="sidebar-subtitle">ACTIVITY</p>
+        <ul class="activity-list">
+            <li class="@(ViewBag.CurrentDays == null ? "active" : "")">
+                <a href="@Url.Action("Activity","Home")">所有活動</a>
+            </li>
+            <li class="@(ViewBag.CurrentDays == 1 ? "active" : "")">
+                <a href="@Url.Action("Activity","Home", new { days = 1 })">單日行程｜山林體驗</a>
+            </li>
+            <li class="@(ViewBag.CurrentDays == 2 ? "active" : "")">
+                <a href="@Url.Action("Activity","Home", new { days = 2 })">兩日行程｜深入荒野</a>
+            </li>
+            <li class="@(ViewBag.CurrentDays == 3 ? "active" : "")">
+                <a href="@Url.Action("Activity","Home", new { days = 3 })">三日行程｜拾回自然</a>
+            </li>
+            <li class="@(ViewBag.CurrentDays != null && ViewBag.CurrentDays >= 4 ? "active" : "")">
+                <a href="@Url.Action("Activity","Home", new { days = 4 })">四日以上｜浪漫忘返</a>
+            </li>
+        </ul>
+        <br />
+        <h3 class="sidebar-title">地區探索</h3>
+        <p class="sidebar-subtitle">REGIONS</p>
+        <ul class="activity-list">
+            <li class="@(ViewBag.CurrentRegion == "北部" ? "active" : "")">
+                <a href="@Url.Action("Activity","Home", new { region = "北" })">北探|台北山水</a>
+            </li>
+            <li class="@(ViewBag.CurrentRegion == "中部" ? "active" : "")">
+                <a href="@Url.Action("Activity","Home", new { region = "中" })">中遊|山谷漫遊</a>
+            </li>
+            <li class="@(ViewBag.CurrentRegion == "南部" ? "active" : "")">
+                <a href="@Url.Action("Activity","Home", new { region = "南" })">南行|熱情南徑</a>
+            </li>
+            <li class="@(ViewBag.CurrentRegion == "東部" ? "active" : "")">
+                <a href="@Url.Action("Activity","Home", new { region = "東" })">東冒|綠野東行</a>
+            </li>
+        </ul>
+    </aside>
+
+    <form action="/Products/Edit/@Model.activity_id" method="post">
+        @Html.AntiForgeryToken()
+        <main class="main-content">
+            <div class="product-container">
+                <div class="product-header">
+                    <!-- 隱藏欄位 - 保存原有資料 -->
+                    <input type="hidden" name="activity_id" value="@Model.activity_id" />
+                    <input type="hidden" name="user_id" value="@Model.user_id" />
+                    <input type="hidden" name="created_date" value="@Model.created_date" />
+                    <input type="hidden" name="updated_date" value="@Model.updated_date" />
+                    <input type="hidden" name="is_active" value="@Model.is_active" />
+
+                    <!-- 可編輯隱藏欄位 -->
+                    <input type="hidden" id="hidden-mt-name" name="mt_name" value="@Model.mt_name" />
+                    <input type="hidden" id="hidden-meeting-time" name="meeting_time" value="@Model.meeting_time" />
+                    <input type="hidden" id="hidden-meeting-location" name="meeting_location" value="@Model.meeting_location" />
+                    <input type="hidden" id="hidden-price" name="price" value="@Model.price" />
+                    <input type="hidden" id="hidden-schedule" name="TripSchedule" value="@Model.TripSchedule" />
+                    <input type="hidden" id="hidden-activity-date" name="activity_date" value="@Model.activity_date.ToString("yyyy-MM-dd")" />
+                    <input type="hidden" id="hidden-team-name" name="team_name" value="@Model.team_name" />
+                    <input type="hidden" id="hidden-leader-message" name="leader_message" value="@Model.leader_message" />
+                    <input type="hidden" id="hidden-max-participants" name="max_participants" value="@Model.max_participants" />
+
+                    <!-- 隱藏欄位 - 山資料 -->
+                    <input type="hidden" name="mt_id" value="@Model.mt_id" />
+                    <input type="hidden" name="badge" value="@Model.badge" />
+                    <input type="hidden" name="walk_days" value="@Model.walk_days" />
+                    <input type="hidden" name="location" value="@Model.location" />
+                    <input type="hidden" name="diff" value="@Model.diff" />
+                    <input type="hidden" name="dist_km" value="@Model.dist_km" />
+                    <input type="hidden" name="time_min" value="@Model.time_min" />
+                    <input type="hidden" name="ascend_m" value="@Model.ascend_m" />
+                    <input type="hidden" name="descend_m" value="@Model.descend_m" />
+                    <input type="hidden" name="trail_cond" value="@Model.trail_cond" />
+                    <input type="hidden" name="route_type" value="@Model.route_type" />
+                    <input type="hidden" name="min_alt_m" value="@Model.min_alt_m" />
+                    <input type="hidden" name="max_alt_m" value="@Model.max_alt_m" />
+                    <input type="hidden" name="mt_range" value="@Model.mt_range" />
+                    <input type="hidden" name="park_permit" value="@Model.park_permit" />
+                    <input type="hidden" name="mt_permit" value="@Model.mt_permit" />
+                    <input type="hidden" name="TripDetails" value="@Model.TripDetails" />
+                    <input type="hidden" name="region" value="@Model.region" />
+
+                    <!-- 費用包含項目隱藏欄位 -->
+                    <input type="hidden" id="hidden-fees" name="FeeIncludes" value="@Model.FeeIncludes" />
+
+
+                    <!-- 標題區塊 -->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h1 class="product-title">
+                            <span id="show-title">@Model.mt_name</span>
+                        </h1>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">編輯資訊</button>
+                    </div>
+
+                    <div class="product-meta">
+                        <span>
+                            <span class="meta-icon">📆</span>
+                            活動日期：
+                            <span id="show-activity-date">@Model.activity_date.ToString("yyyy-MM-dd")</span>
+                        </span>
+                        <span>
+                            <span class="meta-icon">📅</span>
+                            集合時間：
+                            <span id="show-time">@Model.meeting_time</span>
+                        </span>
+                        <span>
+                            <span class="meta-icon">📍</span>
+                            集合地點：
+                            <span id="show-location">@Model.meeting_location</span>
+                        </span>
+                        <span>
+                            <span class="meta-icon">⭐</span>
+                            難易度：
+                        </span>
+                        <div class="difficulty-stars">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <span class="star @(i <= Model.diff ? "" : "inactive")">@(i <= Model.diff ? "●" : "○")</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div id="top-booking-section" class="booking-section">
+                    <div class="price-container">
+                        <div class="price">
+                            NT$<span id="show-price">@Model.price</span> <span class="person">/人</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 輪播圖片區域 -->
+            <div class="modern-carousel-container position-relative">
+                <div id="productImageCarousel" class="carousel slide modern-carousel" data-bs-ride="carousel" data-bs-interval="5000">
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#productImageCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                        <button type="button" data-bs-target="#productImageCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                        <button type="button" data-bs-target="#productImageCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                    </div>
+
+
+                    <div class="carousel-inner">
+                        @if (Model.GroupImages != null && Model.GroupImages.Any())
+                        {
+                            int index = 0;
+                            foreach (var img in Model.GroupImages)
+                            {
+                                <div class="carousel-item @(index == 0 ? "active" : "")">
+                                    <img src="@Url.Action("GetGroupImage", new { imageId = img.image_id })"
+                                         class="d-block w-100 product-carousel-image"
+                                         alt="@Model.group_name">
+                                </div>
+                                index++;
+                            }
+                        }
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#productImageCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#productImageCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+
+            <hr />
+
+            <div class="product-full-details">
+                <section class="detail-section">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="section-title">簡易行程</h3>
+                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#scheduleModal">編輯</button>
+                    </div>
+                    <div class="timeline" id="show-schedule">
+                        @if (!string.IsNullOrEmpty(Model.TripSchedule))
+                        {
+                            <p>@Html.Raw(Model.TripSchedule.Replace("\n", "<br/>"))</p>
+                        }
+                        else
+                        {
+                            <p>行程詳情請洽詢客服</p>
+                        }
+                    </div>
+                    <p class="section-note">實際行程需視天候、天氣、團員狀況及嚮導判斷而定。</p>
+                </section>
+
+                <hr />
+
+                <section class="detail-section">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="section-title">團隊資訊</h3>
+                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#teamInfoModal">編輯</button>
+                    </div>
+
+                    <div class="team-info-item mb-3">
+                        <h5 class="team_name" id="show-team-name">
+                            @if (!string.IsNullOrEmpty(Model.team_name))
+                            {
+                                @Model.team_name
+                            }
+                            else
+                            {
+                                <span class="text-muted">請設定團名</span>
+                            }
+                        </h5>
+                    </div>
+
+                    <div class="team-info-item">
+                        <div class="leader-message" id="show-leader-message">
+                            @if (!string.IsNullOrEmpty(Model.leader_message))
+                            {
+                                <p>@Html.Raw(Model.leader_message.Replace("\n", "<br/>"))</p>
+                            }
+                            else
+                            {
+                                <p class="text-muted">分享你對這次活動的想法，讓參與者更了解這次行程...</p>
+                            }
+                        </div>
+                    </div>
+                </section>
+
+
+                <section class="detail-section">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="section-title">費用包含</h3>
+                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#feeModal">編輯</button>
+                    </div>
+                    <ul class="detail-list" id="show-fees">
+                        <!-- 這裡會由 JavaScript 動態產生 -->
+                    </ul>
+                </section>
+
+                <section class="detail-section">
+                    <h3 class="section-title">注意事項</h3>
+                    <ul class="detail-list">
+                        <li>請先詳閱<a href="#" class="action-link">活動服務條款</a>，報名即表示同意該條款。</li>
+                        <li>本活動 <span style="color: #e74c3c; font-weight: bold;"> <span id="show-max-participants-2">@Model.max_participants</span> 人成團</span>，達成團人數後即確認成團，最遲於活動日前 7 日確認是否成團。</li>
+                        <li>活動裝備表將於活動成團信中附上，若需提早檢視，可私訊 LINE 客服詢問。</li>
+                    </ul>
+                </section>
+            </div>
+        </main>
+
+        <!-- 提交按鈕 -->
+        <div class="text-center mt-4 mb-4">
+            <a href="/Products/Index" class="btn btn-secondary me-3">取消</a>
+            <button type="button" class="btn btn-success" id="submit-btn">儲存變更</button>
+        </div>
+    </form>
+</div>
+
+<!-- 編輯資訊 Modal -->
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">編輯行程資訊</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="modal-activity-date" class="form-label">活動日期</label>
+                    <input type="date" id="modal-activity-date" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="modal-mt-name" class="form-label">步道名稱</label>
+                    <input type="text" id="modal-mt-name" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="modal-meeting-time" class="form-label">集合時間</label>
+                    <input type="text" id="modal-meeting-time" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="modal-meeting-location" class="form-label">集合地點</label>
+                    <input type="text" id="modal-meeting-location" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="modal-price" class="form-label">價格</label>
+                    <input type="number" id="modal-price" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="modal-max-participants" class="form-label">最大參與人數</label>
+                    <input type="number" id="modal-max-participants" class="form-control" min="1" max="50">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="saveAllChanges()">儲存變更</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 簡易行程 Modal -->
+<div class="modal fade" id="scheduleModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">編輯簡易行程</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="modal-schedule" class="form-label">行程內容</label>
+                    <textarea id="modal-schedule" class="form-control" rows="10"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="saveSchedule()">儲存變更</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 團體資訊 Modal -->
+<div class="modal fade" id="teamInfoModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">編輯團體資訊</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="modal-team-name" class="form-label">團名</label>
+                    <input type="text" id="modal-team-name" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="modal-leader-message" class="form-label">團長的話</label>
+                    <textarea id="modal-leader-message" class="form-control" rows="6"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="saveTeamInfo()">儲存變更</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 費用包含 Modal -->
+<div class="modal fade" id="feeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">編輯費用包含項目</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="接駁車" id="fee1">
+                    <label class="form-check-label" for="fee1">接駁車</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="住宿費" id="fee2">
+                    <label class="form-check-label" for="fee2">住宿費</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="嚮導費" id="fee3">
+                    <label class="form-check-label" for="fee3">嚮導費</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="300萬登山事故險" id="fee4">
+                    <label class="form-check-label" for="fee4">300萬登山事故險</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="90分鐘登山行前課程影片" id="fee5">
+                    <label class="form-check-label" for="fee5">90分鐘登山行前課程影片</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="餐食" id="fee6">
+                    <label class="form-check-label" for="fee6">餐食</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="裝備租借" id="fee7">
+                    <label class="form-check-label" for="fee7">裝備租借</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="入園證申請" id="fee8">
+                    <label class="form-check-label" for="fee8">入園證申請</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="saveFees()">儲存變更</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section MyJS{
+    <script src="~/Scripts/jquery-3.7.1.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // 編輯資訊 Modal
+        document.getElementById('editModal').addEventListener('show.bs.modal', function () {
+            document.getElementById('modal-activity-date').value = document.getElementById('hidden-activity-date').value;
+            document.getElementById('modal-mt-name').value = document.getElementById('show-title').textContent.trim();
+            document.getElementById('modal-meeting-time').value = document.getElementById('show-time').textContent.trim();
+            document.getElementById('modal-meeting-location').value = document.getElementById('show-location').textContent.trim();
+            document.getElementById('modal-price').value = document.getElementById('show-price').textContent.trim();
+            document.getElementById('modal-max-participants').value = document.getElementById('hidden-max-participants').value;
+        });
+
+
+        function saveAllChanges() {
+            var activityDate = document.getElementById('modal-activity-date').value;
+            document.getElementById('show-activity-date').textContent = activityDate;
+            document.getElementById('hidden-activity-date').value = activityDate;
+
+            var mtName = document.getElementById('modal-mt-name').value;
+            document.getElementById('show-title').textContent = mtName;
+            document.getElementById('hidden-mt-name').value = mtName;
+
+            var meetingTime = document.getElementById('modal-meeting-time').value;
+            document.getElementById('show-time').textContent = meetingTime;
+            document.getElementById('hidden-meeting-time').value = meetingTime;
+
+            var meetingLocation = document.getElementById('modal-meeting-location').value;
+            document.getElementById('show-location').textContent = meetingLocation;
+            document.getElementById('hidden-meeting-location').value = meetingLocation;
+
+            var price = document.getElementById('modal-price').value;
+            document.getElementById('show-price').textContent = price;
+            document.getElementById('hidden-price').value = price;
+
+            var maxParticipants = document.getElementById('modal-max-participants').value;
+            document.getElementById('show-max-participants-2').textContent = maxParticipants;
+            document.getElementById('hidden-max-participants').value = maxParticipants;
+
+            bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
+        }
+
+        // 簡易行程 Modal
+        document.getElementById('scheduleModal').addEventListener('show.bs.modal', function () {
+            document.getElementById('modal-schedule').value = document.getElementById('hidden-schedule').value || '';
+        });
+
+        function saveSchedule() {
+            var schedule = document.getElementById('modal-schedule').value;
+            var displaySchedule = schedule.replace(/\n/g, '<br/>');
+            document.getElementById('show-schedule').innerHTML = '<p>' + displaySchedule + '</p>';
+            document.getElementById('hidden-schedule').value = schedule;
+            bootstrap.Modal.getInstance(document.getElementById('scheduleModal')).hide();
+        }
+
+        // 團體資訊 Modal
+        document.getElementById('teamInfoModal').addEventListener('show.bs.modal', function () {
+            document.getElementById('modal-team-name').value = document.getElementById('hidden-team-name').value || '';
+            document.getElementById('modal-leader-message').value = document.getElementById('hidden-leader-message').value || '';
+        });
+
+        function saveTeamInfo() {
+            var teamName = document.getElementById('modal-team-name').value.trim();
+            var leaderMessage = document.getElementById('modal-leader-message').value.trim();
+
+            var teamNameDisplay = document.getElementById('show-team-name');
+            if (teamName) {
+                teamNameDisplay.innerHTML = teamName;
+                teamNameDisplay.classList.remove('text-muted');
+            } else {
+                teamNameDisplay.innerHTML = '<span class="text-muted">請設定團名</span>';
+            }
+
+            var leaderMessageDisplay = document.getElementById('show-leader-message');
+            if (leaderMessage) {
+                var displayMessage = leaderMessage.replace(/\n/g, '<br/>');
+                leaderMessageDisplay.innerHTML = '<p>' + displayMessage + '</p>';
+            } else {
+                leaderMessageDisplay.innerHTML = '<p class="text-muted">分享你對這次活動的想法，讓參與者更了解這次行程...</p>';
+            }
+
+            document.getElementById('hidden-team-name').value = teamName;
+            document.getElementById('hidden-leader-message').value = leaderMessage;
+            bootstrap.Modal.getInstance(document.getElementById('teamInfoModal')).hide();
+        }
+
+        //費用部分
+
+        document.addEventListener('DOMContentLoaded', function () {
+            initializeFees();
+        });
+
+        function initializeFees() {
+            var currentFees = document.getElementById('hidden-fees').value;
+            if (currentFees) {
+                var feeArray = currentFees.split(',');
+                feeArray.forEach(function (fee) {
+                    if (fee.trim()) {
+                        var checkbox = document.querySelector('#feeModal input[value="' + fee.trim() + '"]');
+                        if (checkbox) {
+                            checkbox.checked = true;
+                        }
+                    }
+                });
+            }
+            updateFeeDisplay();
+        }
+
+        function updateFeeDisplay() {
+            var selectedFees = [];
+            document.querySelectorAll('#feeModal input[type="checkbox"]:checked').forEach(cb => {
+                selectedFees.push(cb.value);
+            });
+
+            var feesList = document.getElementById('show-fees');
+            feesList.innerHTML = '';
+            selectedFees.forEach(fee => {
+                var li = document.createElement('li');
+                li.textContent = fee;
+                feesList.appendChild(li);
+            });
+
+            document.getElementById('hidden-fees').value = selectedFees.join(',');
+        }
+
+        function saveFees() {
+            updateFeeDisplay();
+            bootstrap.Modal.getInstance(document.getElementById('feeModal')).hide();
+        }
+
+        // 確認儲存
+        document.getElementById('submit-btn').addEventListener('click', function () {
+            Swal.fire({
+                title: '確定要儲存變更嗎？',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '儲存變更',
+                cancelButtonText: '取消'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.querySelector('form').submit();
+                }
+            });
+        });
+
+        $(() => {
+            $('.activity-list a').hover(function () {
+                $('.activity-list li').removeClass('active');
+                $(this).parent('li').addClass('active');
+            });
+        });
+    </script>
+
+
+}
+
+@section HeroSection {
+    <div class="img-bg rellax ">
+        <img src="~/images/legend.jpg" alt="Image" class="img-fluid">
+    </div>
+    <div class="container">
+        <div class="row align-items-center justify-content-center">
+            <div class="col-lg-5 text-center">
+                <p data-aos="fade-up" style="color:#FFFFFF; font-size:18px;">
+                    編輯頁面，尊敬的管理者。
+                </p>
+                <!-- 白色短線 -->
+                <div style="width: 40px; height: 1px; background-color: #FFFFFF; margin: 1px auto;" data-aos="fade-up"></div>
+            </div>
+        </div>
+    </div>
+}
+

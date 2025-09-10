@@ -1,0 +1,1169 @@
+﻿@model GoHiking.ViewModels.TripGroupViewModel
+@{
+    ViewBag.Title = "Create";
+}
+
+@section MyCSS{
+    <link href="~/css/mycss/product.css?v=@DateTime.Now.Ticks" rel="stylesheet" />
+    <style>
+
+        .carousel-item {
+            /* 為輪播的每一頁設定固定的長寬比 */
+            aspect-ratio: 900 / 536;
+            background-color: #f8f9fa; /* 圖片載入前的預設背景色 */
+            border-radius: .375rem; /* 圓角 */
+            overflow: hidden; /* 確保圖片和按鈕不會超出圓角範圍 */
+        }
+
+        .product-carousel-image {
+            /* 讓圖片本身填滿輪播頁，同時保持比例不變形 */
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 讓輪播的圓點指示器更明顯一點 */
+        .carousel-indicators [data-bs-target] {
+            background-color: #0d6efd; /* 換成藍色 */
+        }
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            /* 使用 filter: invert(1) 將白色圖示反轉為黑色 */
+            filter: invert(1);
+        }
+    </style>
+
+}
+<div class="product-page-container">
+    <aside class="sidebar d-none d-lg-block">
+        <h3 class="sidebar-title">活動總覽</h3>
+        <p class="sidebar-subtitle">ACTIVITY</p>
+        <ul class="activity-list">
+            <li class="@(ViewBag.CurrentDays == null ? "active" : "")">
+                <a href="@Url.Action("Activity","Home")">所有活動</a>
+            </li>
+            <li class="@(ViewBag.CurrentDays == 1 ? "active" : "")">
+                <a href="@Url.Action("Activity","Home", new { days = 1 })">單日行程｜山林體驗</a>
+            </li>
+            <li class="@(ViewBag.CurrentDays == 2 ? "active" : "")">
+                <a href="@Url.Action("Activity","Home", new { days = 2 })">兩日行程｜深入荒野</a>
+            </li>
+            <li class="@(ViewBag.CurrentDays == 3 ? "active" : "")">
+                <a href="@Url.Action("Activity","Home", new { days = 3 })">三日行程｜拾回自然</a>
+            </li>
+            <li class="@(ViewBag.CurrentDays != null && ViewBag.CurrentDays >= 4 ? "active" : "")">
+                <a href="@Url.Action("Activity","Home", new { days = 4 })">四日以上｜浪漫忘返</a>
+            </li>
+        </ul>
+        <br />
+        <h3 class="sidebar-title">地區探索</h3>
+        <p class="sidebar-subtitle">REGIONS</p>
+        <ul class="activity-list">
+            <li class="@(ViewBag.CurrentRegion == "北部" ? "active" : "")">
+                <a href="@Url.Action("Activity","Home", new { region = "北" })">北探|台北山水</a>
+            </li>
+            <li class="@(ViewBag.CurrentRegion == "中部" ? "active" : "")">
+                <a href="@Url.Action("Activity","Home", new { region = "中" })">中遊|山谷漫遊</a>
+            </li>
+            <li class="@(ViewBag.CurrentRegion == "南部" ? "active" : "")">
+                <a href="@Url.Action("Activity","Home", new { region = "南" })">南行|熱情南徑</a>
+            </li>
+            <li class="@(ViewBag.CurrentRegion == "東部" ? "active" : "")">
+                <a href="@Url.Action("Activity","Home", new { region = "東" })">東冒|綠野東行</a>
+            </li>
+        </ul>
+    </aside>
+    <form action="/Products/Create" method="post" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+        <main class="main-content">
+            <div class="product-container">
+
+                <div class="product-header">
+
+
+                    <!-- 可編輯隱藏欄位 -->
+                    <input type="hidden" id="hidden-mt-name" name="mt_name" value="@Model.mt_name" />
+                    <input type="hidden" id="hidden-meeting-time" name="meeting_time" value="@Model.meeting_time" />
+                    <input type="hidden" id="hidden-meeting-location" name="meeting_location" value="@Model.meeting_location" />
+                    <input type="hidden" id="hidden-price" name="price" value="@Model.price" />
+                    <input type="hidden" id="hidden-schedule" name="TripSchedule" value="@Model.TripSchedule" />
+                    <input type="hidden" id="hidden-fees" name="FeeIncludes" value="@Model.FeeIncludes" />
+                    <input type="hidden" id="hidden-activity-date" name="activity_date" value="@Model.activity_date.ToString("yyyy-MM-dd")" />
+                    <input type="hidden" id="hidden-team-name" name="team_name" value="@Model.team_name" />
+                    <input type="hidden" id="hidden-leader-message" name="leader_message" value="" />
+                    <input type="hidden" id="hidden-max-participants" name="max_participants" value="@Model.max_participants" />
+
+                    <input type="file" id="ImageFiles" name="ImageFiles" multiple accept="image/*" style="display: none;">
+
+                    <!-- 隱藏欄位 - 不可編輯的山資料 -->
+                    <input type="hidden" name="mt_id" value="@Model.mt_id" />
+                    <input type="hidden" name="badge" value="@Model.badge" />
+                    <input type="hidden" name="walk_days" value="@Model.walk_days" />
+                    <input type="hidden" name="location" value="@Model.location" />
+                    <input type="hidden" name="diff" value="@Model.diff" />
+                    <input type="hidden" name="dist_km" value="@Model.dist_km" />
+                    <input type="hidden" name="time_min" value="@Model.time_min" />
+                    <input type="hidden" name="ascend_m" value="@Model.ascend_m" />
+                    <input type="hidden" name="descend_m" value="@Model.descend_m" />
+                    <input type="hidden" name="trail_cond" value="@Model.trail_cond" />
+                    <input type="hidden" name="route_type" value="@Model.route_type" />
+                    <input type="hidden" name="min_alt_m" value="@Model.min_alt_m" />
+                    <input type="hidden" name="max_alt_m" value="@Model.max_alt_m" />
+                    <input type="hidden" name="mt_range" value="@Model.mt_range" />
+                    <input type="hidden" name="park_permit" value="@Model.park_permit" />
+                    <input type="hidden" name="mt_permit" value="@Model.mt_permit" />
+                    <input type="hidden" name="TripDetails" value="@Model.TripDetails" />
+                    <input type="hidden" name="region" value="@Model.region" />
+
+                    <!-- 隱藏欄位 - 用戶資料 -->
+                    <input type="hidden" name="user_id" value="@Model.user_id" />
+                    <input type="hidden" name="user_name" value="@Model.user_name" />
+                    <input type="hidden" name="user_email" value="@Model.user_email" />
+                    <input type="hidden" name="user_password" value="@Model.user_password" />
+
+                    <!-- 標題區塊 -->
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h1 class="product-title">
+                            <span id="show-title">@Model.mt_name</span>
+                        </h1>
+                        <!-- 編輯按鈕在最右側 -->
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">編輯資訊</button>
+                    </div>
+
+                    <div class="product-meta">
+                        <!-- 活動日期 -->
+                        <span>
+                            <span class="meta-icon">📆</span>
+                            活動日期：
+                            <span id="show-activity-date">@Model.activity_date.ToString("yyyy-MM-dd")</span>
+                        </span>
+
+                        <!-- 集合時間 -->
+                        <span>
+                            <span class="meta-icon">📅</span>
+                            集合時間：
+                            <span id="show-time">@Model.meeting_time</span>
+                        </span>
+
+                        <!-- 集合地點 -->
+                        <span>
+                            <span class="meta-icon">📍</span>
+                            集合地點：
+                            <span id="show-location">@Model.meeting_location</span>
+                        </span>
+
+                        <!-- 難易度 -->
+                        <span>
+                            <span class="meta-icon">⭐</span>
+                            難易度：
+                        </span>
+                        <div class="difficulty-stars">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <span class="star @(i <= Model.diff ? "" : "inactive")">@(i <= Model.diff ? "●" : "○")</span>
+                            }
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+                <div id="top-booking-section" class="booking-section">
+                    <div class="price-container">
+                        <div class="price">
+                            NT$<span id="show-price">@Model.price</span> <span class="person">/人</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 在輪播圖片區域添加編輯按鈕 -->
+            <div class="modern-carousel-container position-relative">
+                <!-- 新增編輯圖片按鈕 -->
+                <button type="button" class="btn btn-primary position-absolute" style="top: 10px; right: 10px; z-index: 1000;"
+                        data-bs-toggle="modal" data-bs-target="#imageModal">
+                    <i class="bi bi-pencil"></i> 編輯圖片
+                </button>
+
+                <div id="productImageCarousel" class="carousel slide modern-carousel" data-bs-ride="carousel" data-bs-interval="5000">
+                    <!-- 指示器 -->
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#productImageCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                        <button type="button" data-bs-target="#productImageCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                        <button type="button" data-bs-target="#productImageCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                    </div>
+
+                    <!-- 圖片內容 -->
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img id="product-image-0"
+                                 src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&h=400&fit=crop&crop=center"
+                                 class="d-block w-100 product-carousel-image"
+                                 alt="玉山主峰風景 1"
+                                 loading="lazy">
+                        </div>
+                        <div class="carousel-item">
+                            <img id="product-image-1"
+                                 src="https://images.unsplash.com/photo-1502085671122-2d218cd434e6?q=80&w=1526&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                 class="d-block w-100 product-carousel-image"
+                                 alt="玉山主峰風景 2"
+                                 loading="lazy">
+                        </div>
+                        <div class="carousel-item">
+                            <img id="product-image-2"
+                                 src="https://images.unsplash.com/photo-1501854140801-50d01698950b?q=80&w=1840"
+                                 class="d-block w-100 product-carousel-image"
+                                 alt="玉山主峰風景 3"
+                                 loading="lazy">
+                        </div>
+                    </div>
+
+                    <!-- 控制按鈕 -->
+                    <button class="carousel-control-prev" type="button" data-bs-target="#productImageCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#productImageCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+
+
+            <hr />
+
+            <div class="product-full-details">
+                <section class="detail-section">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="section-title">簡易行程</h3>
+                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#scheduleModal">編輯</button>
+                    </div>
+                    <div class="timeline" id="show-schedule">
+                        @if (!string.IsNullOrEmpty(Model.TripSchedule))
+                        {
+                            <p>@Html.Raw(Model.TripSchedule.Replace("\n", "<br/>"))</p>
+                        }
+                        else
+                        {
+                            <p>行程詳情請洽詢客服</p>
+                        }
+                    </div>
+                    <p class="section-note">實際行程需視天候、天氣、團員狀況及嚮導判斷而定。</p>
+                </section>
+
+                <hr />
+                <section class="detail-section">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="section-title">團隊資訊</h3>
+                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#teamInfoModal">編輯</button>
+                    </div>
+
+                    <!-- 團名顯示 -->
+                    <div class="team-info-item mb-3">
+                        <h5 class="team_name" id="show-team-name">
+                            @if (!string.IsNullOrEmpty(Model.team_name))
+                            {
+                                @Model.team_name
+                            }
+                        </h5>
+                    </div>
+
+                    <!-- 團長的話顯示 -->
+                    <div class="team-info-item">
+                        <div class="leader-message" id="show-leader-message">
+                            @if (!string.IsNullOrEmpty(Model.leader_message))
+                            {
+                                <p>@Html.Raw(Model.leader_message.Replace("\n", "<br/>"))</p>
+                            }
+                            else
+                            {
+                                <p class="text-muted">分享你對這次活動的想法，讓參與者更了解這次行程...</p>
+                            }
+                        </div>
+                    </div>
+                </section>
+
+
+                <section class="detail-section">
+                    <h3 class="section-title">基本資訊</h3>
+
+                    <!-- 主要數據統計 -->
+                    <div class="row row-cols-2 row-cols-sm-3 row-cols-lg-5 text-center border-bottom pb-3 mb-4 g-3">
+                        <div class="col">
+                            <p class="text-muted mb-0">總距離</p>
+                            <strong class="fs-2 fw-bold">@Model.dist_km</strong><small class="fs-6 align-baseline">km</small>
+                        </div>
+                        <div class="col">
+                            <p class="text-muted mb-0">總時間</p>
+                            @{
+                                int hours = Model.time_min / 60;
+                                int minutes = Model.time_min % 60;
+                            }
+                            <strong class="fs-2 fw-bold">@hours<small class="fs-6 align-baseline"> h</small> @minutes<small class="fs-6 align-baseline">m</small></strong>
+                        </div>
+                        <div class="col">
+                            <p class="text-muted mb-0">總爬升高度</p>
+                            <strong class="fs-2 fw-bold">@Model.ascend_m</strong><small class="fs-6 align-baseline">m</small>
+                        </div>
+                        <div class="col">
+                            <p class="text-muted mb-0">總下降高度</p>
+                            <strong class="fs-2 fw-bold">@Model.descend_m</strong><small class="fs-6 align-baseline">m</small>
+                        </div>
+                        <div class="col">
+                            <p class="text-muted mb-0">活動天數</p>
+                            <strong class="fs-2 fw-bold">@Model.walk_days</strong><small class="fs-6 align-baseline">日</small>
+                        </div>
+                    </div>
+
+                    <!-- 描述文字 -->
+                    <p class="my-4">@Model.TripDetails</p>
+                    <hr />
+
+                    <!-- 其他詳細資料 -->
+                    <div class="details-container">
+                        <!-- 雙欄項目 -->
+                        <div class="detail-row">
+                            <div class="row g-0">
+                                <div class="col-md-6">
+                                    <div class="detail-item">
+                                        <dl class="row mb-0 w-100">
+                                            <dt class="detail-label col-5">地形路況</dt>
+                                            <dd class="detail-value col-7">@Model.trail_cond</dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="detail-item">
+                                        <dl class="row mb-0 w-100">
+                                            <dt class="detail-label col-5">型態</dt>
+                                            <dd class="detail-value col-7">@Model.route_type</dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="detail-row">
+                            <div class="row g-0">
+                                <div class="col-md-6">
+                                    <div class="detail-item">
+                                        <dl class="row mb-0 w-100">
+                                            <dt class="detail-label col-5">最高海拔</dt>
+                                            <dd class="detail-value col-7">@Model.max_alt_m m</dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="detail-item">
+                                        <dl class="row mb-0 w-100">
+                                            <dt class="detail-label col-5">最低海拔</dt>
+                                            <dd class="detail-value col-7">@Model.min_alt_m m</dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="detail-row">
+                            <div class="row g-0">
+                                <div class="col-md-6">
+                                    <div class="detail-item">
+                                        <dl class="row mb-0 w-100">
+                                            <dt class="detail-label col-5">高度落差</dt>
+                                            <dd class="detail-value col-7">@(Model.max_alt_m - Model.min_alt_m) m</dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="detail-item">
+                                        <dl class="row mb-0 w-100">
+                                            <dt class="detail-label col-5">所屬山系</dt>
+                                            <dd class="detail-value col-7">@Model.mt_range</dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="row g-0">
+                                <div class="col-md-6">
+                                    <div class="detail-item">
+                                        <dl class="row mb-0 w-100">
+                                            <dt class="detail-label col-5">入園證 & 入山證</dt>
+                                            <dd class="detail-value col-7">
+                                                @if (Model.park_permit == 1 && Model.mt_permit == 1)
+                                                {
+                                                    @:需入園證，需入山證
+                                                }
+                                                else if (Model.park_permit == 1)
+                                                {
+                                                    @:需入園證，不需入山證
+                                                }
+                                                else if (Model.mt_permit == 1)
+                                                {
+                                                    @:不需入園證，需入山證
+                                                }
+                                                else
+                                                {
+                                                    @:不需入園證，不需入山證
+                                                }
+                                            </dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 更新時間 -->
+                        <div class="update-time">
+                            <small class="text-muted">更新時間 2025年7月31日</small>
+                        </div>
+                    </div>
+                </section>
+
+                <hr />
+
+                <section class="detail-section">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="section-title">費用包含</h3>
+                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#feeModal">編輯</button>
+                    </div>
+                    <ul class="detail-list" id="show-fees">
+                        <li>接駁車</li>
+                        <li>住宿費</li>
+                        <li>嚮導費</li>
+                        <li>300萬登山事故險</li>
+                        <li>90分鐘登山行前課程影片</li>
+                    </ul>
+                </section>
+
+
+
+                <hr />
+
+                <section class="detail-section">
+                    <h3 class="section-title">注意事項</h3>
+                    <ul class="detail-list">
+                        <li>請先詳閱<a href="#" class="action-link">活動服務條款</a>，報名即表示同意該條款。</li>
+                        <li>本活動 <span style="color: #e74c3c; font-weight: bold;"> <span id="show-max-participants-2">@Model.max_participants</span> 人成團</span>，達成團人數後即確認成團，最遲於活動日前 7 日確認是否成團。</li>
+                        <li>活動裝備表將於活動成團信中附上，若需提早檢視，可私訊 LINE 客服詢問。</li>
+                    </ul>
+                </section>
+            </div>
+        </main>
+
+        <!-- 提交按鈕 -->
+        <button type="button" class="btn btn-success" id="submit-btn">確認成團</button>
+    </form>
+</div>
+
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">編輯行程資訊</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="modal-activity-date" class="form-label">活動日期</label>
+                    <input type="date" id="modal-activity-date" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="modal-mt-name" class="form-label">步道名稱</label>
+                    <input type="text" id="modal-mt-name" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="modal-meeting-time" class="form-label">集合時間</label>
+                    <input type="text" id="modal-meeting-time" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="modal-meeting-location" class="form-label">集合地點</label>
+                    <input type="text" id="modal-meeting-location" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="modal-price" class="form-label">價格</label>
+                    <input type="number" id="modal-price" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label for="modal-max-participants" class="form-label">最大參與人數</label>
+                    <input type="number" id="modal-max-participants" class="form-control" min="1" max="50" placeholder="設定活動人數上限">
+                    <div class="form-text">建議根據路線難度和安全考量設定</div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="saveAllChanges()">儲存變更</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="scheduleModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">編輯簡易行程</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="modal-schedule" class="form-label">行程內容</label>
+                    <textarea id="modal-schedule" class="form-control" rows="10"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="saveSchedule()">儲存變更</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="feeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">編輯費用包含項目</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="接駁車" id="fee1">
+                    <label class="form-check-label" for="fee1">
+                        接駁車
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="住宿費" id="fee2">
+                    <label class="form-check-label" for="fee2">
+                        住宿費
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="嚮導費" id="fee3">
+                    <label class="form-check-label" for="fee3">
+                        嚮導費
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="300萬登山事故險" id="fee4">
+                    <label class="form-check-label" for="fee4">
+                        300萬登山事故險
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="90分鐘登山行前課程影片" id="fee5">
+                    <label class="form-check-label" for="fee5">
+                        90分鐘登山行前課程影片
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="餐食" id="fee6">
+                    <label class="form-check-label" for="fee6">
+                        餐食
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="裝備租借" id="fee7">
+                    <label class="form-check-label" for="fee7">
+                        裝備租借
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="入園證申請" id="fee8">
+                    <label class="form-check-label" for="fee8">
+                        入園證申請
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="saveFees()">儲存變更</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 團體資訊編輯 Modal -->
+<div class="modal fade" id="teamInfoModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">編輯團體資訊</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="modal-team-name" class="form-label">團名</label>
+                    <input type="text" id="modal-team-name" class="form-control" placeholder="為你的團隊取個響亮的名字">
+                    <div class="form-text">例如：「征服玉山小隊」、「週末登山趣」</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="modal-leader-message" class="form-label">團長的話</label>
+                    <textarea id="modal-leader-message" class="form-control" rows="6" placeholder="分享你對這次活動的想法、注意事項或期待..."></textarea>
+                    <div class="form-text">讓參與者更了解你的想法和這次行程的特色</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="saveTeamInfo()">儲存變更</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 修改後的圖片編輯 Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">編輯圖片</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="destroyCropper()"></button>
+            </div>
+            <div class="modal-body">
+                <!-- 圖片選擇標籤 -->
+                <ul class="nav nav-tabs mb-3" id="imageTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="image1-tab" data-bs-toggle="tab" data-bs-target="#image1"
+                                type="button" role="tab" aria-controls="image1" aria-selected="true"
+                                onclick="switchImageTab(0)">
+                            圖片 1
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="image2-tab" data-bs-toggle="tab" data-bs-target="#image2"
+                                type="button" role="tab" aria-controls="image2" aria-selected="false"
+                                onclick="switchImageTab(1)">
+                            圖片 2
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="image3-tab" data-bs-toggle="tab" data-bs-target="#image3"
+                                type="button" role="tab" aria-controls="image3" aria-selected="false"
+                                onclick="switchImageTab(2)">
+                            圖片 3
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- 當前編輯的圖片預覽 -->
+                <div class="mb-3">
+                    <p class="text-muted">當前圖片：</p>
+                    <div style="max-width: 300px; border: 1px solid #ddd; padding: 5px; border-radius: 5px;">
+                        <img id="current-image-preview" src="" style="width: 100%; height: auto;">
+                    </div>
+                </div>
+
+                <!-- 選擇檔案 -->
+                <div class="mb-3">
+                    <label for="image-upload" class="form-label">選擇新圖片 (留空則保留原圖)</label>
+                    <input type="file" class="form-control" id="image-upload" accept="image/*">
+                </div>
+
+                <!-- 裁切區域 -->
+                <div class="crop-container" style="max-height: 500px; display: none;">
+                    <img id="image-to-crop" style="max-width: 100%;">
+                </div>
+
+                <!-- 預覽區域 -->
+                <div class="mt-3" id="preview-container" style="display: none;">
+                    <p>預覽 (900 × 536 px):</p>
+                    <div class="preview-box" style="width: 450px; height: 268px; overflow: hidden; border: 1px solid #ddd;">
+                        <img id="preview-image" style="width: 100%;">
+                    </div>
+                </div>
+
+                <!-- 隱藏的 file inputs 給表單用 (每張圖片一個) -->
+                <input type="file" id="ImageFile0" name="ImageFiles" style="display: none;" multiple>
+                <input type="file" id="ImageFile1" name="ImageFiles" style="display: none;">
+                <input type="file" id="ImageFile2" name="ImageFiles" style="display: none;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="destroyCropper()">取消</button>
+                <button type="button" class="btn btn-warning" onclick="clearCurrentImage()" id="clear-btn">清除此圖片</button>
+                <button type="button" class="btn btn-primary" onclick="cropImage()" id="crop-btn" style="display: none;">裁切並儲存</button>
+                <button type="button" class="btn btn-success" onclick="saveAllImages()">完成編輯</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section MyJS{
+    <script src="~/Scripts/jquery-3.7.1.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+
+    <script>
+        $(() => {
+            $('.activity-list a').hover(function () {
+                $('.activity-list li').removeClass('active');
+
+                $(this).parent('li').addClass('active');
+            });
+        });
+    </script>
+
+    <script>
+        // 編輯資訊 Modal
+        document.getElementById('editModal').addEventListener('show.bs.modal', function () {
+            var activityDate = document.getElementById('hidden-activity-date').value;
+            document.getElementById('modal-activity-date').value = activityDate;
+            document.getElementById('modal-mt-name').value = document.getElementById('show-title').textContent.trim();
+            document.getElementById('modal-meeting-time').value = document.getElementById('show-time').textContent.trim();
+            document.getElementById('modal-meeting-location').value = document.getElementById('show-location').textContent.trim();
+            document.getElementById('modal-price').value = document.getElementById('show-price').textContent.trim();
+            document.getElementById('modal-max-participants').value = document.getElementById('hidden-max-participants').value;
+        });
+
+
+
+        // 儲存基本資訊
+        function saveAllChanges() {
+            // 更新活動日期
+            var activityDate = document.getElementById('modal-activity-date').value;
+            document.getElementById('show-activity-date').textContent = activityDate;
+            document.getElementById('hidden-activity-date').value = activityDate;
+            // 更新步道名稱
+            document.getElementById('show-title').textContent = document.getElementById('modal-mt-name').value;
+            document.getElementById('hidden-mt-name').value = document.getElementById('modal-mt-name').value;
+            // 更新集合時間
+            document.getElementById('show-time').textContent = document.getElementById('modal-meeting-time').value;
+            document.getElementById('hidden-meeting-time').value = document.getElementById('modal-meeting-time').value;
+            // 更新集合地點
+            document.getElementById('show-location').textContent = document.getElementById('modal-meeting-location').value;
+            document.getElementById('hidden-meeting-location').value = document.getElementById('modal-meeting-location').value;
+            // 更新價格
+            document.getElementById('show-price').textContent = document.getElementById('modal-price').value;
+            document.getElementById('hidden-price').value = document.getElementById('modal-price').value;
+
+            var maxParticipants = document.getElementById('modal-max-participants').value;
+            if (maxParticipants) {
+
+                document.getElementById('show-max-participants-2').textContent = maxParticipants;
+                document.getElementById('hidden-max-participants').value = maxParticipants;
+            }
+            // 關閉 Modal
+            bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
+        }
+
+        // 團體資訊 Modal
+        document.getElementById('teamInfoModal').addEventListener('show.bs.modal', function () {
+            var groupName = document.getElementById('hidden-team-name').value || '';
+            var leaderMessage = document.getElementById('hidden-leader-message').value || '';
+            document.getElementById('modal-team-name').value = groupName;
+            document.getElementById('modal-leader-message').value = leaderMessage;
+        });
+
+        // 儲存團體資訊
+        function saveTeamInfo() {
+            var groupName = document.getElementById('modal-team-name').value.trim();
+            var leaderMessage = document.getElementById('modal-leader-message').value.trim();
+
+            // 更新團名顯示
+            var teamNameDisplay = document.getElementById('show-team-name');
+            if (groupName) {
+                teamNameDisplay.innerHTML = groupName;
+                teamNameDisplay.classList.remove('text-muted');
+            } else {
+                teamNameDisplay.innerHTML = '<span class="text-muted">請設定團名</span>';
+            }
+
+            // 更新團長的話顯示
+            var leaderMessageDisplay = document.getElementById('show-leader-message');
+            if (leaderMessage) {
+                var displayMessage = leaderMessage.replace(/\n/g, '<br/>');
+                leaderMessageDisplay.innerHTML = '<p>' + displayMessage + '</p>';
+                leaderMessageDisplay.classList.remove('text-muted');
+            } else {
+                leaderMessageDisplay.innerHTML = '<p class="text-muted">分享你對這次活動的想法，讓參與者更了解這次行程...</p>';
+            }
+
+            // 更新隱藏欄位
+            document.getElementById('hidden-team-name').value = groupName;
+            document.getElementById('hidden-leader-message').value = leaderMessage;
+
+            // 關閉 Modal
+            bootstrap.Modal.getInstance(document.getElementById('teamInfoModal')).hide();
+        }
+
+        // 簡易行程 Modal
+        document.getElementById('scheduleModal').addEventListener('show.bs.modal', function () {
+            var currentSchedule = document.getElementById('hidden-schedule').value || '';
+            document.getElementById('modal-schedule').value = currentSchedule;
+        });
+
+        // 儲存簡易行程
+        function saveSchedule() {
+            var schedule = document.getElementById('modal-schedule').value;
+            // 更新顯示內容
+            var displaySchedule = schedule.replace(/\n/g, '<br/>');
+            document.getElementById('show-schedule').innerHTML = '<p>' + displaySchedule + '</p>';
+            // 更新隱藏欄位
+            document.getElementById('hidden-schedule').value = schedule;
+            // 關閉 Modal
+            bootstrap.Modal.getInstance(document.getElementById('scheduleModal')).hide();
+        }
+
+        // 費用包含 Modal
+        document.getElementById('feeModal').addEventListener('show.bs.modal', function () {
+            // 先取消所有勾選
+            document.querySelectorAll('#feeModal input[type="checkbox"]').forEach(cb => {
+                cb.checked = false;
+            });
+
+            // 取得目前的費用項目
+            var currentFees = document.querySelectorAll('#show-fees li');
+            currentFees.forEach(fee => {
+                var feeText = fee.textContent.trim();
+                // 找到對應的 checkbox 並勾選
+                document.querySelectorAll('#feeModal input[type="checkbox"]').forEach(cb => {
+                    if (cb.value === feeText) {
+                        cb.checked = true;
+                    }
+                });
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // 從隱藏欄位取得已選的項目
+            var selectedFees = '@Model.FeeIncludes'.split(',');
+
+            // 勾選對應的 checkbox
+            selectedFees.forEach(function(fee) {
+                if (fee.trim()) {
+                    var checkbox = document.querySelector('#feeModal input[value="' + fee.trim() + '"]');
+                    if (checkbox) {
+                        checkbox.checked = true;
+                    }
+                }
+            });
+
+            // 初始化顯示列表
+            updateFeeDisplay();
+        });
+        function updateFeeDisplay() {
+            var selectedFees = [];
+            document.querySelectorAll('#feeModal input[type="checkbox"]:checked').forEach(cb => {
+                selectedFees.push(cb.value);
+            });
+
+            var feesList = document.getElementById('show-fees');
+            feesList.innerHTML = '';
+            selectedFees.forEach(fee => {
+                var li = document.createElement('li');
+                li.textContent = fee;
+                feesList.appendChild(li);
+            });
+        }
+
+
+        // 儲存費用包含
+        function saveFees() {
+            var selectedFees = [];
+            document.querySelectorAll('#feeModal input[type="checkbox"]:checked').forEach(cb => {
+                selectedFees.push(cb.value);
+            });
+
+            // 更新顯示內容
+            updateFeeDisplay();
+
+            // 更新隱藏欄位（用逗號分隔）
+            document.getElementById('hidden-fees').value = selectedFees.join(',');
+
+            // 關閉 Modal
+            bootstrap.Modal.getInstance(document.getElementById('feeModal')).hide();
+        }
+
+
+        // 確認成團提示
+        document.getElementById('submit-btn').addEventListener('click', function () {
+            Swal.fire({
+                title: '確定要確認成團嗎？',
+                text: '請確認所有資料都已填寫完成',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '確定成團',
+                cancelButtonText: '取消'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.querySelector('form').submit();
+                }
+            });
+        });
+
+
+        var cropper = null;
+        var currentFile = null;
+        var currentImageIndex = 0; // 追蹤當前編輯的圖片索引
+        var tempImageData = [null, null, null]; // 暫存三張圖片的資料
+
+        // Modal 開啟時初始化
+        document.getElementById('imageModal').addEventListener('show.bs.modal', function () {
+            currentImageIndex = 0;
+            loadCurrentImage();
+
+            // 重設標籤狀態
+            document.querySelectorAll('#imageTab .nav-link').forEach((tab, index) => {
+                tab.classList.toggle('active', index === 0);
+            });
+        });
+
+        // 切換圖片標籤
+        function switchImageTab(index) {
+            // 先儲存當前的變更（如果有的話）
+            if (cropper) {
+                saveTempImage();
+            }
+
+            currentImageIndex = index;
+            loadCurrentImage();
+            destroyCropper();
+
+            // 清空檔案選擇
+            document.getElementById('image-upload').value = '';
+        }
+
+        // 載入當前圖片
+        function loadCurrentImage() {
+            var currentImage = document.getElementById('product-image-' + currentImageIndex);
+            if (currentImage) {
+                document.getElementById('current-image-preview').src = currentImage.src;
+            }
+        }
+
+        // 圖片選擇處理
+        document.getElementById('image-upload').addEventListener('change', function (e) {
+            var files = e.target.files;
+
+            if (files && files.length > 0) {
+                currentFile = files[0];
+
+                // 檢查檔案類型
+                if (!currentFile.type.startsWith('image/')) {
+                    Swal.fire('錯誤', '請選擇圖片檔案', 'error');
+                    return;
+                }
+
+                // 檢查檔案大小（例如限制 10MB）
+                if (currentFile.size > 10 * 1024 * 1024) {
+                    Swal.fire('錯誤', '圖片大小不能超過 10MB', 'error');
+                    return;
+                }
+
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    // 顯示裁切區域
+                    document.querySelector('.crop-container').style.display = 'block';
+                    document.getElementById('preview-container').style.display = 'block';
+                    document.getElementById('crop-btn').style.display = 'inline-block';
+
+                    // 設定圖片
+                    var image = document.getElementById('image-to-crop');
+                    image.src = e.target.result;
+
+                    // 如果已有 cropper，先銷毀
+                    if (cropper) {
+                        cropper.destroy();
+                    }
+
+                    // 初始化 Cropper
+                    cropper = new Cropper(image, {
+                        aspectRatio: 900 / 536,  // 固定比例
+                        viewMode: 1,
+                        dragMode: 'move',
+                        autoCropArea: 1,
+                        restore: false,
+                        guides: true,
+                        center: true,
+                        highlight: false,
+                        cropBoxMovable: true,
+                        cropBoxResizable: true,
+                        toggleDragModeOnDblclick: false,
+                        //preview: '#preview-image',
+                        crop: function (event) {
+                            // 即時預覽
+                            var canvas = cropper.getCroppedCanvas({
+                                width: 900,
+                                height: 536
+                            });
+
+                            if (canvas) {
+                                document.getElementById('preview-image').src = canvas.toDataURL();
+                            }
+                        }
+                    });
+                };
+                reader.readAsDataURL(currentFile);
+            }
+        });
+
+        // 裁切並暫存當前圖片
+        function cropImage() {
+            if (!cropper) {
+                Swal.fire('錯誤', '請先選擇圖片', 'error');
+                return;
+            }
+
+            // 取得裁切後的 canvas
+            var canvas = cropper.getCroppedCanvas({
+                width: 900,
+                height: 536,
+                imageSmoothingEnabled: true,
+                imageSmoothingQuality: 'high'
+            });
+
+            // 轉換為 Blob
+            canvas.toBlob(function (blob) {
+                // 建立新的 File 物件
+                var croppedFile = new File([blob], 'image_' + currentImageIndex + '.jpg', {
+                    type: 'image/jpeg',
+                    lastModified: Date.now()
+                });
+
+                // 暫存檔案資料
+                tempImageData[currentImageIndex] = croppedFile;
+
+                // 更新預覽
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('product-image-' + currentImageIndex).src = e.target.result;
+                    document.getElementById('current-image-preview').src = e.target.result;
+                };
+                reader.readAsDataURL(croppedFile);
+
+                // 顯示成功訊息
+                Swal.fire({
+                    icon: 'success',
+                    title: '圖片已裁切',
+                    text: '圖片 ' + (currentImageIndex + 1) + ' 已準備好',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+
+                // 清理裁切器
+                destroyCropper();
+                document.getElementById('image-upload').value = '';
+
+            }, 'image/jpeg', 0.9);
+        }
+
+        // 暫存當前圖片（不裁切）
+        function saveTempImage() {
+            if (cropper) {
+                cropImage();
+            }
+        }
+
+        // 清除當前圖片
+        function clearCurrentImage() {
+            // 恢復預設圖片
+            var defaultImages = [
+                'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&h=400&fit=crop&crop=center',
+                'https://images.unsplash.com/photo-1502085671122-2d218cd434e6?q=80&w=1526&auto=format&fit=crop&crop=center',
+                'https://images.unsplash.com/photo-1501854140801-50d01698950b?q=80&w=1840'
+            ];
+
+            document.getElementById('product-image-' + currentImageIndex).src = defaultImages[currentImageIndex];
+            document.getElementById('current-image-preview').src = defaultImages[currentImageIndex];
+            tempImageData[currentImageIndex] = null;
+
+            Swal.fire({
+                icon: 'info',
+                title: '已清除',
+                text: '圖片 ' + (currentImageIndex + 1) + ' 已恢復預設',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        }
+
+        function saveAllImages() {
+            // 建立一個新的 FileList
+            var dt = new DataTransfer();
+            var actualCount = 0;
+
+            // 將所有圖片加入
+            for (let i = 0; i < 3; i++) {
+                if (tempImageData[i]) {
+                    dt.items.add(tempImageData[i]);
+                    actualCount++;
+                }
+            }
+
+            // 嘗試設定 files（如果瀏覽器支援）
+            var fileInput = document.getElementById('ImageFiles');
+            if (dt.files.length > 0) {
+                try {
+                    fileInput.files = dt.files;
+                } catch (e) {
+                    // 如果不支援直接設定，使用替代方案
+                    console.error('瀏覽器不支援直接設定 files，請使用 FormData 方案');
+                }
+            }
+
+            // 顯示成功訊息
+            Swal.fire({
+                icon: 'success',
+                title: '編輯完成',
+                text: actualCount > 0 ? `已更新 ${actualCount} 張圖片` : '未選擇任何圖片',
+                timer: 1500,
+                showConfirmButton: false
+            });
+
+            bootstrap.Modal.getInstance(document.getElementById('imageModal')).hide();
+            destroyCropper();
+        }
+
+
+
+        // 銷毀 Cropper
+        function destroyCropper() {
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+
+            // 重置表單
+            document.getElementById('image-upload').value = '';
+            document.querySelector('.crop-container').style.display = 'none';
+            document.getElementById('preview-container').style.display = 'none';
+            document.getElementById('crop-btn').style.display = 'none';
+        }
+
+        // Modal 關閉時清理
+        document.getElementById('imageModal').addEventListener('hidden.bs.modal', function () {
+            destroyCropper();
+            tempImageData = [null, null, null]; // 清空暫存
+        });
+    </script>
+
+}
+
+@section HeroSection {
+    <div class="img-bg rellax">
+        <img src="/images/backgroup.jpg" alt="Image" class="img-fluid">
+    </div>
+    <div class="container">
+        <div class="row align-items-center justify-content-center">
+            <div class="col-lg-5 text-center">
+                <p data-aos="fade-up" style="color:#FFFFFF; font-size:18px;">
+                    開始揪團
+                </p>
+                <!-- 白色短線 -->
+                <div style="width: 40px; height: 1px; background-color: #FFFFFF; margin: 1px auto;" data-aos="fade-up"></div>
+            </div>
+        </div>
+    </div>
+}

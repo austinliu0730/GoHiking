@@ -1,0 +1,344 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="HikingDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="HikingDBEntities1" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="GroupImages" EntityType="HikingDBModel.GroupImage" />
+    <EntitySet Name="TripGroups" EntityType="HikingDBModel.TripGroup" />
+    <EntitySet Name="Users" EntityType="HikingDBModel.User" />
+    <AssociationSet Name="FK_TripGroup_Users" Association="HikingDBModel.FK_TripGroup_Users">
+      <End Role="User" EntitySet="Users" />
+      <End Role="TripGroup" EntitySet="TripGroups" />
+    </AssociationSet>
+    <EntitySet Name="MountainTrails" EntityType="HikingDBModel.MountainTrail" />
+    <AssociationSet Name="FK_TripGroup_MountainTrails" Association="HikingDBModel.FK_TripGroup_MountainTrails">
+      <End Role="MountainTrail" EntitySet="MountainTrails" />
+      <End Role="TripGroup" EntitySet="TripGroups" />
+    </AssociationSet>
+    <EntitySet Name="UserDetails" EntityType="HikingDBModel.UserDetail" />
+    <AssociationSet Name="FK_UserDetails_Users" Association="HikingDBModel.FK_UserDetails_Users">
+      <End Role="User" EntitySet="Users" />
+      <End Role="UserDetail" EntitySet="UserDetails" />
+    </AssociationSet>
+    <EntitySet Name="TripActivities" EntityType="HikingDBModel.TripActivity" />
+    <EntitySet Name="UserProfiles" EntityType="HikingDBModel.UserProfile" />
+    <AssociationSet Name="FK_GroupImage_TripActivities" Association="HikingDBModel.FK_GroupImage_TripActivities">
+      <End Role="TripActivity" EntitySet="TripActivities" />
+      <End Role="GroupImage" EntitySet="GroupImages" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TripActivities_MountainTrails" Association="HikingDBModel.FK_TripActivities_MountainTrails">
+      <End Role="MountainTrail" EntitySet="MountainTrails" />
+      <End Role="TripActivity" EntitySet="TripActivities" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TripActivities_Users" Association="HikingDBModel.FK_TripActivities_Users">
+      <End Role="User" EntitySet="Users" />
+      <End Role="TripActivity" EntitySet="TripActivities" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserProfile_TripActivities" Association="HikingDBModel.FK_UserProfile_TripActivities">
+      <End Role="TripActivity" EntitySet="TripActivities" />
+      <End Role="UserProfile" EntitySet="UserProfiles" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserProfile_Users" Association="HikingDBModel.FK_UserProfile_Users">
+      <End Role="User" EntitySet="Users" />
+      <End Role="UserProfile" EntitySet="UserProfiles" />
+    </AssociationSet>
+    <EntitySet Name="Comments" EntityType="HikingDBModel.Comment" />
+    <AssociationSet Name="FK_Comment_UserDetails" Association="HikingDBModel.FK_Comment_UserDetails">
+      <End Role="UserDetail" EntitySet="UserDetails" />
+      <End Role="Comment" EntitySet="Comments" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="GroupImage">
+    <Key>
+      <PropertyRef Name="image_id" />
+    </Key>
+    <Property Name="image_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="group_id" Type="Int32" />
+    <Property Name="image_data" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <Property Name="image_name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="upload_order" Type="Int32" />
+    <Property Name="upload_date" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="TripActivity" Relationship="HikingDBModel.FK_GroupImage_TripActivities" FromRole="GroupImage" ToRole="TripActivity" />
+  </EntityType>
+  <EntityType Name="TripGroup">
+    <Key>
+      <PropertyRef Name="group_id" />
+    </Key>
+    <Property Name="group_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="mt_id" Type="Int32" Nullable="false" />
+    <Property Name="user_id" Type="Int32" Nullable="false" />
+    <Property Name="group_name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="activity_date" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="meeting_time" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="meeting_location" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="custom_schedule" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="leader_message" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="max_participants" Type="Int32" />
+    <Property Name="current_participants" Type="Int32" />
+    <Property Name="price" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="include_transport" Type="Boolean" />
+    <Property Name="include_accommodation" Type="Boolean" />
+    <Property Name="include_guide" Type="Boolean" />
+    <Property Name="include_insurance" Type="Boolean" />
+    <Property Name="include_course" Type="Boolean" />
+    <Property Name="status" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="created_date" Type="DateTime" Precision="3" />
+    <Property Name="updated_date" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="User" Relationship="HikingDBModel.FK_TripGroup_Users" FromRole="TripGroup" ToRole="User" />
+    <Property Name="FeeIncludes" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="MountainTrail" Relationship="HikingDBModel.FK_TripGroup_MountainTrails" FromRole="TripGroup" ToRole="MountainTrail" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Password" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Email" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Permission" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="TripGroups" Relationship="HikingDBModel.FK_TripGroup_Users" FromRole="User" ToRole="TripGroup" />
+    <NavigationProperty Name="UserDetails" Relationship="HikingDBModel.FK_UserDetails_Users" FromRole="User" ToRole="UserDetail" />
+    <NavigationProperty Name="TripActivities" Relationship="HikingDBModel.FK_TripActivities_Users" FromRole="User" ToRole="TripActivity" />
+    <NavigationProperty Name="UserProfiles" Relationship="HikingDBModel.FK_UserProfile_Users" FromRole="User" ToRole="UserProfile" />
+  </EntityType>
+  <Association Name="FK_TripGroup_Users">
+    <End Type="HikingDBModel.User" Role="User" Multiplicity="1" />
+    <End Type="HikingDBModel.TripGroup" Role="TripGroup" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="TripGroup">
+        <PropertyRef Name="user_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="MountainTrail">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="badge" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="walk_days" Type="Int32" Nullable="false" />
+    <Property Name="location" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="mt_name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="diff" Type="Int32" Nullable="false" />
+    <Property Name="dist_km" Type="Decimal" Nullable="false" Precision="5" Scale="2" />
+    <Property Name="time_min" Type="Int32" Nullable="false" />
+    <Property Name="ascend_m" Type="Int32" Nullable="false" />
+    <Property Name="descend_m" Type="Int32" Nullable="false" />
+    <Property Name="trail_cond" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="route_type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="min_alt_m" Type="Int32" Nullable="false" />
+    <Property Name="max_alt_m" Type="Int32" Nullable="false" />
+    <Property Name="mt_range" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="park_permit" Type="Byte" Nullable="false" />
+    <Property Name="mt_permit" Type="Byte" Nullable="false" />
+    <Property Name="TripDetails" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="region" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+    <Property Name="TripSchedule" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="TripGroups" Relationship="HikingDBModel.FK_TripGroup_MountainTrails" FromRole="MountainTrail" ToRole="TripGroup" />
+    <NavigationProperty Name="TripActivities" Relationship="HikingDBModel.FK_TripActivities_MountainTrails" FromRole="MountainTrail" ToRole="TripActivity" />
+  </EntityType>
+  <Association Name="FK_TripGroup_MountainTrails">
+    <End Type="HikingDBModel.MountainTrail" Role="MountainTrail" Multiplicity="1" />
+    <End Type="HikingDBModel.TripGroup" Role="TripGroup" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MountainTrail">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="TripGroup">
+        <PropertyRef Name="mt_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="UserDetail">
+    <Key>
+      <PropertyRef Name="DetailId" />
+    </Key>
+    <Property Name="DetailId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+    <Property Name="FullName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Gender" Type="Boolean" />
+    <Property Name="Birthday" Type="DateTime" Precision="0" />
+    <Property Name="Phone" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="Address" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="User" Relationship="HikingDBModel.FK_UserDetails_Users" FromRole="UserDetail" ToRole="User" />
+    <Property Name="ProfileImage" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <Property Name="ProfileImageName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Comments" Relationship="HikingDBModel.FK_Comment_UserDetails" FromRole="UserDetail" ToRole="Comment" />
+  </EntityType>
+  <Association Name="FK_UserDetails_Users">
+    <End Type="HikingDBModel.User" Role="User" Multiplicity="1" />
+    <End Type="HikingDBModel.UserDetail" Role="UserDetail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="UserDetail">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="TripActivity">
+    <Key>
+      <PropertyRef Name="activity_id" />
+    </Key>
+    <Property Name="activity_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="group_name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="activity_date" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="meeting_time" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="meeting_location" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="custom_schedule" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="leader_message" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="max_participants" Type="Int32" />
+    <Property Name="price" Type="Int32" Nullable="false" />
+    <Property Name="mt_id" Type="Int32" Nullable="false" />
+    <Property Name="mt_name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="badge" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="walk_days" Type="Int32" Nullable="false" />
+    <Property Name="location" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="diff" Type="Int32" Nullable="false" />
+    <Property Name="dist_km" Type="Decimal" Nullable="false" Precision="5" Scale="2" />
+    <Property Name="time_min" Type="Int32" Nullable="false" />
+    <Property Name="ascend_m" Type="Int32" Nullable="false" />
+    <Property Name="descend_m" Type="Int32" Nullable="false" />
+    <Property Name="trail_cond" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="route_type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="min_alt_m" Type="Int32" Nullable="false" />
+    <Property Name="max_alt_m" Type="Int32" Nullable="false" />
+    <Property Name="mt_range" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="park_permit" Type="Byte" Nullable="false" />
+    <Property Name="mt_permit" Type="Byte" Nullable="false" />
+    <Property Name="TripDetails" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="region" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+    <Property Name="TripSchedule" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="user_id" Type="Int32" Nullable="false" />
+    <Property Name="user_name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="user_email" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="user_password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="status" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="current_participants" Type="Int32" />
+    <Property Name="created_date" Type="DateTime" Precision="3" />
+    <Property Name="updated_date" Type="DateTime" Precision="3" />
+    <Property Name="is_active" Type="Boolean" />
+    <Property Name="team_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="FeeIncludes" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="participants" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="GroupImages" Relationship="HikingDBModel.FK_GroupImage_TripActivities" FromRole="TripActivity" ToRole="GroupImage" />
+    <NavigationProperty Name="MountainTrail" Relationship="HikingDBModel.FK_TripActivities_MountainTrails" FromRole="TripActivity" ToRole="MountainTrail" />
+    <NavigationProperty Name="User" Relationship="HikingDBModel.FK_TripActivities_Users" FromRole="TripActivity" ToRole="User" />
+    <NavigationProperty Name="UserProfiles" Relationship="HikingDBModel.FK_UserProfile_TripActivities" FromRole="TripActivity" ToRole="UserProfile" />
+  </EntityType>
+  <EntityType Name="UserProfile">
+    <Key>
+      <PropertyRef Name="ProfileId" />
+    </Key>
+    <Property Name="ProfileId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+    <Property Name="RealName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Gender" Type="Boolean" Nullable="false" />
+    <Property Name="BirthDate" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="Nationality" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="IdNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="LineId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Phone" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="Address" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="EmergencyContactName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="EmergencyContactPhone" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="HasCompanion" Type="Boolean" Nullable="false" />
+    <Property Name="CompanionName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="HikingExperience" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="ExerciseHabit" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedAt" Type="DateTime" Precision="3" />
+    <Property Name="activity_id" Type="Int32" />
+    <Property Name="is_creator" Type="Boolean" />
+    <NavigationProperty Name="TripActivity" Relationship="HikingDBModel.FK_UserProfile_TripActivities" FromRole="UserProfile" ToRole="TripActivity" />
+    <NavigationProperty Name="User" Relationship="HikingDBModel.FK_UserProfile_Users" FromRole="UserProfile" ToRole="User" />
+  </EntityType>
+  <Association Name="FK_GroupImage_TripActivities">
+    <End Type="HikingDBModel.TripActivity" Role="TripActivity" Multiplicity="0..1" />
+    <End Type="HikingDBModel.GroupImage" Role="GroupImage" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TripActivity">
+        <PropertyRef Name="activity_id" />
+      </Principal>
+      <Dependent Role="GroupImage">
+        <PropertyRef Name="group_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TripActivities_MountainTrails">
+    <End Type="HikingDBModel.MountainTrail" Role="MountainTrail" Multiplicity="1" />
+    <End Type="HikingDBModel.TripActivity" Role="TripActivity" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MountainTrail">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="TripActivity">
+        <PropertyRef Name="mt_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TripActivities_Users">
+    <End Type="HikingDBModel.User" Role="User" Multiplicity="1" />
+    <End Type="HikingDBModel.TripActivity" Role="TripActivity" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="TripActivity">
+        <PropertyRef Name="user_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserProfile_TripActivities">
+    <End Type="HikingDBModel.TripActivity" Role="TripActivity" Multiplicity="0..1" />
+    <End Type="HikingDBModel.UserProfile" Role="UserProfile" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TripActivity">
+        <PropertyRef Name="activity_id" />
+      </Principal>
+      <Dependent Role="UserProfile">
+        <PropertyRef Name="activity_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserProfile_Users">
+    <End Type="HikingDBModel.User" Role="User" Multiplicity="1" />
+    <End Type="HikingDBModel.UserProfile" Role="UserProfile" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="UserProfile">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Comment">
+    <Key>
+      <PropertyRef Name="CommentId" />
+    </Key>
+    <Property Name="CommentId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Activity_Id" Type="Int32" Nullable="false" />
+    <Property Name="CommentTime" Type="DateTime" Precision="3" />
+    <Property Name="Content" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UserId" Type="Int32" />
+    <Property Name="DetailId" Type="Int32" />
+    <NavigationProperty Name="UserDetail" Relationship="HikingDBModel.FK_Comment_UserDetails" FromRole="Comment" ToRole="UserDetail" />
+  </EntityType>
+  <Association Name="FK_Comment_UserDetails">
+    <End Type="HikingDBModel.UserDetail" Role="UserDetail" Multiplicity="0..1" />
+    <End Type="HikingDBModel.Comment" Role="Comment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserDetail">
+        <PropertyRef Name="DetailId" />
+      </Principal>
+      <Dependent Role="Comment">
+        <PropertyRef Name="DetailId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

@@ -1,0 +1,444 @@
+﻿@model GoHiking.ViewModels.HomeViewModel
+
+@{
+    ViewBag.Title = "Index";
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: '@TempData["SuccessMessage"]',
+            showConfirmButton: false,
+            timer: 2000
+        });
+    </script>
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@section MyCSS{
+    <link href="~/css/mycss/Index.css?v=@DateTime.Now.Ticks" rel="stylesheet" />
+    <link href="~/css/mycss/about.css?v=@DateTime.Now.Ticks" rel="stylesheet" />
+    <style>
+        .btn.btn-secondary {
+            background-color: cornflowerblue;
+            color: #fff; /* 文字顏色 */
+            border: none;
+        }
+
+            .btn.btn-secondary:hover {
+                background-color: #74A3F0;
+            }
+    </style>
+
+}
+
+
+<!-- 即將成團 -->
+<section class="upcoming-section py-5">
+    <div class="container" data-aos="fade-up">
+        <!-- PAGE-HEADER -->
+        <div class="text-center mb-5">
+            <h2 class="section-title">即將成團活動</h2>
+            <p class="section-subtitle">把握機會，立即報名參與精彩登山之旅</p>
+        </div>
+
+        <div class="upcoming-activities">
+            @foreach (var item in Model.ActiveActivities)
+            {
+                <div class="activity-row" data-aos="fade-up" data-aos-delay="@((Model.ActiveActivities.IndexOf(item) + 1) * 100)">
+                    <div class="row align-items-center">
+                        <div class="col-lg-4 col-md-6">
+                            <div class="activity-info">
+                                <h5 class="activity-name">@item.mt_name</h5>
+                                <p class="activity-date">
+                                    <i class="icon-calendar"></i>
+                                    @item.activity_date.ToString("MM月dd日") (@item.activity_date.ToString("dddd"))
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6">
+                            <div class="meeting-info">
+                                <p class="meeting-details">
+                                    <i class="icon-clock"></i> @item.meeting_time<br>
+                                    <i class="icon-location"></i> @item.meeting_location
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-6">
+                            <div class="availability">
+                                <span class="spots-left">剩餘 @item.participants 名額</span>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-6">
+                            <div class="action-btn">
+                                <a href="@(Url.Action("Activity", "Products", new { id = item.activity_id }))"
+                                   class="btn btn-primary btn-sm">
+                                    <i class="icon-arrow-right"></i> 立即報名
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="@Url.Action("Upcoming", "Home")" class="btn btn-secondary" data-aos="fade-up">
+                <i class="icon-eye"></i> 查看更多活動
+            </a>
+        </div>
+
+    </div>
+</section>
+
+<!-- 活動區塊一 -->
+<div class="section service-section-1 " style="margin-top:15px;">
+
+    <section class="index-activity">
+
+        <div class="container">
+            <!-- 入門級活動 -->
+            <div class="page-header">
+                <h2><span>登山活動精選<b>｜</b><strong class="green">入門</strong></span></h2>
+                <p>BEGINNER</p>
+            </div>
+
+            <div class="activity-slider-wrapper">
+                <div class="activity-slider" id="beginnerSlider">
+                    @foreach (var item in Model.BeginnerActivities)
+                    {
+                        <div class="activity-card">
+                            <a href="@(item.activity_id != 0
+                                        ? Url.Action("Activity", "Products", new { id = item.activity_id })
+                                        : Url.Action("Details", "Products", new { id = item.mt_id }))">
+
+                                @if (item.activity_id != 0 && item.ImageData != null && item.ImageData.Length > 0)
+                                {
+                                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(item.ImageData)"
+                                         alt="@item.mt_name" style="width: 390px; height: 200px; object-fit: cover;">
+                                }
+                                else
+                                {
+                                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&h=400&fit=crop&crop=center"
+                                         alt="@item.mt_name" style="width: 390px; height: 200px; object-fit: cover;">
+                                }
+                            </a>
+                            <div class="activity-content">
+                                <h3 class="activity-title">
+                                    @item.mt_name｜
+                                    @(item.walk_days)天@(item.walk_days)夜｜
+                                </h3>
+                                <div class="activity-details">
+                                    <div class="price">NT$<span>@item.price</span></div>
+                                    <div class="difficulty">
+                                        <span class="difficulty-label"></span>
+                                        <div class="stars">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                <div class="star @(i <= item.difficulty_level ? "filled" : "")"></div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- 中階級活動 -->
+            <div class="page-header">
+                <h2><span>登山活動精選<b>｜</b><strong class="blue">中階</strong></span></h2>
+                <p>INTERMEDIATE</p>
+            </div>
+
+            <div class="activity-slider-wrapper">
+                <div class="activity-slider" id="beginnerSlider">
+                    @foreach (var item in Model.IntermediateActivities)
+                    {
+                        <div class="activity-card">
+                            <a href="@(item.activity_id != 0
+                            ? Url.Action("Activity", "Products", new { id = item.activity_id })
+                            : Url.Action("Details", "Products", new { id = item.mt_id }))">
+
+                                @if (item.activity_id != 0 && item.ImageData != null && item.ImageData.Length > 0)
+                                {
+                                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(item.ImageData)"
+                                         alt="@item.mt_name" style="width: 390px; height: 200px; object-fit: cover;">
+                                }
+                                else
+                                {
+                                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&h=400&fit=crop&crop=center"
+                                         alt="@item.mt_name" style="width: 390px; height: 200px; object-fit: cover;">
+                                }
+                            </a>
+                            <div class="activity-content">
+                                <h3 class="activity-title">
+                                    @item.mt_name｜
+                                    @(item.walk_days)天@(item.walk_days)夜｜
+                                </h3>
+                                <div class="activity-details">
+                                    <div class="price">NT$<span>@item.price</span></div>
+                                    <div class="difficulty">
+                                        <span class="difficulty-label"></span>
+                                        <div class="stars">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                <div class="star @(i <= item.difficulty_level ? "filled" : "")"></div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+
+        </div>
+    </section>
+</div>
+
+
+
+<!-- 活動宗旨 -->
+<section class="purpose-section py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-label text-primary">Our Purpose</span>
+            <h2 class="section-title" data-aos="fade-up">活動宗旨</h2>
+            <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">
+                我們致力於創造一個安全、友善、充滿學習機會的登山環境
+            </p>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="purpose-card">
+                    <div class="purpose-icon">
+                        <i class="icon-shield"></i>
+                    </div>
+                    <h4 class="purpose-title">安全第一</h4>
+                    <p class="purpose-description">
+                        嚴格的領隊認證制度，完善的行前準備，確保每一次活動都能平安回家。
+                        我們相信，只有在安全的前提下，才能真正享受登山的樂趣。
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="purpose-card">
+                    <div class="purpose-icon">
+                        <i class="icon-people"></i>
+                    </div>
+                    <h4 class="purpose-title">友善社群</h4>
+                    <p class="purpose-description">
+                        不論您是登山新手還是資深山友，都能在這裡找到適合的活動與夥伴。
+                        我們鼓勵經驗分享，互助合作，共同成長。
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="purpose-card">
+                    <div class="purpose-icon">
+                        <i class="icon-leaf"></i>
+                    </div>
+                    <h4 class="purpose-title">環境保護</h4>
+                    <p class="purpose-description">
+                        推廣「無痕山林」理念，教育成員尊重自然、愛護環境。
+                        讓美麗的台灣山林能夠永續保存，供後代子孫繼續欣賞。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- 為什麼選擇我們 -->
+<section class="features-section py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title" data-aos="fade-up">為什麼選擇登友無界？</h2>
+            <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">我們提供最專業、最安全、最貼心的登山媒合服務</p>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="icon-shield"></i>
+                    </div>
+                    <h4 class="feature-title">專業安全保障</h4>
+                    <p class="feature-description">嚴格的領隊認證制度，完善的風險管控，每一次活動都有專業保險保障</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="icon-heart"></i>
+                    </div>
+                    <h4 class="feature-title">友善社群環境</h4>
+                    <p class="feature-description">不論您是新手還是老手，都能找到適合的夥伴，一起享受登山的樂趣</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="icon-map"></i>
+                    </div>
+                    <h4 class="feature-title">豐富路線選擇</h4>
+                    <p class="feature-description">從入門郊山到進階百岳，涵蓋全台各地精選路線，滿足不同程度需求</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 加入我們 CTA -->
+<section class="cta-section py-5 bg-primary text-white">
+    <div class="container text-center">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h2 class="mb-4" data-aos="fade-up">準備好開始您的登山之旅了嗎？</h2>
+                <p class="lead mb-4" data-aos="fade-up" data-aos-delay="100">
+                    加入登友無界，與志同道合的山友一起探索台灣美麗的山林
+                </p>
+                <div class="cta-buttons" data-aos="fade-up" data-aos-delay="200">
+                    <a href="/User/Login" class="btn btn-outline-light btn-lg">
+                        <i class="icon-user me-2"></i>
+                        立即註冊
+                    </a>
+                    <a href="/Home/Activity" class="btn btn-outline-light btn-lg">
+                        <i class="icon-search me-2"></i>
+                        瀏覽活動
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section MyJS {
+    <script>
+        $(document).ready(function () {
+            // 統計數字動畫
+            function animateStats() {
+                $('.stat-number').each(function () {
+                    var $this = $(this);
+                    var target = parseInt($this.attr('data-target'));
+
+                    $({ counter: 0 }).animate({
+                        counter: target
+                    }, {
+                        duration: 2000,
+                        easing: 'swing',
+                        step: function () {
+                            $this.text(Math.ceil(this.counter));
+                        },
+                        complete: function () {
+                            $this.text(target);
+                        }
+                    });
+                });
+            }
+
+            // 當統計區域進入視窗時啟動動畫
+            $(window).on('scroll', function () {
+                var statsOffset = $('.stats-section').offset().top;
+                var scrollTop = $(window).scrollTop();
+                var windowHeight = $(window).height();
+
+                if (scrollTop + windowHeight > statsOffset + 100) {
+                    if (!$('.stats-section').hasClass('animated')) {
+                        $('.stats-section').addClass('animated');
+                        animateStats();
+                    }
+                }
+            });
+
+            // 電子報訂閱
+            $('.newsletter-form').on('submit', function (e) {
+                e.preventDefault();
+                var email = $(this).find('input[type="email"]').val();
+                if (email) {
+                    alert('感謝您的訂閱！我們會將最新資訊發送到 ' + email);
+                    $(this).find('input[type="email"]').val('');
+                }
+            });
+
+            // 難度標籤切換效果
+            $('.difficulty-tag').on('click', function () {
+                $('.difficulty-tag').removeClass('active');
+                $(this).addClass('active');
+            });
+
+            // 平滑滾動
+            $('a[href^="#"]').on('click', function (e) {
+                e.preventDefault();
+                var target = this.hash;
+                var $target = $(target);
+                if ($target.length) {
+                    $('html, body').animate({
+                        scrollTop: $target.offset().top - 100
+                    }, 600);
+                }
+            });
+        });
+    </script>
+}
+
+
+
+
+
+
+
+@section HeroSection {
+    <div class="img-bg rellax">
+        <img src="~/images/backgroud.jpg" alt="Image">
+    </div>
+    <div class="container">
+        <div class="row align-items-center justify-content-center">
+            <div class="col-lg-5 text-center">
+                <p data-aos="fade-up" style="color:#FFFFFF; font-size:16px;">
+                    台灣登山行程｜專業媒合團隊
+                </p>
+
+                <br />
+                <h1 data-aos="fade-up" style="color:#F0FFF0; display: inline-block;">
+                    走入野地，踏上不同的旅程
+                </h1>
+
+                <!-- 白色短線 -->
+                <div style="width: 40px; height: 1px; background-color: #FFFFFF; margin: 1px auto;" data-aos="fade-up"></div>
+                <br />
+                <br />
+
+                <p data-aos="fade-up" style="color:#FFFFFF; font-size:16px;">
+                    與真實自己相遇
+                </p>
+                <div class="hero-buttons" data-aos="fade-up" data-aos-delay="500">
+                    <a href="/Home/Activity" class="btn btn-outline-light btn-lg hero-btn">
+                        <i class="icon-mountain"></i> 探索活動
+                    </a>
+                    <a href="/User/Login" class="btn btn-outline-light btn-lg hero-btn">
+                        <i class="icon-user-plus"></i> 立即加入
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}

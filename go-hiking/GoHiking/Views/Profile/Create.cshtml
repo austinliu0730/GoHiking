@@ -1,0 +1,424 @@
+﻿@model GoHiking.ViewModels.UserProfileViewModel
+@{
+    ViewBag.Title = "活動報名";
+}
+
+@section MyCSS {
+    <style>
+        .registration-card {
+            border-radius: 15px;
+            border: none;
+        }
+
+        .section-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 10px 12px;
+            transition: all 0.3s ease;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: #007bff;
+                box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            }
+
+        .form-label {
+            font-weight: 500;
+            color: #495057;
+            margin-bottom: 5px;
+        }
+
+        .btn {
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            }
+
+        .form-section {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .btn-sample {
+            opacity: 0;
+            background: #6c757d;
+            border: none;
+            color: white;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: opacity 0.3s ease;
+        }
+
+            .btn-sample:hover {
+                background: #5a6268;
+                color: white;
+            }
+
+        .text-center:hover .btn-sample {
+            opacity: 1;
+        }
+    </style>
+}
+
+<div class="section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <div class="registration-card p-5 shadow rounded mt-5" style="background: white;">
+                    <!-- 標題 -->
+                    <div class="text-center mb-4">
+                        <div class="mb-3">
+                            <i class="fas fa-clipboard-list fa-3x text-primary mb-3"></i>
+                        </div>
+                        <h2 class="heading mb-2" style="color: #2c3e50; font-weight: 600;">活動報名表</h2>
+                        <p class="text-muted" style="font-size: 16px;">請填寫以下資料完成活動報名</p>
+                        <hr style="width: 60px; height: 3px; background: linear-gradient(45deg, #007bff, #17a2b8); border: none; margin: 20px auto;">
+
+
+                    </div>
+
+                    <!-- 提示訊息 -->
+                    <div class="alert alert-info border-0 mb-4" style="background: linear-gradient(135deg, #e3f2fd, #f8f9ff); border-left: 4px solid #2196f3 !important;">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-info-circle text-primary me-3" style="font-size: 1.5em;"></i>
+                            <div>
+                                <strong>請確實填寫報名資料</strong><br>
+                                <small class="text-muted">為了您的安全，請務必提供正確的個人資料與緊急聯絡人資訊</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 報名表單 -->
+                    @using (Html.BeginForm("Create", "Profile", FormMethod.Post, new { @class = "registration-form", @id = "registrationForm" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.UserId)
+                        @Html.HiddenFor(m => m.ActivityId)
+                        @Html.HiddenFor(m => m.is_creator)
+
+                        <!-- 基本資料區塊 -->
+                        <div class="form-section mb-4">
+                            <h5 class="section-title mb-3" style="color: #495057; border-bottom: 2px solid #007bff; padding-bottom: 10px;">
+                                <i class="fas fa-user me-2 text-primary"></i>基本資料
+                            </h5>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="RealName" class="form-label">
+                                        真實姓名 <span class="text-danger">*</span>
+                                    </label>
+                                    @Html.TextBoxFor(m => m.RealName, new { @class = "form-control", @placeholder = "請輸入真實姓名", @required = "required" })
+                                    @Html.ValidationMessageFor(m => m.RealName, "", new { @class = "text-danger small" })
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="Gender" class="form-label">
+                                        性別 <span class="text-danger">*</span>
+                                    </label>
+                                    @Html.DropDownListFor(m => m.Gender, new List<SelectListItem>
+                                    {
+                                        new SelectListItem { Text = "請選擇", Value = "" },
+                                        new SelectListItem { Text = "男", Value = "M" },
+                                        new SelectListItem { Text = "女", Value = "F" }
+                                    }, new { @class = "form-select", @required = "required" })
+                                    @Html.ValidationMessageFor(m => m.Gender, "", new { @class = "text-danger small" })
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="BirthDate" class="form-label">
+                                        出生日期 <span class="text-danger">*</span>
+                                    </label>
+                                    @Html.TextBoxFor(m => m.BirthDate, new { @class = "form-control", @type = "date", @required = "required" })
+                                    @Html.ValidationMessageFor(m => m.BirthDate, "", new { @class = "text-danger small" })
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="IdNumber" class="form-label">
+                                        身分證字號 <span class="text-danger">*</span>
+                                    </label>
+                                    @Html.TextBoxFor(m => m.IdNumber, new { @class = "form-control", @placeholder = "A123456789", @required = "required", @pattern = "[A-Z][0-9]{9}" })
+                                    @Html.ValidationMessageFor(m => m.IdNumber, "", new { @class = "text-danger small" })
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="Nationality" class="form-label">
+                                        國籍 <span class="text-danger">*</span>
+                                    </label>
+                                    @Html.DropDownListFor(m => m.Nationality, new List<SelectListItem>
+                                    {
+                                        new SelectListItem { Text = "臺灣", Value = "臺灣" },
+                                        new SelectListItem { Text = "其他", Value = "其他" }
+                                    }, new { @class = "form-select", @id = "nationalitySelect", @required = "required" })
+                                </div>
+
+                                <div class="col-md-6 mb-3" id="otherNationalityDiv" style="display: none;">
+                                    <label for="OtherNationality" class="form-label">
+                                        請輸入國家名稱 <span class="text-danger">*</span>
+                                    </label>
+                                    @Html.TextBoxFor(m => m.OtherNationality, new { @class = "form-control", @placeholder = "請輸入國家名稱" })
+                                    @Html.ValidationMessageFor(m => m.OtherNationality, "", new { @class = "text-danger small" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 聯絡資訊區塊 -->
+                        <div class="form-section mb-4">
+                            <h5 class="section-title mb-3" style="color: #495057; border-bottom: 2px solid #17a2b8; padding-bottom: 10px;">
+                                <i class="fas fa-phone me-2 text-info"></i>聯絡資訊
+                            </h5>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="Phone" class="form-label">
+                                        手機號碼 <span class="text-danger">*</span>
+                                    </label>
+                                    @Html.TextBoxFor(m => m.Phone, new { @class = "form-control", @placeholder = "0912345678", @required = "required", @pattern = "09[0-9]{8}" })
+                                    @Html.ValidationMessageFor(m => m.Phone, "", new { @class = "text-danger small" })
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="LineId" class="form-label">
+                                        LINE ID
+                                    </label>
+                                    @Html.TextBoxFor(m => m.LineId, new { @class = "form-control", @placeholder = "選填" })
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="County" class="form-label">
+                                        縣市 <span class="text-danger">*</span>
+                                    </label>
+                                    @Html.TextBoxFor(m => m.County, new { @class = "form-control", @placeholder = "台北市", @required = "required" })
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label for="District" class="form-label">
+                                        區域 <span class="text-danger">*</span>
+                                    </label>
+                                    @Html.TextBoxFor(m => m.District, new { @class = "form-control", @placeholder = "信義區", @required = "required" })
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label for="Zipcode" class="form-label">
+                                        郵遞區號 <span class="text-danger">*</span>
+                                    </label>
+                                    @Html.TextBoxFor(m => m.Zipcode, new { @class = "form-control", @placeholder = "110", @required = "required" })
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="Address" class="form-label">
+                                    詳細地址 <span class="text-danger">*</span>
+                                </label>
+                                @Html.TextBoxFor(m => m.Address, new { @class = "form-control", @placeholder = "請輸入詳細地址", @required = "required" })
+                                @Html.ValidationMessageFor(m => m.Address, "", new { @class = "text-danger small" })
+                            </div>
+                        </div>
+
+                        <!-- 緊急聯絡人區塊 -->
+                        <div class="form-section mb-4">
+                            <h5 class="section-title mb-3" style="color: #495057; border-bottom: 2px solid #dc3545; padding-bottom: 10px;">
+                                <i class="fas fa-exclamation-triangle me-2 text-danger"></i>緊急聯絡人
+                            </h5>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="EmergencyContactName" class="form-label">
+                                        緊急聯絡人姓名 <span class="text-danger">*</span>
+                                    </label>
+                                    @Html.TextBoxFor(m => m.EmergencyContactName, new { @class = "form-control", @placeholder = "請輸入緊急聯絡人姓名", @required = "required" })
+                                    @Html.ValidationMessageFor(m => m.EmergencyContactName, "", new { @class = "text-danger small" })
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="EmergencyContactPhone" class="form-label">
+                                        緊急聯絡人電話 <span class="text-danger">*</span>
+                                    </label>
+                                    @Html.TextBoxFor(m => m.EmergencyContactPhone, new { @class = "form-control", @placeholder = "0912345678", @required = "required" })
+                                    @Html.ValidationMessageFor(m => m.EmergencyContactPhone, "", new { @class = "text-danger small" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 活動相關資訊區塊 -->
+                        <div class="form-section mb-4">
+                            <h5 class="section-title mb-3" style="color: #495057; border-bottom: 2px solid #28a745; padding-bottom: 10px;">
+                                <i class="fas fa-mountain me-2 text-success"></i>活動相關資訊
+                            </h5>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="HasCompanion" class="form-label">
+                                        是否有同行夥伴 <span class="text-danger">*</span>
+                                    </label>
+                                    @Html.DropDownListFor(m => m.HasCompanion, new List<SelectListItem>
+                                    {
+                                        new SelectListItem { Text = "否", Value = "否" },
+                                        new SelectListItem { Text = "是", Value = "是" }
+                                    }, new { @class = "form-select", @id = "hasCompanionSelect", @required = "required" })
+                                </div>
+
+                                <div class="col-md-6 mb-3" id="companionNameDiv" style="display: none;">
+                                    <label for="CompanionName" class="form-label">
+                                        同行夥伴姓名 <span class="text-danger">*</span>
+                                    </label>
+                                    @Html.TextBoxFor(m => m.CompanionName, new { @class = "form-control", @placeholder = "請輸入同行夥伴姓名" })
+                                    @Html.ValidationMessageFor(m => m.CompanionName, "", new { @class = "text-danger small" })
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="HikingExperience" class="form-label">
+                                    登山經驗 <span class="text-danger">*</span>
+                                </label>
+                                @Html.TextAreaFor(m => m.HikingExperience, new { @class = "form-control", @rows = "3", @placeholder = "請簡述您的登山經驗（例如：曾經爬過的山、登山年資等）", @required = "required" })
+                                @Html.ValidationMessageFor(m => m.HikingExperience, "", new { @class = "text-danger small" })
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="ExerciseHabit" class="form-label">
+                                    運動習慣 <span class="text-danger">*</span>
+                                </label>
+                                @Html.TextAreaFor(m => m.ExerciseHabit, new { @class = "form-control", @rows = "3", @placeholder = "請簡述您的運動習慣（例如：每週運動頻率、運動類型等）", @required = "required" })
+                                @Html.ValidationMessageFor(m => m.ExerciseHabit, "", new { @class = "text-danger small" })
+                            </div>
+                        </div>
+
+                        <!-- 送出按鈕 -->
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg px-5" id="submitBtn">
+                                <i class="fas fa-check-circle me-2"></i>確認送出報名
+                            </button>
+                            <a href="javascript:history.back()" class="btn btn-secondary btn-lg px-5 ms-3">
+                                <i class="fas fa-arrow-left me-2"></i>返回
+                            </a>
+
+                        </div>
+                        <br />
+                        <br />
+                        <br />
+                        <!-- 範例資料按鈕 -->
+                        <div class="text-center mt-4">
+                            <button type="button" class="btn btn-sample btn-lg px-5" id="fillSampleBtn">
+                                <i class="fas fa-magic me-2"></i>填入範例資料
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section MyJS {
+    <script src="~/Scripts/jquery-3.7.1.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+
+        $(document).ready(function () {
+            // 國籍選擇處理
+            $('#nationalitySelect').change(function () {
+                if ($(this).val() === '其他') {
+                    $('#otherNationalityDiv').show();
+                    $('#OtherNationality').attr('required', true);
+                } else {
+                    $('#otherNationalityDiv').hide();
+                    $('#OtherNationality').attr('required', false);
+                    $('#OtherNationality').val('');
+                }
+            });
+
+            // 同行夥伴選擇處理
+            $('#hasCompanionSelect').change(function () {
+                if ($(this).val() === '是') {
+                    $('#companionNameDiv').show();
+                    $('#CompanionName').attr('required', true);
+                } else {
+                    $('#companionNameDiv').hide();
+                    $('#CompanionName').attr('required', false);
+                    $('#CompanionName').val('');
+                }
+            });
+
+            // 填入範例資料功能
+            $('#fillSampleBtn').click(function () {
+
+                // 基本資料
+                $('#RealName').val('王小明');
+                $('#Gender').val('M');
+                $('#BirthDate').val('1990-05-15');
+                $('#IdNumber').val('A123456789');
+                $('#Nationality').val('臺灣');
+
+                // 聯絡資訊
+                $('#Phone').val('0912345678');
+                $('#LineId').val('xiaoming123');
+                $('#County').val('台北市');
+                $('#District').val('信義區');
+                $('#Zipcode').val('110');
+                $('#Address').val('信義路五段7號');
+
+                // 緊急聯絡人
+                $('#EmergencyContactName').val('王大華');
+                $('#EmergencyContactPhone').val('0987654321');
+
+                // 活動相關資訊
+                $('#HasCompanion').val('否').trigger('change'); // 使用 trigger 而不是 change()
+
+                $('#HikingExperience').val('有3年登山經驗，曾爬過玉山、雪山、合歡山等百岳，熟悉基本登山技巧和安全知識。');
+                $('#ExerciseHabit').val('每週運動3-4次，平時有慢跑和重量訓練的習慣，體能狀況良好。');
+
+            });
+
+            // 確認提交
+
+            $('#registrationForm').on('submit', function (e) {
+                e.preventDefault(); // 先阻止預設提交
+
+                // 驗證表單
+                if (!this.checkValidity()) {
+                    this.reportValidity();
+                    return false;
+                }
+
+                // SweetAlert2 確認
+                Swal.fire({
+                    title: '確定要送出報名資料嗎？',
+                    text: '送出後將無法修改，請確認資料正確無誤。',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: '確定送出',
+                    cancelButtonText: '取消'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // 防止重複送出
+                        $('#submitBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>處理中...');
+                        this.submit(); // 手動送出表單
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+@section HeroSection {
+    <div class="img-bg rellax">
+        <img src="/images/hero_1.jpg" alt="Image" class="img-fluid">
+    </div>
+}

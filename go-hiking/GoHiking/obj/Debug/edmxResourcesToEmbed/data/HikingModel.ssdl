@@ -1,0 +1,326 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="HikingDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Comment">
+    <Key>
+      <PropertyRef Name="CommentId" />
+    </Key>
+    <Property Name="CommentId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Activity_Id" Type="int" Nullable="false" />
+    <Property Name="CommentTime" Type="datetime" />
+    <Property Name="Content" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="UserName" Type="nvarchar" MaxLength="50" />
+    <Property Name="UserId" Type="int" />
+    <Property Name="DetailId" Type="int" />
+  </EntityType>
+  <EntityType Name="GroupImage">
+    <Key>
+      <PropertyRef Name="image_id" />
+    </Key>
+    <Property Name="image_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="group_id" Type="int" />
+    <Property Name="image_data" Type="varbinary(max)" />
+    <Property Name="image_name" Type="nvarchar" MaxLength="255" />
+    <Property Name="upload_order" Type="int" />
+    <Property Name="upload_date" Type="datetime" />
+  </EntityType>
+  <EntityType Name="MountainTrails">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="badge" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="walk_days" Type="int" Nullable="false" />
+    <Property Name="location" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="mt_name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="diff" Type="int" Nullable="false" />
+    <Property Name="dist_km" Type="decimal" Precision="5" Scale="2" Nullable="false" />
+    <Property Name="time_min" Type="int" Nullable="false" />
+    <Property Name="ascend_m" Type="int" Nullable="false" />
+    <Property Name="descend_m" Type="int" Nullable="false" />
+    <Property Name="trail_cond" Type="nvarchar" MaxLength="200" />
+    <Property Name="route_type" Type="nvarchar" MaxLength="50" />
+    <Property Name="min_alt_m" Type="int" Nullable="false" />
+    <Property Name="max_alt_m" Type="int" Nullable="false" />
+    <Property Name="mt_range" Type="nvarchar" MaxLength="50" />
+    <Property Name="park_permit" Type="tinyint" Nullable="false" />
+    <Property Name="mt_permit" Type="tinyint" Nullable="false" />
+    <Property Name="TripDetails" Type="ntext" />
+    <Property Name="region" Type="nvarchar" MaxLength="10" Nullable="false" />
+    <Property Name="TripSchedule" Type="nvarchar(max)" />
+  </EntityType>
+  <EntityType Name="TripActivities">
+    <Key>
+      <PropertyRef Name="activity_id" />
+    </Key>
+    <Property Name="activity_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="group_name" Type="nvarchar" MaxLength="100" />
+    <Property Name="activity_date" Type="date" Nullable="false" />
+    <Property Name="meeting_time" Type="nvarchar" MaxLength="50" />
+    <Property Name="meeting_location" Type="nvarchar" MaxLength="200" />
+    <Property Name="custom_schedule" Type="nvarchar(max)" />
+    <Property Name="leader_message" Type="nvarchar(max)" />
+    <Property Name="max_participants" Type="int" />
+    <Property Name="price" Type="int" Nullable="false" />
+    <Property Name="mt_id" Type="int" Nullable="false" />
+    <Property Name="mt_name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="badge" Type="nvarchar" MaxLength="50" />
+    <Property Name="walk_days" Type="int" Nullable="false" />
+    <Property Name="location" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="diff" Type="int" Nullable="false" />
+    <Property Name="dist_km" Type="decimal" Precision="5" Scale="2" Nullable="false" />
+    <Property Name="time_min" Type="int" Nullable="false" />
+    <Property Name="ascend_m" Type="int" Nullable="false" />
+    <Property Name="descend_m" Type="int" Nullable="false" />
+    <Property Name="trail_cond" Type="nvarchar" MaxLength="200" />
+    <Property Name="route_type" Type="nvarchar" MaxLength="50" />
+    <Property Name="min_alt_m" Type="int" Nullable="false" />
+    <Property Name="max_alt_m" Type="int" Nullable="false" />
+    <Property Name="mt_range" Type="nvarchar" MaxLength="50" />
+    <Property Name="park_permit" Type="tinyint" Nullable="false" />
+    <Property Name="mt_permit" Type="tinyint" Nullable="false" />
+    <Property Name="TripDetails" Type="ntext" />
+    <Property Name="region" Type="nvarchar" MaxLength="10" Nullable="false" />
+    <Property Name="TripSchedule" Type="nvarchar(max)" />
+    <Property Name="user_id" Type="int" Nullable="false" />
+    <Property Name="user_name" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="user_email" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="user_password" Type="nvarchar" MaxLength="50" />
+    <Property Name="status" Type="nvarchar" MaxLength="20" />
+    <Property Name="current_participants" Type="int" />
+    <Property Name="created_date" Type="datetime" />
+    <Property Name="updated_date" Type="datetime" />
+    <Property Name="is_active" Type="bit" />
+    <Property Name="team_name" Type="nvarchar" MaxLength="50" />
+    <Property Name="FeeIncludes" Type="nvarchar" MaxLength="500" />
+    <Property Name="participants" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="TripGroup">
+    <Key>
+      <PropertyRef Name="group_id" />
+    </Key>
+    <Property Name="group_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="mt_id" Type="int" Nullable="false" />
+    <Property Name="user_id" Type="int" Nullable="false" />
+    <Property Name="group_name" Type="nvarchar" MaxLength="100" />
+    <Property Name="activity_date" Type="date" Nullable="false" />
+    <Property Name="meeting_time" Type="nvarchar" MaxLength="50" />
+    <Property Name="meeting_location" Type="nvarchar" MaxLength="200" />
+    <Property Name="custom_schedule" Type="nvarchar(max)" />
+    <Property Name="leader_message" Type="nvarchar(max)" />
+    <Property Name="max_participants" Type="int" />
+    <Property Name="current_participants" Type="int" />
+    <Property Name="price" Type="decimal" Precision="10" Scale="2" />
+    <Property Name="include_transport" Type="bit" />
+    <Property Name="include_accommodation" Type="bit" />
+    <Property Name="include_guide" Type="bit" />
+    <Property Name="include_insurance" Type="bit" />
+    <Property Name="include_course" Type="bit" />
+    <Property Name="status" Type="nvarchar" MaxLength="20" />
+    <Property Name="created_date" Type="datetime" />
+    <Property Name="updated_date" Type="datetime" />
+    <Property Name="FeeIncludes" Type="nvarchar" MaxLength="500" />
+  </EntityType>
+  <EntityType Name="UserDetails">
+    <Key>
+      <PropertyRef Name="DetailId" />
+    </Key>
+    <Property Name="DetailId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserId" Type="int" Nullable="false" />
+    <Property Name="FullName" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Gender" Type="bit" />
+    <Property Name="Birthday" Type="date" />
+    <Property Name="Phone" Type="nvarchar" MaxLength="20" />
+    <Property Name="Address" Type="nvarchar" MaxLength="200" />
+    <Property Name="ProfileImage" Type="varbinary(max)" />
+    <Property Name="ProfileImageName" Type="nvarchar" MaxLength="255" />
+  </EntityType>
+  <EntityType Name="UserProfile">
+    <Key>
+      <PropertyRef Name="ProfileId" />
+    </Key>
+    <Property Name="ProfileId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserId" Type="int" Nullable="false" />
+    <Property Name="RealName" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Gender" Type="bit" Nullable="false" />
+    <Property Name="BirthDate" Type="date" Nullable="false" />
+    <Property Name="Nationality" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="IdNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="LineId" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Phone" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="Address" Type="nvarchar" MaxLength="200" Nullable="false" />
+    <Property Name="EmergencyContactName" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="EmergencyContactPhone" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="HasCompanion" Type="bit" Nullable="false" />
+    <Property Name="CompanionName" Type="nvarchar" MaxLength="200" />
+    <Property Name="HikingExperience" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="ExerciseHabit" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="CreatedAt" Type="datetime" />
+    <Property Name="UpdatedAt" Type="datetime" />
+    <Property Name="activity_id" Type="int" />
+    <Property Name="is_creator" Type="bit" />
+  </EntityType>
+  <EntityType Name="Users">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserName" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Password" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Email" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Permission" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_Comment_UserDetails">
+    <End Role="UserDetails" Type="Self.UserDetails" Multiplicity="0..1" />
+    <End Role="Comment" Type="Self.Comment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserDetails">
+        <PropertyRef Name="DetailId" />
+      </Principal>
+      <Dependent Role="Comment">
+        <PropertyRef Name="DetailId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_GroupImage_TripActivities">
+    <End Role="TripActivities" Type="Self.TripActivities" Multiplicity="0..1" />
+    <End Role="GroupImage" Type="Self.GroupImage" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TripActivities">
+        <PropertyRef Name="activity_id" />
+      </Principal>
+      <Dependent Role="GroupImage">
+        <PropertyRef Name="group_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TripActivities_MountainTrails">
+    <End Role="MountainTrails" Type="Self.MountainTrails" Multiplicity="1" />
+    <End Role="TripActivities" Type="Self.TripActivities" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MountainTrails">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="TripActivities">
+        <PropertyRef Name="mt_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TripActivities_Users">
+    <End Role="Users" Type="Self.Users" Multiplicity="1" />
+    <End Role="TripActivities" Type="Self.TripActivities" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="TripActivities">
+        <PropertyRef Name="user_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TripGroup_MountainTrails">
+    <End Role="MountainTrails" Type="Self.MountainTrails" Multiplicity="1" />
+    <End Role="TripGroup" Type="Self.TripGroup" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MountainTrails">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="TripGroup">
+        <PropertyRef Name="mt_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TripGroup_Users">
+    <End Role="Users" Type="Self.Users" Multiplicity="1" />
+    <End Role="TripGroup" Type="Self.TripGroup" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="TripGroup">
+        <PropertyRef Name="user_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserDetails_Users">
+    <End Role="Users" Type="Self.Users" Multiplicity="1" />
+    <End Role="UserDetails" Type="Self.UserDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="UserDetails">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserProfile_TripActivities">
+    <End Role="TripActivities" Type="Self.TripActivities" Multiplicity="0..1" />
+    <End Role="UserProfile" Type="Self.UserProfile" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TripActivities">
+        <PropertyRef Name="activity_id" />
+      </Principal>
+      <Dependent Role="UserProfile">
+        <PropertyRef Name="activity_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserProfile_Users">
+    <End Role="Users" Type="Self.Users" Multiplicity="1" />
+    <End Role="UserProfile" Type="Self.UserProfile" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="UserProfile">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="HikingDBModelStoreContainer">
+    <EntitySet Name="Comment" EntityType="Self.Comment" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="GroupImage" EntityType="Self.GroupImage" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MountainTrails" EntityType="Self.MountainTrails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TripActivities" EntityType="Self.TripActivities" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TripGroup" EntityType="Self.TripGroup" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserDetails" EntityType="Self.UserDetails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserProfile" EntityType="Self.UserProfile" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_Comment_UserDetails" Association="Self.FK_Comment_UserDetails">
+      <End Role="UserDetails" EntitySet="UserDetails" />
+      <End Role="Comment" EntitySet="Comment" />
+    </AssociationSet>
+    <AssociationSet Name="FK_GroupImage_TripActivities" Association="Self.FK_GroupImage_TripActivities">
+      <End Role="TripActivities" EntitySet="TripActivities" />
+      <End Role="GroupImage" EntitySet="GroupImage" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TripActivities_MountainTrails" Association="Self.FK_TripActivities_MountainTrails">
+      <End Role="MountainTrails" EntitySet="MountainTrails" />
+      <End Role="TripActivities" EntitySet="TripActivities" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TripActivities_Users" Association="Self.FK_TripActivities_Users">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="TripActivities" EntitySet="TripActivities" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TripGroup_MountainTrails" Association="Self.FK_TripGroup_MountainTrails">
+      <End Role="MountainTrails" EntitySet="MountainTrails" />
+      <End Role="TripGroup" EntitySet="TripGroup" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TripGroup_Users" Association="Self.FK_TripGroup_Users">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="TripGroup" EntitySet="TripGroup" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserDetails_Users" Association="Self.FK_UserDetails_Users">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="UserDetails" EntitySet="UserDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserProfile_TripActivities" Association="Self.FK_UserProfile_TripActivities">
+      <End Role="TripActivities" EntitySet="TripActivities" />
+      <End Role="UserProfile" EntitySet="UserProfile" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserProfile_Users" Association="Self.FK_UserProfile_Users">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="UserProfile" EntitySet="UserProfile" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

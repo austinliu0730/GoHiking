@@ -1,0 +1,584 @@
+﻿@model IEnumerable<GoHiking.data.UserProfile>
+@{
+    ViewBag.Title = "日曆管理";
+    var currentView = ViewBag.CurrentView as string ?? "calendar";
+    var activityId = ViewBag.ActivityId ?? 0;
+    var activeId = Model.FirstOrDefault().activity_id;
+    var mountainName = Model.FirstOrDefault().User.TripActivities.FirstOrDefault(m => m.activity_id == activeId)?.mt_name;
+}
+@section MyCSS{
+    <link href="~/css/mycss/product.css?v=@DateTime.Now.Ticks" rel="stylesheet" />
+    <link href="~/css/mycss/calendar.css?v=@DateTime.Now.Ticks" rel="stylesheet" />
+
+    <style>
+        .btn.btn-secondary {
+            background-color: cornflowerblue;
+            color: #fff; /* 文字顏色 */
+            border: none;
+        }
+
+            .btn.btn-secondary:hover {
+                background-color: #74A3F0;
+            }
+
+        .btn.btn-primary {
+            background-color: lightseagreen;
+            color: #fff;
+            border: none;
+        }
+
+            .btn.btn-primary:hover {
+                background-color: #4DD0C7
+            }
+    </style>
+}
+
+<div class="section py-5">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-10 col-xl-9">
+                <div class="card p-4 shadow rounded main-card">
+                    <div class="row">
+                        <div class="col-lg-3 pr-lg-5">
+                            <aside class="sidebar d-none d-lg-block">
+                                <h3 class="sidebar-title">@mountainName 行程管理</h3>
+                                <p class="sidebar-subtitle">Calendar & Schedule</p>
+                                <ul class="activity-list">
+                                    <li class="@(currentView == "calendar" ? "calendar-active" : "")">
+                                        <a href="@Url.Action("CalendarIntegrated", "TripHelper", new { id = activityId, view = "calendar" })">日曆檢視</a>
+                                    </li>
+                                    <li class="@(currentView == "schedule" ? "calendar-active" : "")">
+                                        <a href="@Url.Action("CalendarIntegrated", "TripHelper", new { id = activityId, view = "schedule" })">列表檢視</a>
+                                    </li>
+                                    <li class="@(currentView == "month" ? "calendar-active" : "")">
+                                        <a href="@Url.Action("CalendarIntegrated", "TripHelper", new { id = activityId, view = "month" })">月份總覽</a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("Index", "TripHelper", new { id = activityId })">返回行程</a>
+                                    </li>
+                                    <li>
+                                        <a href="/User/Logout">登出</a>
+                                    </li>
+                                </ul>
+                            </aside>
+                        </div>
+                        <div class="col-9 content-section">
+                            @if (currentView == "calendar")
+                            {
+                                <!-- 日曆檢視 -->
+                                <div class="calendar-controls">
+                                    <div class="calendar-nav">
+                                        <button class="btn btn-secondary" onclick="previousMonth()">
+                                            <i class="fas fa-chevron-left"><<</i>
+                                        </button>
+                                        <span id="currentMonth" class="current-month"></span>
+                                        <button class="btn btn-secondary" onclick="nextMonth()">
+                                            <i class="fas fa-chevron-right">>></i>
+                                        </button>
+                                    </div>
+                                    <button class="btn btn-primary" onclick="openAddEventModal()">
+                                        <i class="fas fa-plus"></i> 新增活動
+                                    </button>
+                                </div>
+
+                                <div class="calendar-container">
+                                    <div class="calendar-grid" id="calendarGrid">
+                                        <div class="calendar-header">
+                                            <div class="calendar-day-header">日</div>
+                                            <div class="calendar-day-header">一</div>
+                                            <div class="calendar-day-header">二</div>
+                                            <div class="calendar-day-header">三</div>
+                                            <div class="calendar-day-header">四</div>
+                                            <div class="calendar-day-header">五</div>
+                                            <div class="calendar-day-header">六</div>
+                                        </div>
+                                        <div class="calendar-body" id="calendarBody">
+                                            <!-- 日曆內容將由 JavaScript 生成 -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="drag-info">
+                                    <p><i class="fas fa-hand-rock"></i> 拖拽活動可以移動到不同日期和時間</p>
+                                </div>
+                            }
+                            else if (currentView == "schedule")
+                            {
+                                <!-- 列表檢視 -->
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                                    <h2><i class="fas fa-list"></i> 活動列表</h2>
+                                    <button class="btn btn-primary" onclick="openAddEventModal()">
+                                        <i class="fas fa-plus"></i> 新增活動
+                                    </button>
+                                </div>
+
+                                <div class="events-grid" id="eventsGrid">
+                                    <!-- 活動列表內容將由 JavaScript 生成 -->
+                                </div>
+                            }
+                            else if (currentView == "month")
+                            {
+                                <!-- 月份總覽 -->
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                                    <h2><i class="fas fa-calendar-alt"></i> 月份總覽</h2>
+                                    <button class="btn btn-primary" onclick="openAddEventModal()">
+                                        <i class="fas fa-plus"></i> 新增活動
+                                    </button>
+                                </div>
+
+                                <div id="monthOverview">
+                                    <!-- 月份總覽內容將由 JavaScript 生成 -->
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 新增事件模態框 -->
+<div id="eventModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">新增運動活動</h2>
+            <span class="close" onclick="closeEventModal()">&times;</span>
+        </div>
+        <form id="eventForm">
+            <div style="padding: 0 30px;">
+                <input type="hidden" id="eventId" name="eventId" />
+                <input type="hidden" id="selectedDate" name="selectedDate" />
+
+                <div class="form-group">
+                    <label for="title">活動標題 *</label>
+                    <input type="text" id="title" name="title" required />
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="eventDate">日期 *</label>
+                        <input type="date" id="eventDate" name="eventDate" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="eventTime">時間 *</label>
+                        <input type="time" id="eventTime" name="eventTime" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="sportsType">運動類型 *</label>
+                    <select id="sportsType" name="sportsType" required>
+                        <option value="">選擇運動類型</option>
+                        <option value="跑步">🏃 跑步</option>
+                        <option value="游泳">🏊 游泳</option>
+                        <option value="騎腳踏車">🚴 騎腳踏車</option>
+                        <option value="健身">💪 健身</option>
+                        <option value="瑜伽">🧘 瑜伽</option>
+                        <option value="登山">🥾 登山</option>
+                        <option value="球類運動">⚽ 球類運動</option>
+                        <option value="其他">🎯 其他</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="duration">持續時間（分鐘）</label>
+                        <input type="number" id="duration" name="duration" value="60" min="10" max="480" />
+                    </div>
+                    <div class="form-group">
+                        <label for="location">地點</label>
+                        <input type="text" id="location" name="location" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">描述</label>
+                    <textarea id="description" name="description" rows="3"></textarea>
+                </div>
+            </div>
+        </form>
+        <div class="form-actions">
+            <button type="button" class="btn btn-secondary" onclick="closeEventModal()">取消</button>
+            <button type="button" class="btn btn-primary" onclick="submitEvent()">儲存</button>
+        </div>
+    </div>
+</div>
+
+@section HeroSection {
+    <div class="img-bg rellax">
+        <img src="/images/backgroup.jpg" alt="Image" class="img-fluid">
+    </div>
+    <div class="container">
+        <div class="row align-items-center justify-content-center">
+            <div class="col-lg-5 text-center">
+                <p data-aos="fade-up" style="color:#FFFFFF; font-size:16px;">
+                    台灣登山行程｜專業媒合團隊
+                </p>
+                <div style="width: 40px; height: 1px; background-color: #FFFFFF; margin: 1px auto;" data-aos="fade-up"></div>
+            </div>
+        </div>
+    </div>
+}
+
+@section MyJS{
+    <script src="~/Scripts/jquery-3.7.1.js"></script>
+    <script>
+        var currentDate = new Date();
+        var events = [];
+        var draggedEvent = null;
+        var currentView = '@currentView';
+
+        // 初始化
+        $(document).ready(function() {
+            loadEvents();
+
+            if (currentView === 'calendar') {
+                renderCalendar();
+            } else if (currentView === 'schedule') {
+                renderScheduleList();
+            } else if (currentView === 'month') {
+                renderMonthOverview();
+            }
+
+            // 側邊欄hover效果
+            $('.activity-list a').hover(function() {
+                $('.activity-list li').not('.calendar-active').removeClass('active');
+                if (!$(this).parent('li').hasClass('calendar-active')) {
+                    $(this).parent('li').addClass('active');
+                }
+            });
+        });
+
+        // 載入事件數據
+        function loadEvents() {
+            $.ajax({
+                url: '@Url.Action("GetEvents", "TripHelper")',
+                type: 'GET',
+                success: function(data) {
+                    events = data;
+                    if (currentView === 'calendar') {
+                        renderCalendar();
+                    } else if (currentView === 'schedule') {
+                        renderScheduleList();
+                    } else if (currentView === 'month') {
+                        renderMonthOverview();
+                    }
+                }
+            });
+        }
+
+        // 渲染日曆
+        function renderCalendar() {
+            var year = currentDate.getFullYear();
+            var month = currentDate.getMonth();
+
+            $('#currentMonth').text(year + '年 ' + (month + 1) + '月');
+
+            var firstDay = new Date(year, month, 1);
+            var lastDay = new Date(year, month + 1, 0);
+            var startDate = new Date(firstDay);
+            startDate.setDate(startDate.getDate() - firstDay.getDay());
+
+            var calendarBody = $('#calendarBody');
+            calendarBody.empty();
+
+            for (var week = 0; week < 6; week++) {
+                var weekDiv = $('<div class="calendar-week"></div>');
+
+                for (var day = 0; day < 7; day++) {
+                    var cellDate = new Date(startDate);
+                    cellDate.setDate(startDate.getDate() + (week * 7) + day);
+
+                    var dayDiv = $('<div class="calendar-day"></div>');
+                    dayDiv.data('date', cellDate.toISOString().split('T')[0]);
+
+                    if (cellDate.getMonth() !== month) {
+                        dayDiv.addClass('other-month');
+                    }
+
+                    if (cellDate.toDateString() === new Date().toDateString()) {
+                        dayDiv.addClass('today');
+                    }
+
+                    var dateString = cellDate.toISOString().split('T')[0];
+                    dayDiv.html('<div class="day-number">' + cellDate.getDate() + '</div>' +
+                        '<div class="day-events">' + renderDayEvents(cellDate) + '</div>');
+
+                    dayDiv.find('.day-events').dblclick(function() {
+                        openAddEventModal($(this).parent().data('date'));
+                    });
+
+                    setupDragAndDrop(dayDiv[0]);
+                    weekDiv.append(dayDiv);
+                }
+
+                calendarBody.append(weekDiv);
+            }
+        }
+
+        // 渲染單日事件
+        function renderDayEvents(date) {
+            var dateStr = date.toISOString().split('T')[0];
+            var dayEvents = events.filter(function(event) {
+                return event.start.split('T')[0] === dateStr;
+            });
+
+            return dayEvents.map(function(event) {
+                var eventTime = new Date(event.start).toLocaleTimeString('zh-TW', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                });
+
+                return '<div class="event-item" draggable="true" data-event-id="' + event.id + '" data-sports-type="' + event.sportsType + '">' +
+                    '<div class="event-time">' + eventTime + '</div>' +
+                    '<div class="event-title">' + event.title + '</div>' +
+                    '</div>';
+            }).join('');
+        }
+
+        // 渲染列表檢視
+        function renderScheduleList() {
+            var eventsGrid = $('#eventsGrid');
+            eventsGrid.empty();
+
+            if (events.length === 0) {
+                eventsGrid.html('<div class="no-events"><i class="fas fa-calendar-times"></i><p>尚無運動行程，點擊上方按鈕新增您的第一個運動計畫！</p></div>');
+                return;
+            }
+
+            var sortedEvents = events.sort(function(a, b) {
+                return new Date(a.start) - new Date(b.start);
+            });
+
+            sortedEvents.forEach(function(event) {
+                var eventDate = new Date(event.start);
+                var eventCard = $('<div class="event-card" data-event-id="' + event.id + '">');
+
+                eventCard.html(`
+                    <div class="event-header">
+                        <h3>${event.title}</h3>
+                        <span class="event-type">${event.sportsType}</span>
+                    </div>
+                    <div class="event-details">
+                        <p><i class="fas fa-calendar"></i> ${eventDate.toLocaleDateString('zh-TW')} ${eventDate.toLocaleTimeString('zh-TW', {hour: '2-digit', minute: '2-digit', hour12: false})}</p>
+                        ${event.description ? `<p class="event-description">${event.description}</p>` : ''}
+                    </div>
+                    <div class="event-actions">
+                        <button class="btn btn-sm btn-danger" onclick="deleteEvent(${event.id})" title="刪除">
+                            <i class="bi bi-trash"></i> 刪除
+                        </button>
+                    </div>
+                `);
+
+                eventsGrid.append(eventCard);
+            });
+        }
+
+        // 渲染月份總覽
+        function renderMonthOverview() {
+            var monthOverview = $('#monthOverview');
+            monthOverview.empty();
+
+            // 按月份分組事件
+            var eventsByMonth = {};
+            events.forEach(function(event) {
+                var monthKey = new Date(event.start).toISOString().substring(0, 7);
+                if (!eventsByMonth[monthKey]) {
+                    eventsByMonth[monthKey] = [];
+                }
+                eventsByMonth[monthKey].push(event);
+            });
+
+            // 渲染每個月份
+            Object.keys(eventsByMonth).sort().forEach(function(monthKey) {
+                var monthEvents = eventsByMonth[monthKey];
+                var monthName = new Date(monthKey + '-01').toLocaleDateString('zh-TW', {year: 'numeric', month: 'long'});
+
+                var monthSection = $(`
+                    <div class="month-section" style="margin-bottom: 30px; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        <h3 style="color: #333; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #007bff;">${monthName}</h3>
+                        <div class="month-events" style="display: grid; gap: 10px;"></div>
+                    </div>
+                `);
+
+                var monthEventsContainer = monthSection.find('.month-events');
+                monthEvents.forEach(function(event) {
+                    var eventDate = new Date(event.start);
+                    var eventItem = $(`
+                        <div style="padding: 10px; background: #f8f9fa; border-left: 4px solid #007bff; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <strong>${event.title}</strong> - ${event.sportsType}
+                                <br><small style="color: #666;">${eventDate.toLocaleDateString('zh-TW')} ${eventDate.toLocaleTimeString('zh-TW', {hour: '2-digit', minute: '2-digit', hour12: false})}</small>
+                            </div>
+                            <div>
+
+                                <button class="btn btn-sm btn-danger " onclick="deleteEvent(${event.id})" title="刪除">
+                                    <i class="fas fa-trash"></i>刪除
+                                </button>
+                            </div>
+                        </div>
+                    `);
+                    monthEventsContainer.append(eventItem);
+                });
+
+                monthOverview.append(monthSection);
+            });
+
+            if (Object.keys(eventsByMonth).length === 0) {
+                monthOverview.html('<div class="no-events"><i class="fas fa-calendar-times"></i><p>尚無運動行程記錄</p></div>');
+            }
+        }
+
+        // 拖放功能
+        function setupDragAndDrop(dayDiv) {
+            dayDiv.addEventListener('dragover', handleDragOver);
+            dayDiv.addEventListener('dragleave', handleDragLeave);
+            dayDiv.addEventListener('drop', handleDrop);
+        }
+
+        $(document).on('dragstart', '.event-item', function(e) {
+            draggedEvent = {
+                id: $(this).data('event-id'),
+                originalParent: $(this).parent()[0]
+            };
+            $(this).addClass('dragging');
+        });
+
+        $(document).on('dragend', '.event-item', function(e) {
+            $(this).removeClass('dragging');
+        });
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            if (!e.currentTarget.contains(e.relatedTarget)) {
+                e.currentTarget.classList.remove('drag-over');
+            }
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+
+            if (draggedEvent) {
+                var newDate = $(e.currentTarget).data('date');
+                var eventElement = $('[data-event-id="' + draggedEvent.id + '"]');
+                if (eventElement.length) {
+                    var currentTime = eventElement.find('.event-time').text();
+                    updateEventDate(draggedEvent.id, newDate, currentTime);
+                }
+            }
+        }
+
+        // 更新事件日期
+        function updateEventDate(eventId, newDate, time) {
+            var timeParts = time.split(':');
+            var hours = parseInt(timeParts[0]);
+            var minutes = parseInt(timeParts[1]);
+
+            $.ajax({
+                url: '@Url.Action("UpdateEvent", "TripHelper")',
+                type: 'POST',
+                data: {
+                    id: eventId,
+                    newDate: newDate,
+                    newHour: hours,
+                    newMinute: minutes
+                },
+                success: function(response) {
+                    if (response.success) {
+                        loadEvents();
+                    } else {
+                        alert('更新失敗：' + (response.message || '請重試'));
+                        if (currentView === 'calendar') renderCalendar();
+                    }
+                }
+            });
+        }
+
+        // 日曆導航
+        function previousMonth() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+        }
+
+        // 模態框控制
+        function openAddEventModal(date) {
+            date = date || new Date().toISOString().split('T')[0];
+            $('#selectedDate').val(date);
+            $('#eventDate').val(date);
+            $('#eventForm')[0].reset();
+            $('#eventDate').val(date);
+            $('#modalTitle').text('新增運動活動');
+            $('#eventModal').show();
+        }
+
+        function closeEventModal() {
+            $('#eventModal').hide();
+        }
+
+        function submitEvent() {
+            var formData = {
+                Title: $('#title').val(),
+                EventDate: $('#eventDate').val() + 'T' + $('#eventTime').val(),
+                SportsType: $('#sportsType').val(),
+                Duration: $('#duration').val() || 60,
+                Location: $('#location').val(),
+                Description: $('#description').val()
+            };
+
+            if (!formData.Title || !formData.EventDate || !formData.SportsType) {
+                alert('請填寫必填欄位');
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("AddEvent", "TripHelper")',
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    if (response.success) {
+                        closeEventModal();
+                        loadEvents();
+                    } else {
+                        alert('新增失敗，請重試');
+                    }
+                }
+            });
+        }
+
+        function deleteEvent(id) {
+            if (confirm('確定要刪除這個運動行程嗎？')) {
+                $.ajax({
+                    url: '@Url.Action("DeleteEvent", "TripHelper")',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function(response) {
+                        if (response.success) {
+                            loadEvents();
+                        } else {
+                            alert('刪除失敗，請重試');
+                        }
+                    }
+                });
+            }
+        }
+
+        // 點擊模態框外部關閉
+        $(window).click(function(event) {
+            if ($(event.target).is('#eventModal')) {
+                closeEventModal();
+            }
+        });
+    </script>
+}

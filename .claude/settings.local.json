@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git checkout:*)",
+      "Bash(tree:*)",
+      "Bash(find:*)",
+      "Read(/C:\\Users\\Admin\\Desktop\\Hiking_claude\\go-hiking\\GoHiking\\Controllers/**)",
+      "Read(/C:\\Users\\Admin\\Desktop\\Hiking_claude\\go-hiking\\GoHiking\\data/**)",
+      "Read(/C:\\Users\\Admin\\Desktop\\Hiking_claude\\go-hiking\\GoHiking\\data/**)",
+      "Read(/C:\\Users\\Admin\\Desktop\\Hiking_claude\\go-hiking\\GoHiking\\Controllers/**)",
+      "Read(/C:\\Users\\Admin\\Desktop\\Hiking_claude\\go-hiking\\GoHiking\\Controllers/**)",
+      "Read(/C:\\Users\\Admin\\Desktop\\Hiking_claude\\go-hiking\\GoHiking\\Controllers/**)",
+      "Read(/C:\\Users\\Admin\\Desktop\\Hiking_claude\\go-hiking\\GoHiking\\App_Start/**)",
+      "Read(/C:\\Users\\Admin\\Desktop\\Hiking_claude\\go-hiking\\GoHiking\\Views\\Shared/**)",
+      "Read(/C:\\Users\\Admin\\Desktop\\Hiking_claude\\go-hiking\\GoHiking\\Controllers/**)",
+      "Read(/C:\\Users\\Admin\\Desktop\\Hiking_claude\\go-hiking\\GoHiking\\Controllers/**)",
+      "Read(/C:\\Users\\Admin\\Desktop\\Hiking_claude\\go-hiking\\GoHiking\\Views\\Admin/**)",
+      "Bash(powershell:*)",
+      "Read(/C:\\Users\\Admin\\Desktop\\Hiking_claude\\go-hiking\\GoHiking\\Controllers/**)",
+      "Read(/C:\\Users\\Admin\\Desktop\\Hiking_claude\\go-hiking\\GoHiking\\Controllers/**)",
+      "Read(/C:\\Users\\Admin\\Desktop\\Hiking_claude\\go-hiking\\GoHiking\\Controllers/**)",
+      "Read(/C:\\Users\\Admin\\Desktop\\Hiking_claude\\go-hiking\\GoHiking\\Views\\Admin/**)",
+      "Read(/C:\\Users\\Admin\\Desktop\\Hiking_claude\\go-hiking\\GoHiking\\Views\\Shared/**)",
+      "Read(/C:\\Users\\Admin\\Desktop\\Hiking_claude\\go-hiking\\GoHiking\\Views\\Products/**)",
+      "Read(/C:\\Users\\Admin\\Desktop\\Hiking_claude\\go-hiking\\GoHiking\\Views\\Admin/**)",
+      "Read(/C:\\Users\\Admin\\Desktop\\Hiking_claude\\go-hiking\\GoHiking\\Views\\Admin/**)",
+      "Read(/C:\\Users\\Admin\\Desktop\\Hiking_claude\\go-hiking\\GoHiking\\Views\\Admin/**)",
+      "Read(/C:\\Users\\Admin\\Desktop\\Hiking_claude\\go-hiking\\GoHiking\\Views\\Admin/**)",
+      "Read(/C:\\Users\\Admin\\Desktop\\Hiking_claude\\go-hiking\\GoHiking\\Views\\User/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

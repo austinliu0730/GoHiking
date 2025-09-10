@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="ec1d370ecfb64a629c1f97eeb04390b8" Name="Diagram1">
+        <EntityTypeShape EntityType="HikingDBModel.GroupImage" Width="1.5" PointX="6.5" PointY="9.625" />
+        <EntityTypeShape EntityType="HikingDBModel.TripGroup" Width="1.5" PointX="4.75" PointY="3.875" />
+        <EntityTypeShape EntityType="HikingDBModel.User" Width="1.5" PointX="1" PointY="8.25" />
+        <AssociationConnector Association="HikingDBModel.FK_TripGroup_Users" />
+        <EntityTypeShape EntityType="HikingDBModel.MountainTrail" Width="1.5" PointX="7.5" PointY="3.5" />
+        <AssociationConnector Association="HikingDBModel.FK_TripGroup_MountainTrails" />
+        <EntityTypeShape EntityType="HikingDBModel.UserDetail" Width="1.5" PointX="4.625" PointY="0.5" />
+        <AssociationConnector Association="HikingDBModel.FK_UserDetails_Users" />
+        <EntityTypeShape EntityType="HikingDBModel.TripActivity" Width="1.5" PointX="9.75" PointY="2.5" />
+        <EntityTypeShape EntityType="HikingDBModel.UserProfile" Width="1.5" PointX="12" PointY="4.625" />
+        <AssociationConnector Association="HikingDBModel.FK_GroupImage_TripActivities" />
+        <AssociationConnector Association="HikingDBModel.FK_TripActivities_MountainTrails" />
+        <AssociationConnector Association="HikingDBModel.FK_TripActivities_Users" />
+        <AssociationConnector Association="HikingDBModel.FK_UserProfile_TripActivities" />
+        <AssociationConnector Association="HikingDBModel.FK_UserProfile_Users" />
+        <EntityTypeShape EntityType="HikingDBModel.Comment" Width="1.5" PointX="6.875" PointY="0.75" />
+        <AssociationConnector Association="HikingDBModel.FK_Comment_UserDetails" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

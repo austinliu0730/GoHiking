@@ -1,0 +1,595 @@
+﻿@model List<GoHiking.ViewModels.GroupStatusViewModel>
+@{
+    ViewBag.Title = "成團狀態管理";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section MyCSS {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+}
+
+<style>
+    .management-header {
+        background: linear-gradient(135deg, #2c5530, #4a7c59);
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+
+    .status-badge {
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.85em;
+        font-weight: bold;
+    }
+
+    .status-recruiting {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .status-almost-full {
+        background: #cce5ff;
+        color: #004085;
+    }
+
+    .status-stable {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .status-full {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    .status-finished {
+        background: #e2e3e5;
+        color: #383d41;
+    }
+
+    .progress-custom {
+        height: 8px;
+        border-radius: 10px;
+    }
+
+    .table-card {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        padding: 20px;
+    }
+
+    .filter-card {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .action-btn {
+        margin: 2px;
+    }
+
+    .badge-success {
+        background-color: #28a745 !important;
+        color: white !important;
+    }
+
+    .badge-secondary {
+        background-color: #6c757d !important;
+        color: white !important;
+    }
+
+    .btn-group-sm > .btn {
+        font-size: 12px;
+        line-height: 1.2;
+    }
+
+    /* 修復按鈕樣式 */
+    .btn {
+        border: 1px solid;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        border-radius: 0.25rem;
+        text-decoration: none;
+        display: inline-block;
+        font-weight: 400;
+        text-align: center;
+        vertical-align: middle;
+        cursor: pointer;
+        background-color: transparent;
+    }
+
+    .btn-outline-info {
+        border-color: #17a2b8;
+        color: #17a2b8;
+    }
+
+        .btn-outline-info:hover {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+    .btn-outline-warning {
+        border-color: #ffc107;
+        color: #ffc107;
+    }
+
+        .btn-outline-warning:hover {
+            background-color: #ffc107;
+            color: #212529;
+        }
+
+    .btn-outline-danger {
+        border-color: #dc3545;
+        color: #dc3545;
+    }
+
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+    .btn-outline-success {
+        border-color: #28a745;
+        color: #28a745;
+    }
+
+        .btn-outline-success:hover {
+            background-color: #28a745;
+            color: white;
+        }
+
+    .management-btn-card {
+        background: white;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+
+    .management-btn-card:hover {
+        border-color: #17a2b8;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .btn-management {
+        display: block;
+        text-decoration: none;
+        color: #495057;
+        padding: 25px 20px;
+        text-align: center;
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .btn-management:hover {
+        text-decoration: none;
+        color: #17a2b8;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    }
+
+    .btn-management.active {
+        color: white;
+        background: linear-gradient(135deg, #17a2b8, #20c997);
+    }
+
+    .btn-management.active:hover {
+        color: white;
+    }
+
+    .btn-management i {
+        font-size: 2.5em;
+        margin-bottom: 15px;
+        display: block;
+    }
+
+    .btn-management h5 {
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
+
+    .btn-management p {
+        font-size: 0.85em;
+        line-height: 1.4;
+    }
+
+    .btn-management.active p {
+        color: rgba(255,255,255,0.9);
+    }
+</style>
+
+<div class="section py-5">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-12 col-xl-10">
+                <div class="card p-4 shadow rounded" style="background: white;">
+                    <!-- Page Header -->
+                    <div class="text-center mb-4">
+                        <div class="mb-3">
+                            <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                        </div>
+                        <h2 class="heading mb-2" style="color: #2c3e50; font-weight: 600;">成團狀態管理</h2>
+                        <hr style="width: 60px; height: 3px; background: linear-gradient(45deg, #17a2b8, #20c997); border: none; margin: 20px auto;">
+                        <p class="text-muted">活動成團狀態監控與管理</p>
+                    </div>
+
+                    <!-- 管理功能按鈕 -->
+                    <div class="row mb-4">
+                        <div class="col-md-3 mb-3">
+                            <div class="management-btn-card h-100">
+                                <a href="@Url.Action("Dashboard", "Admin")" class="btn-management">
+                                    <i class="fas fa-chart-bar"></i>
+                                    <h5>統計儀表板</h5>
+                                    <p class="text-muted mb-0">數據分析總覽</p>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="management-btn-card h-100">
+                                <a href="@Url.Action("GroupManagement", "Admin")" class="btn-management active">
+                                    <i class="fas fa-users"></i>
+                                    <h5>成團狀態</h5>
+                                    <p class="text-muted mb-0">活動狀態管理</p>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="management-btn-card h-100">
+                                <a href="@Url.Action("Index", "User")" class="btn-management">
+                                    <i class="fas fa-user-cog"></i>
+                                    <h5>人員管理</h5>
+                                    <p class="text-muted mb-0">用戶帳號管理</p>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="management-btn-card h-100">
+                                <a href="@Url.Action("Index", "Products")" class="btn-management">
+                                    <i class="fas fa-clipboard-check"></i>
+                                    <h5>審核開團</h5>
+                                    <p class="text-muted mb-0">活動審核管理</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+<!-- 篩選區域 -->
+<div class="filter-card">
+    <div class="row justify-content-center">
+        <div class="col-md-3">
+            <label>狀態篩選:</label>
+            <select id="statusFilter" class="form-control">
+                <option value="">全部狀態</option>
+                <option value="招募中">招募中</option>
+                <option value="即將成團">即將成團</option>
+                <option value="招募穩定">招募穩定</option>
+                <option value="額滿">額滿</option>
+                <option value="已結束">已結束</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label>活動狀態:</label>
+            <select id="activeFilter" class="form-control">
+                <option value="">全部</option>
+                <option value="true">啟用中</option>
+                <option value="false">已停用</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label>日期範圍:</label>
+            <select id="dateFilter" class="form-control">
+                <option value="">全部</option>
+                <option value="upcoming">即將到來</option>
+                <option value="past">已過期</option>
+                <option value="today">今日</option>
+            </select>
+        </div>
+
+    </div>
+</div>
+
+<!-- 成團狀態統計卡片 -->
+<div class="row mb-4">
+    <div class="col-md-2">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="text-warning" id="recruiting-count">@ViewBag.RecruitingCount</h5>
+                <small>招募中</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="text-info" id="almost-full-count">@ViewBag.AlmostFullCount</h5>
+                <small>即將成團</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="text-success" id="stable-count">@ViewBag.StableCount</h5>
+                <small>招募穩定</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="text-danger" id="full-count">@ViewBag.FullCount</h5>
+                <small>額滿</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="text-secondary" id="finished-count">@ViewBag.FinishedCount</h5>
+                <small>已結束</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="text-primary" id="total-count">@Model.Count</h5>
+                <small>本頁總計</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 成團列表 -->
+<div class="table-card">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4><i class="fas fa-list"></i> 活動列表</h4>
+        <div>
+            <span class="text-muted">共 @Model.Count 個活動</span>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover" id="groupTable">
+            <thead class="thead-light">
+                <tr>
+                    <th>活動編號</th>
+                    <th>山岳名稱</th>
+                    <th>團名</th>
+                    <th>活動日期</th>
+                    <th>人數狀況</th>
+                    <th>成團進度</th>
+                    <th>狀態</th>
+                    <th>啟用狀態</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var activity in Model)
+                {
+                    <tr data-status="@activity.Status" data-active="@activity.IsActive.ToString().ToLower()" data-date="@activity.ActivityDate.ToString("yyyy-MM-dd")">
+                        <td><strong>#@activity.ActivityId</strong></td>
+                        <td>@activity.MountainName</td>
+                        <td>@activity.GroupName</td>
+                        <td>@activity.ActivityDate.ToString("yyyy-MM-dd")</td>
+                        <td>
+                            <strong>
+                                <strong>@(activity.CurrentParticipants > activity.MaxParticipants ? activity.MaxParticipants : activity.CurrentParticipants)</strong> / @activity.MaxParticipants 人
+                                @if (activity.RemainingSlots > 0)
+                                {
+                                    <small class="text-success">(剩餘@(activity.MaxParticipants - activity.CurrentParticipants )名額)</small>
+                                }
+                                else
+                                {
+                                    <small class="text-danger">(額滿)</small>
+                                }
+</td>
+                        <td>
+                            <div class="progress progress-custom">
+                                <div class="progress-bar bg-success" style="width: @activity.FillRate%"></div>
+                            </div>
+                            <small>@Math.Round(activity.FillRate, 1)%</small>
+                        </td>
+                        <td>
+                            <span class="status-badge status-@(activity.Status.Replace("招募中", "recruiting").Replace("即將成團", "almost-full").Replace("招募穩定", "stable").Replace("額滿", "full").Replace("已結束", "finished"))">
+                                @activity.Status
+                            </span>
+                        </td>
+                        <td>
+                            @if (activity.IsActive)
+                            {
+                                <span class="badge badge-success">啟用</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-secondary">停用</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm" style="white-space: nowrap;">
+                                <a href="@Url.Action("Detail", "Products", new { id = activity.ActivityId })"
+                                   class=" btn-outline-info action-btn btn-sm" title="查看詳情">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+
+                                <a href="@Url.Action("Edit", "Products", new { id = activity.ActivityId })"
+                                   class="btn-outline-warning action-btn btn-sm" title="編輯活動">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                @if (activity.IsActive)
+                                {
+                                    <button type="button" class=" btn-outline-danger action-btn btn-sm"
+                                            title="停用活動" onclick="toggleActivity(@activity.ActivityId, false)">
+                                        <i class="fas fa-pause"></i>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="button" class="btn-outline-success action-btn btn-sm"
+                                            title="啟用活動" onclick="toggleActivity(@activity.ActivityId, true)">
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- 分頁 -->
+@if (ViewBag.TotalPages > 1)
+{
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("GroupManagement", new { page = i })">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+
+@section MyJS{
+    <script src="~/Scripts/jquery-3.7.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            updateStatusCounts();
+
+            // 篩選功能
+            $('#statusFilter, #activeFilter, #dateFilter').on('change', function () {
+                filterTable();
+            });
+
+            // 重置篩選
+            $('#resetFilter').click(function () {
+                $('#statusFilter, #activeFilter, #dateFilter').val('');
+                filterTable();
+            });
+        });
+
+        // 更新狀態統計 (僅更新當前頁面的可見行統計)
+        function updateStatusCounts() {
+            const rows = $('#groupTable tbody tr:visible');
+            let counts = {
+                recruiting: 0, almostFull: 0, stable: 0, full: 0, finished: 0
+            };
+
+            rows.each(function () {
+                const status = $(this).data('status');
+                switch (status) {
+                    case '招募中': counts.recruiting++; break;
+                    case '即將成團': counts.almostFull++; break;
+                    case '招募穩定': counts.stable++; break;
+                    case '額滿': counts.full++; break;
+                    case '已結束': counts.finished++; break;
+                }
+            });
+
+            // 只更新本頁總計，其他數字保持從後端傳來的全站統計
+            $('#total-count').text(rows.length);
+        }
+
+        // 篩選表格
+        function filterTable() {
+            const statusFilter = $('#statusFilter').val();
+            const activeFilter = $('#activeFilter').val();
+            const dateFilter = $('#dateFilter').val();
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            console.log('篩選條件:', { statusFilter, activeFilter, dateFilter }); // 除錯用
+
+            $('#groupTable tbody tr').each(function () {
+                let show = true;
+                const row = $(this);
+                const status = row.data('status');
+                const active = row.data('active').toString();
+                const dateStr = row.data('date');
+
+                console.log('行數據:', { status, active, dateStr }); // 除錯用
+
+                // 狀態篩選
+                if (statusFilter && status !== statusFilter) {
+                    show = false;
+                }
+
+                // 啟用狀態篩選
+                if (activeFilter && active !== activeFilter) {
+                    show = false;
+                }
+
+                // 日期篩選
+                if (dateFilter && dateStr) {
+                    const activityDate = new Date(dateStr);
+                    switch (dateFilter) {
+                        case 'upcoming':
+                            if (activityDate <= today) show = false;
+                            break;
+                        case 'past':
+                            if (activityDate >= today) show = false;
+                            break;
+                        case 'today':
+                            if (activityDate.getTime() !== today.getTime()) show = false;
+                            break;
+                    }
+                }
+
+                if (show) {
+                    row.show();
+                } else {
+                    row.hide();
+                }
+            });
+
+            updateStatusCounts();
+        }
+
+        // 編輯活動
+        function editActivity(activityId) {
+            // 這裡可以實作編輯功能
+            alert('編輯活動功能開發中... 活動ID: ' + activityId);
+        }
+
+        // 切換活動狀態
+        function toggleActivity(activityId, enable) {
+            const action = enable ? '啟用' : '停用';
+            if (confirm('確定要' + action + '此活動嗎？')) {
+                // 這裡可以實作AJAX請求來更新活動狀態
+                alert(action + '活動功能開發中... 活動ID: ' + activityId);
+            }
+        }
+    </script>
+}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section HeroSection {
+    <div class="img-bg rellax ">
+        <img src="~/images/legend.jpg" alt="Image" class="img-fluid">
+    </div>
+    <div class="container">
+        <div class="row align-items-center justify-content-center">
+            <div class="col-lg-5 text-center">
+                <p data-aos="fade-up" style="color:#FFFFFF; font-size:18px;">
+                    成團狀態管理，尊敬的管理者。
+                </p>
+                <!-- 白色短線 -->
+                <div style="width: 40px; height: 1px; background-color: #FFFFFF; margin: 1px auto;" data-aos="fade-up"></div>
+            </div>
+        </div>
+    </div>
+}

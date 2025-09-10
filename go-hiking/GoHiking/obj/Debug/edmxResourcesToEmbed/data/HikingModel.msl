@@ -1,0 +1,182 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="HikingDBModelStoreContainer" CdmEntityContainer="HikingDBEntities1">
+    <EntitySetMapping Name="GroupImages">
+      <EntityTypeMapping TypeName="HikingDBModel.GroupImage">
+        <MappingFragment StoreEntitySet="GroupImage">
+          <ScalarProperty Name="upload_date" ColumnName="upload_date" />
+          <ScalarProperty Name="upload_order" ColumnName="upload_order" />
+          <ScalarProperty Name="image_name" ColumnName="image_name" />
+          <ScalarProperty Name="image_data" ColumnName="image_data" />
+          <ScalarProperty Name="group_id" ColumnName="group_id" />
+          <ScalarProperty Name="image_id" ColumnName="image_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TripGroups">
+      <EntityTypeMapping TypeName="HikingDBModel.TripGroup">
+        <MappingFragment StoreEntitySet="TripGroup">
+          <ScalarProperty Name="FeeIncludes" ColumnName="FeeIncludes" />
+          <ScalarProperty Name="updated_date" ColumnName="updated_date" />
+          <ScalarProperty Name="created_date" ColumnName="created_date" />
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="include_course" ColumnName="include_course" />
+          <ScalarProperty Name="include_insurance" ColumnName="include_insurance" />
+          <ScalarProperty Name="include_guide" ColumnName="include_guide" />
+          <ScalarProperty Name="include_accommodation" ColumnName="include_accommodation" />
+          <ScalarProperty Name="include_transport" ColumnName="include_transport" />
+          <ScalarProperty Name="price" ColumnName="price" />
+          <ScalarProperty Name="current_participants" ColumnName="current_participants" />
+          <ScalarProperty Name="max_participants" ColumnName="max_participants" />
+          <ScalarProperty Name="leader_message" ColumnName="leader_message" />
+          <ScalarProperty Name="custom_schedule" ColumnName="custom_schedule" />
+          <ScalarProperty Name="meeting_location" ColumnName="meeting_location" />
+          <ScalarProperty Name="meeting_time" ColumnName="meeting_time" />
+          <ScalarProperty Name="activity_date" ColumnName="activity_date" />
+          <ScalarProperty Name="group_name" ColumnName="group_name" />
+          <ScalarProperty Name="user_id" ColumnName="user_id" />
+          <ScalarProperty Name="mt_id" ColumnName="mt_id" />
+          <ScalarProperty Name="group_id" ColumnName="group_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Users">
+      <EntityTypeMapping TypeName="HikingDBModel.User">
+        <MappingFragment StoreEntitySet="Users">
+          <ScalarProperty Name="Permission" ColumnName="Permission" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MountainTrails">
+      <EntityTypeMapping TypeName="HikingDBModel.MountainTrail">
+        <MappingFragment StoreEntitySet="MountainTrails">
+          <ScalarProperty Name="TripSchedule" ColumnName="TripSchedule" />
+          <ScalarProperty Name="region" ColumnName="region" />
+          <ScalarProperty Name="TripDetails" ColumnName="TripDetails" />
+          <ScalarProperty Name="mt_permit" ColumnName="mt_permit" />
+          <ScalarProperty Name="park_permit" ColumnName="park_permit" />
+          <ScalarProperty Name="mt_range" ColumnName="mt_range" />
+          <ScalarProperty Name="max_alt_m" ColumnName="max_alt_m" />
+          <ScalarProperty Name="min_alt_m" ColumnName="min_alt_m" />
+          <ScalarProperty Name="route_type" ColumnName="route_type" />
+          <ScalarProperty Name="trail_cond" ColumnName="trail_cond" />
+          <ScalarProperty Name="descend_m" ColumnName="descend_m" />
+          <ScalarProperty Name="ascend_m" ColumnName="ascend_m" />
+          <ScalarProperty Name="time_min" ColumnName="time_min" />
+          <ScalarProperty Name="dist_km" ColumnName="dist_km" />
+          <ScalarProperty Name="diff" ColumnName="diff" />
+          <ScalarProperty Name="mt_name" ColumnName="mt_name" />
+          <ScalarProperty Name="location" ColumnName="location" />
+          <ScalarProperty Name="walk_days" ColumnName="walk_days" />
+          <ScalarProperty Name="badge" ColumnName="badge" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UserDetails">
+      <EntityTypeMapping TypeName="HikingDBModel.UserDetail">
+        <MappingFragment StoreEntitySet="UserDetails">
+          <ScalarProperty Name="ProfileImageName" ColumnName="ProfileImageName" />
+          <ScalarProperty Name="ProfileImage" ColumnName="ProfileImage" />
+          <ScalarProperty Name="Address" ColumnName="Address" />
+          <ScalarProperty Name="Phone" ColumnName="Phone" />
+          <ScalarProperty Name="Birthday" ColumnName="Birthday" />
+          <ScalarProperty Name="Gender" ColumnName="Gender" />
+          <ScalarProperty Name="FullName" ColumnName="FullName" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="DetailId" ColumnName="DetailId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TripActivities">
+      <EntityTypeMapping TypeName="HikingDBModel.TripActivity">
+        <MappingFragment StoreEntitySet="TripActivities">
+          <ScalarProperty Name="participants" ColumnName="participants" />
+          <ScalarProperty Name="FeeIncludes" ColumnName="FeeIncludes" />
+          <ScalarProperty Name="team_name" ColumnName="team_name" />
+          <ScalarProperty Name="is_active" ColumnName="is_active" />
+          <ScalarProperty Name="updated_date" ColumnName="updated_date" />
+          <ScalarProperty Name="created_date" ColumnName="created_date" />
+          <ScalarProperty Name="current_participants" ColumnName="current_participants" />
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="user_password" ColumnName="user_password" />
+          <ScalarProperty Name="user_email" ColumnName="user_email" />
+          <ScalarProperty Name="user_name" ColumnName="user_name" />
+          <ScalarProperty Name="user_id" ColumnName="user_id" />
+          <ScalarProperty Name="TripSchedule" ColumnName="TripSchedule" />
+          <ScalarProperty Name="region" ColumnName="region" />
+          <ScalarProperty Name="TripDetails" ColumnName="TripDetails" />
+          <ScalarProperty Name="mt_permit" ColumnName="mt_permit" />
+          <ScalarProperty Name="park_permit" ColumnName="park_permit" />
+          <ScalarProperty Name="mt_range" ColumnName="mt_range" />
+          <ScalarProperty Name="max_alt_m" ColumnName="max_alt_m" />
+          <ScalarProperty Name="min_alt_m" ColumnName="min_alt_m" />
+          <ScalarProperty Name="route_type" ColumnName="route_type" />
+          <ScalarProperty Name="trail_cond" ColumnName="trail_cond" />
+          <ScalarProperty Name="descend_m" ColumnName="descend_m" />
+          <ScalarProperty Name="ascend_m" ColumnName="ascend_m" />
+          <ScalarProperty Name="time_min" ColumnName="time_min" />
+          <ScalarProperty Name="dist_km" ColumnName="dist_km" />
+          <ScalarProperty Name="diff" ColumnName="diff" />
+          <ScalarProperty Name="location" ColumnName="location" />
+          <ScalarProperty Name="walk_days" ColumnName="walk_days" />
+          <ScalarProperty Name="badge" ColumnName="badge" />
+          <ScalarProperty Name="mt_name" ColumnName="mt_name" />
+          <ScalarProperty Name="mt_id" ColumnName="mt_id" />
+          <ScalarProperty Name="price" ColumnName="price" />
+          <ScalarProperty Name="max_participants" ColumnName="max_participants" />
+          <ScalarProperty Name="leader_message" ColumnName="leader_message" />
+          <ScalarProperty Name="custom_schedule" ColumnName="custom_schedule" />
+          <ScalarProperty Name="meeting_location" ColumnName="meeting_location" />
+          <ScalarProperty Name="meeting_time" ColumnName="meeting_time" />
+          <ScalarProperty Name="activity_date" ColumnName="activity_date" />
+          <ScalarProperty Name="group_name" ColumnName="group_name" />
+          <ScalarProperty Name="activity_id" ColumnName="activity_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UserProfiles">
+      <EntityTypeMapping TypeName="HikingDBModel.UserProfile">
+        <MappingFragment StoreEntitySet="UserProfile">
+          <ScalarProperty Name="is_creator" ColumnName="is_creator" />
+          <ScalarProperty Name="activity_id" ColumnName="activity_id" />
+          <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
+          <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+          <ScalarProperty Name="ExerciseHabit" ColumnName="ExerciseHabit" />
+          <ScalarProperty Name="HikingExperience" ColumnName="HikingExperience" />
+          <ScalarProperty Name="CompanionName" ColumnName="CompanionName" />
+          <ScalarProperty Name="HasCompanion" ColumnName="HasCompanion" />
+          <ScalarProperty Name="EmergencyContactPhone" ColumnName="EmergencyContactPhone" />
+          <ScalarProperty Name="EmergencyContactName" ColumnName="EmergencyContactName" />
+          <ScalarProperty Name="Address" ColumnName="Address" />
+          <ScalarProperty Name="Phone" ColumnName="Phone" />
+          <ScalarProperty Name="LineId" ColumnName="LineId" />
+          <ScalarProperty Name="IdNumber" ColumnName="IdNumber" />
+          <ScalarProperty Name="Nationality" ColumnName="Nationality" />
+          <ScalarProperty Name="BirthDate" ColumnName="BirthDate" />
+          <ScalarProperty Name="Gender" ColumnName="Gender" />
+          <ScalarProperty Name="RealName" ColumnName="RealName" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="ProfileId" ColumnName="ProfileId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Comments">
+      <EntityTypeMapping TypeName="HikingDBModel.Comment">
+        <MappingFragment StoreEntitySet="Comment">
+          <ScalarProperty Name="DetailId" ColumnName="DetailId" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="Content" ColumnName="Content" />
+          <ScalarProperty Name="CommentTime" ColumnName="CommentTime" />
+          <ScalarProperty Name="Activity_Id" ColumnName="Activity_Id" />
+          <ScalarProperty Name="CommentId" ColumnName="CommentId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

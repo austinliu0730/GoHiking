@@ -1,0 +1,200 @@
+﻿@model IEnumerable<GoHiking.data.TripActivity>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@section MyCSS {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+    .management-btn-card {
+        background: white;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+
+    .management-btn-card:hover {
+        border-color: #17a2b8;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .btn-management {
+        display: block;
+        text-decoration: none;
+        color: #495057;
+        padding: 25px 20px;
+        text-align: center;
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .btn-management:hover {
+        text-decoration: none;
+        color: #17a2b8;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    }
+
+    .btn-management.active {
+        color: white;
+        background: linear-gradient(135deg, #17a2b8, #20c997);
+    }
+
+    .btn-management.active:hover {
+        color: white;
+    }
+
+    .btn-management i {
+        font-size: 2.5em;
+        margin-bottom: 15px;
+        display: block;
+    }
+
+    .btn-management h5 {
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
+
+    .btn-management p {
+        font-size: 0.85em;
+        line-height: 1.4;
+    }
+
+    .btn-management.active p {
+        color: rgba(255,255,255,0.9);
+    }
+    </style>
+}
+
+<div class="section py-5">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-12 col-xl-10">
+                <div class="card p-4 shadow rounded" style="background: white;">
+                    <!-- Page Header -->
+                    <div class="text-center mb-4">
+                        <div class="mb-3">
+                            <i class="fas fa-clipboard-check fa-3x text-primary mb-3"></i>
+                        </div>
+                        <h2 class="heading mb-2" style="color: #2c3e50; font-weight: 600;">審核開團</h2>
+                        <hr style="width: 60px; height: 3px; background: linear-gradient(45deg, #17a2b8, #20c997); border: none; margin: 20px auto;">
+                        <p class="text-muted">活動審核與開團管理</p>
+                    </div>
+
+                    <!-- 管理功能按鈕 -->
+                    <div class="row mb-4">
+                        <div class="col-md-3 mb-3">
+                            <div class="management-btn-card h-100">
+                                <a href="@Url.Action("Dashboard", "Admin")" class="btn-management">
+                                    <i class="fas fa-chart-bar"></i>
+                                    <h5>統計儀表板</h5>
+                                    <p class="text-muted mb-0">數據分析總覽</p>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="management-btn-card h-100">
+                                <a href="@Url.Action("GroupManagement", "Admin")" class="btn-management">
+                                    <i class="fas fa-users"></i>
+                                    <h5>成團狀態</h5>
+                                    <p class="text-muted mb-0">活動狀態管理</p>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="management-btn-card h-100">
+                                <a href="@Url.Action("Index", "User")" class="btn-management">
+                                    <i class="fas fa-user-cog"></i>
+                                    <h5>人員管理</h5>
+                                    <p class="text-muted mb-0">用戶帳號管理</p>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="management-btn-card h-100">
+                                <a href="@Url.Action("Index", "Products")" class="btn-management active">
+                                    <i class="fas fa-clipboard-check"></i>
+                                    <h5>審核開團</h5>
+                                    <p class="text-muted mb-0">活動審核管理</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="table table-striped table-hover">
+                        <tr>
+                            <th>活動ID</th>
+                            <th>隊長名</th>
+                            <th>團隊名稱</th>
+                            <th>步道/山名</th>
+                            <th>審核</th>
+                            <th>創立日期</th>
+                            <th>更新日期</th>
+
+
+                            <th>操作</th>
+                        </tr>
+
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.activity_id)</td>
+                                <td>@Html.DisplayFor(modelItem => item.user_name)</td>
+                                <td>@Html.DisplayFor(modelItem => item.team_name)</td>
+                                <td>@Html.DisplayFor(modelItem => item.mt_name)</td>
+                                <td>
+                                    @if ((item.is_active ?? false))
+                                    {
+                                        <span class="text-success">已開團</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-warning">未通過</span>
+                                    }
+                                </td>
+                                <td>@(item.created_date?.ToString("yyyy-MM-dd"))</td>
+                                <td>@(item.updated_date?.ToString("yyyy-MM-dd"))</td>
+
+                                <td>
+                                    @Html.ActionLink("修改", "Edit", new { id = item.activity_id }) |
+                                    @Html.ActionLink("內容", "Detail", new { id = item.activity_id }) |
+                                    <a href="@Url.Action("Delete", "Products", new { id = item.activity_id })"
+                                       onclick="return confirm('確定要刪除這個活動嗎？');">
+                                        刪除
+                                    </a>|
+                                    <a href="#" onclick="auditConfirm(@item.activity_id)">審核通過</a>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section MyJS{
+    <script>
+        function auditConfirm(id) {
+            var approve = confirm("同意開團嗎？按確定 = 通過，取消 = 不通過");
+            window.location.href = '/Products/Audit?id=' + id + '&approve=' + approve;
+        }
+    </script>
+}
+
+@section HeroSection {
+    <div class="img-bg rellax ">
+        <img src="~/images/legend.jpg" alt="Image" class="img-fluid">
+    </div>
+    <div class="container">
+        <div class="row align-items-center justify-content-center">
+            <div class="col-lg-5 text-center">
+                <p data-aos="fade-up" style="color:#FFFFFF; font-size:18px;">
+                    歡迎回來，尊敬的管理者。
+                </p>
+                <!-- 白色短線 -->
+                <div style="width: 40px; height: 1px; background-color: #FFFFFF; margin: 1px auto;" data-aos="fade-up"></div>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,402 @@
+﻿@{
+    ViewBag.Title = "關於我們 - 登友無界 GoHiking";
+}
+
+@section MyCSS{
+    <link href="~/css/mycss/about.css?v=@DateTime.Now.Ticks" rel="stylesheet" />
+}
+
+
+
+@section HeroSection {
+    <div class="img-bg rellax">
+        <img src="/images/backgroup.jpg" alt="Image" class="img-fluid">
+    </div>
+
+    <div class="container">
+        <div class="row align-items-center justify-content-center">
+            <div class="col-lg-5 text-center">
+
+                <br />
+                <h1 data-aos="fade-up" style="color:#F0FFF0; display: inline-block;">
+                    \ 關於我們 /
+                </h1>
+                <p data-aos="fade-up" style="color:#FFFFFF; font-size:12px;">
+                    ABOUT US
+                </p>
+
+                <!-- 白色短線 -->
+                <div style="width: 40px; height: 1px; background-color: #FFFFFF; margin: 1px auto;" data-aos="fade-up"></div>
+                <br />
+                <br />
+
+                <p data-aos="fade-up" style="color:#FFFFFF; font-size:16px;">
+                    連結每一位熱愛山林的心，創造安全而充滿溫暖的登山社群
+                </p>
+                <div class="hero-stats row" data-aos="fade-up" data-aos-delay="300">
+                    <div class="col-md-4">
+                        <div class="stat-item">
+                            <h3 class="stat-number">500+</h3>
+                            <p class="stat-label">活躍會員</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-item">
+                            <h3 class="stat-number">200+</h3>
+                            <p class="stat-label">成功活動</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-item">
+                            <h3 class="stat-number">100%</h3>
+                            <p class="stat-label">安全紀錄</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<!-- 創團理念與活動宗旨 -->
+<section class="mission-section py-5">
+    <div class="container">
+        <div class="row align-items-center mb-5">
+            <div class="col-lg-6" data-aos="fade-right">
+                <div class="mission-content">
+                    <span class="section-label text-primary">Our Mission</span>
+                    <h2 class="section-title mb-4">創團理念</h2>
+                    <p class="mb-4">
+                        台灣擁有豐富的山林資源，從海拔三千公尺以上的百岳，到親民的郊山步道，每一座山都有著獨特的魅力。
+                        然而，許多人因為缺乏經驗夥伴或對山林安全的疑慮而卻步。
+                    </p>
+                    <p class="mb-4">
+                        <strong>「登友無界 GoHiking」</strong>就是為了解決這個問題而誕生。我們相信，登山不應該是孤單的旅程，
+                        而是一個能夠結交志同道合朋友、互相學習成長的美好體驗。
+                    </p>
+                    <div class="mission-points">
+                        <div class="point-item">
+                            <i class="icon-mountain text-primary"></i>
+                            <span>打破地域限制，連結全台山友</span>
+                        </div>
+                        <div class="point-item">
+                            <i class="icon-users text-primary"></i>
+                            <span>建立安全可靠的登山社群</span>
+                        </div>
+                        <div class="point-item">
+                            <i class="icon-heart text-primary"></i>
+                            <span>推廣正確的登山知識與態度</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6" data-aos="fade-left">
+                <div class="mission-image">
+                    <img src="~/images/IMG_0201.jpg" alt="創團理念" class="img-fluid rounded-lg shadow">
+                    <div class="floating-card" data-aos="zoom-in" data-aos-delay="300">
+                        <h4 class="text-primary mb-2">我們的願景</h4>
+                        <p class="mb-0">成為最值得信賴的登山媒合平台，讓每個人都能安全地享受山林之美。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 活動宗旨 -->
+<section class="purpose-section py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-label text-primary">Our Purpose</span>
+            <h2 class="section-title" data-aos="fade-up">活動宗旨</h2>
+            <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">
+                我們致力於創造一個安全、友善、充滿學習機會的登山環境
+            </p>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="purpose-card">
+                    <div class="purpose-icon">
+                        <i class="icon-shield"></i>
+                    </div>
+                    <h4 class="purpose-title">安全第一</h4>
+                    <p class="purpose-description">
+                        嚴格的領隊認證制度，完善的行前準備，確保每一次活動都能平安回家。
+                        我們相信，只有在安全的前提下，才能真正享受登山的樂趣。
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="purpose-card">
+                    <div class="purpose-icon">
+                        <i class="icon-people"></i>
+                    </div>
+                    <h4 class="purpose-title">友善社群</h4>
+                    <p class="purpose-description">
+                        不論您是登山新手還是資深山友，都能在這裡找到適合的活動與夥伴。
+                        我們鼓勵經驗分享，互助合作，共同成長。
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="purpose-card">
+                    <div class="purpose-icon">
+                        <i class="icon-leaf"></i>
+                    </div>
+                    <h4 class="purpose-title">環境保護</h4>
+                    <p class="purpose-description">
+                        推廣「無痕山林」理念，教育成員尊重自然、愛護環境。
+                        讓美麗的台灣山林能夠永續保存，供後代子孫繼續欣賞。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 團隊介紹 -->
+<section class="team-section py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-label text-primary">Our Team</span>
+            <h2 class="section-title" data-aos="fade-up">團隊介紹</h2>
+            <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">
+                一群熱愛山林的夥伴，用專業與熱忱打造最棒的登山體驗
+            </p>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="team-card">
+                    <div class="team-image">
+                        <img  src="~/images/IMG_4112.jpg" alt="創辦人" class="img-fluid">
+                        <div class="team-overlay">
+                            <div class="team-social">
+                                <a href="#"><i class="icon-facebook"></i></a>
+                                <a href="#"><i class="icon-instagram"></i></a>
+                                <a href="#"><i class="icon-linkedin"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="team-info">
+                        <h4 class="team-name">Arthur Ma</h4>
+                        <p class="team-role text-primary">創辦人 & 首席嚮導</p>
+                        <p class="team-description">
+                            擁有10年登山經驗，完成百岳認證。
+                            深知登山安全的重要性，致力於推廣正確的登山知識。
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="team-card">
+                    <div class="team-image">
+                        <img src="~/images/line_157319414948631.jpg" alt="營運長" class="img-fluid">
+                        <div class="team-overlay">
+                            <div class="team-social">
+                                <a href="#"><i class="icon-facebook"></i></a>
+                                <a href="#"><i class="icon-instagram"></i></a>
+                                <a href="#"><i class="icon-linkedin"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="team-info">
+                        <h4 class="team-name">Cole Khan</h4>
+                        <p class="team-role text-primary">營運長 & 安全顧問</p>
+                        <p class="team-description">
+                            前山難救助隊成員，擁有急救員證照。負責制定活動安全標準，
+                            確保每一次活動都符合最高安全規範。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="team-card">
+                    <div class="team-image">
+                        <img src="~/images/IMG_0189.jpg" alt="技術長" class="img-fluid">
+                        <div class="team-overlay">
+                            <div class="team-social">
+                                <a href="#"><i class="icon-facebook"></i></a>
+                                <a href="#"><i class="icon-instagram"></i></a>
+                                <a href="#"><i class="icon-linkedin"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="team-info">
+                        <h4 class="team-name">Austin</h4>
+                        <p class="team-role text-primary">技術長 & 產品經理</p>
+                        <p class="team-description">
+                            資淺軟體工程師。負責平台技術開發
+                            致力於打造最友善的使用者體驗。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<!-- 聯絡方式 -->
+<section class="contact-section py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6" data-aos="fade-right">
+                <span class="section-label text-primary">Get in Touch</span>
+                <h2 class="section-title mb-4">聯絡我們</h2>
+                <p class="mb-4">
+                    有任何問題或建議嗎？我們隨時準備為您服務。
+                    無論是登山相關問題、平台使用疑問，或是合作提案，都歡迎與我們聯繫。
+                </p>
+
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="icon-map-marker"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h5>辦公地址</h5>
+                            <p>台北市信義區松仁路100號12樓</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="icon-phone"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h5>聯絡電話</h5>
+                            <p>+886-2-2722-1234</p>
+                            <p>+886-912-345-678</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="icon-envelope"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h5>電子信箱</h5>
+                            <p>info@gohiking.tw</p>
+                            <p>support@gohiking.tw</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="icon-clock"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h5>服務時間</h5>
+                            <p>週一至週五 09:00-18:00</p>
+                            <p>週末及國定假日 10:00-17:00</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6" data-aos="fade-left">
+                <div class="contact-form-wrapper">
+                    <h3 class="mb-4">快速聯絡表單</h3>
+                    <form class="contact-form" id="contactForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <input type="text" class="form-control" placeholder="您的姓名 *" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <input type="email" class="form-control" placeholder="電子信箱 *" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
+                            <input type="text" class="form-control" placeholder="聯絡電話">
+                        </div>
+                       
+                        <div class="form-group mb-4">
+                            <textarea class="form-control" rows="5" placeholder="您的訊息 *" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <i class="icon-paper-plane me-2"></i>
+                            發送訊息
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 加入我們 CTA -->
+<section class="cta-section py-5 bg-primary text-white">
+    <div class="container text-center">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h2 class="mb-4" data-aos="fade-up">準備好開始您的登山之旅了嗎？</h2>
+                <p class="lead mb-4" data-aos="fade-up" data-aos-delay="100">
+                    加入登友無界，與志同道合的山友一起探索台灣美麗的山林
+                </p>
+                <div class="cta-buttons" data-aos="fade-up" data-aos-delay="200">
+                    <a href="/User/Login" class="btn btn-outline-light btn-lg">
+                        <i class="icon-user me-2"></i>
+                        立即註冊
+                    </a>
+                    <a href="/Home/Activity" class="btn btn-outline-light btn-lg">
+                        <i class="icon-search me-2"></i>
+                        瀏覽活動
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section MyJS {
+    <script>
+        // 統計數字動畫
+        $(document).ready(function () {
+            // 當統計區塊進入視窗時觸發動畫
+            $('.stat-number').each(function () {
+                var $this = $(this);
+                var countTo = $this.text().replace(/\+|%/g, '');
+                var suffix = $this.text().match(/\+|%/) ? $this.text().match(/\+|%/)[0] : '';
+
+                $this.prop('Counter', 0).animate({
+                    Counter: countTo
+                }, {
+                    duration: 2000,
+                    easing: 'swing',
+                    step: function (now) {
+                        $this.text(Math.ceil(now) + suffix);
+                    }
+                });
+            });
+
+            // 聯絡表單提交處理
+            $('#contactForm').on('submit', function (e) {
+                e.preventDefault();
+                // 這裡可以添加表單提交邏輯
+                alert('感謝您的聯絡！我們會盡快回覆您。');
+            });
+
+            // 平滑滾動
+            $('a[href^="#"]').on('click', function (e) {
+                e.preventDefault();
+                var target = this.hash;
+                var $target = $(target);
+                $('html, body').animate({
+                    scrollTop: $target.offset().top - 100
+                }, 600);
+            });
+        });
+    </script>
+}

@@ -1,0 +1,139 @@
+﻿@model GoHiking.ViewModels.HomeViewModel
+
+@{
+    ViewBag.Title = "Upcoming";
+}
+
+@section MyCSS{
+    <link href="~/css/mycss/Index.css?v=@DateTime.Now.Ticks" rel="stylesheet" />
+
+}
+
+<div class="product-page-container">
+    <section class="index-news news" style="margin-top:40px;">
+        <div class="container aos-init aos-animate" data-aos="fade-up">
+            <!-- PAGE-HEADER -->
+            <div class="page-header">
+                <h2><span>即將成團</span></h2>
+                <p>Upcoming</p>
+            </div>
+
+            <table class="table">
+                <thead>
+                    <tr style="font-size:18px;">
+                        <th>活動</th>
+                        <th></th>
+                        <th>活動日期</th>
+                        <th>集合時間 / 地點</th>
+                        <th>餘額</th>
+                        <th>狀態</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ActiveActivities)
+                    {
+                        <tr style="vertical-align: middle;">
+                            <td data-content="活動">@item.mt_name</td>
+                            <td data-content="">
+                            </td>
+                            <td class="date" data-content="活動日期">@item.activity_date.ToString("MM/dd") @item.activity_date.ToString("dddd")</td>
+                            <td class="add" data-content="集合時間 / 地點">@item.activity_date.ToString("MM/dd") @item.meeting_location</td>
+                            <td class="num" data-content="餘額">@item.participants</td>
+
+                            <td data-content="狀態">
+                                <a href="@(Url.Action("Activity", "Products", new { id = item.activity_id }))" class="btn btn-primary">
+                                    線上報名
+                                </a>
+
+                            </td>
+                        </tr>
+
+                    }
+
+
+
+                </tbody>
+
+            </table>
+
+        </div>
+    </section>
+
+    <nav class="mt-5 d-flex justify-content-center" aria-label="Page navigation example" data-aos="fade-up" data-aos-delay="100">
+        <ul class="custom-pagination pagination">
+            <!-- Previous 按鈕 -->
+            @if (ViewBag.CurrentPage > 1)
+            {
+                <li class="page-item prev">
+                    <a class="page-link" href="@Url.Action("Upcoming", new { page = ViewBag.CurrentPage - 1 })">Previous</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item prev disabled">
+                    <span class="page-link">Previous</span>
+                </li>
+            }
+
+            <!-- 頁碼按鈕 -->
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                if (i == ViewBag.CurrentPage)
+                {
+                    <li class="page-item active">
+                        <a class="page-link" href="#">@i</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Upcoming", new { page = i })">@i</a>
+                    </li>
+                }
+            }
+
+            <!-- Next 按鈕 -->
+            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+            {
+                <li class="page-item next">
+                    <a class="page-link" href="@Url.Action("Upcoming", new { page = ViewBag.CurrentPage + 1 })">Next</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item next disabled">
+                    <span class="page-link">Next</span>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>
+@section HeroSection {
+    <div class="img-bg rellax ">
+        <img src="~/images/legend.jpg" alt="Image" class="img-fluid">
+    </div>
+    <div class="container">
+        <div class="row align-items-center justify-content-center">
+            <div class="col-lg-5 text-center">
+                <p data-aos="fade-up" style="color:#FFFFFF; font-size:16px;">
+                    Upcoming Trips｜即將成團
+                </p>
+
+                <br />
+                <h1 data-aos="fade-up" style="color:#F0FFF0; display: inline-block;">
+                    熱門登山活動 正在招募中
+                </h1>
+
+                <!-- 白色短線 -->
+                <div style="width: 40px; height: 1px; background-color: #FFFFFF; margin: 1px auto;" data-aos="fade-up"></div>
+                <br />
+                <br />
+
+                <p data-aos="fade-up" style="color:#FFFFFF; font-size:16px;">
+                    把握機會，一起出發！
+                </p>
+            </div>
+        </div>
+    </div>
+
+}

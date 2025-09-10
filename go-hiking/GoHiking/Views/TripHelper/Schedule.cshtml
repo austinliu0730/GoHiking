@@ -1,0 +1,188 @@
+﻿@model List<GoHiking.Models.SportsEvent>
+@{
+    ViewBag.Title = "運動行程管理";
+    Layout = "~/Views/Shared/_Layout1.cshtml";
+}
+
+<div class="page-header">
+    <h1><i class="fas fa-dumbbell"></i> 運動行程管理</h1>
+    <button class="btn btn-primary" onclick="openAddEventModal()">
+        <i class="fas fa-plus"></i> 新增運動行程
+    </button>
+</div>
+
+<div class="events-container">
+    <div class="events-grid">
+        @if (Model != null && Model.Any())
+        {
+            foreach (var eventItem in Model.OrderBy(e => e.EventDate))
+            {
+                <div class="event-card" data-event-id="@eventItem.Id">
+                    <div class="event-header">
+                        <h3>@eventItem.Title</h3>
+                        <span class="event-type">@eventItem.SportsType</span>
+                    </div>
+                    <div class="event-details">
+                        <p><i class="fas fa-calendar"></i> @eventItem.EventDate.ToString("yyyy/MM/dd HH:mm")</p>
+                        @if (!string.IsNullOrEmpty(eventItem.Location))
+                        {
+                            <p><i class="fas fa-map-marker-alt"></i> @eventItem.Location</p>
+                        }
+                        <p><i class="fas fa-clock"></i> @eventItem.Duration 分鐘</p>
+                        @if (!string.IsNullOrEmpty(eventItem.Description))
+                        {
+                            <p class="event-description">@eventItem.Description</p>
+                        }
+                    </div>
+                    <div class="event-actions">
+                        <button class="btn btn-sm btn-success" onclick="toggleComplete(@eventItem.Id)" title="標記為完成">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteEvent(@eventItem.Id)" title="刪除">
+                            <i class="fas fa-trash">刪除</i>
+                        </button>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="no-events">
+                <i class="fas fa-calendar-times"></i>
+                <p>尚無運動行程，點擊上方按鈕新增您的第一個運動計畫！</p>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- 新增事件模態框 -->
+<div id="eventModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">新增運動行程</h2>
+            <span class="close" onclick="closeEventModal()">&times;</span>
+        </div>
+        <form id="eventForm">
+            <div class="form-group">
+                <label for="title">活動標題 *</label>
+                <input type="text" id="title" name="title" required />
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="eventDate">日期 *</label>
+                    <input type="date" id="eventDate" name="eventDate" required />
+                </div>
+                <div class="form-group">
+                    <label for="eventTime">時間 *</label>
+                    <input type="time" id="eventTime" name="eventTime" required />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="sportsType">運動類型 *</label>
+                <select id="sportsType" name="sportsType" required>
+                    <option value="">選擇運動類型</option>
+                    <option value="跑步">跑步</option>
+                    <option value="游泳">游泳</option>
+                    <option value="騎腳踏車">騎腳踏車</option>
+                    <option value="健身">健身</option>
+                    <option value="瑜伽">瑜伽</option>
+                    <option value="登山">登山</option>
+                    <option value="球類運動">球類運動</option>
+                    <option value="其他">其他</option>
+                </select>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="duration">持續時間（分鐘）</label>
+                    <input type="number" id="duration" name="duration" value="60" min="10" max="480" />
+                </div>
+                <div class="form-group">
+                    <label for="location">地點</label>
+                    <input type="text" id="location" name="location" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="description">描述</label>
+                <textarea id="description" name="description" rows="3"></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeEventModal()">取消</button>
+                <button type="submit" class="btn btn-primary">儲存</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function openAddEventModal() {
+            document.getElementById('modalTitle').textContent = '新增運動行程';
+            document.getElementById('eventForm').reset();
+            document.getElementById('eventModal').style.display = 'block';
+        }
+
+        function closeEventModal() {
+            document.getElementById('eventModal').style.display = 'none';
+        }
+
+        function deleteEvent(id) {
+            if (confirm('確定要刪除這個運動行程嗎？')) {
+                $.ajax({
+                    url: '@Url.Action("DeleteEvent", "TripHelper")',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function(response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            alert('刪除失敗，請重試');
+                        }
+                    }
+                });
+            }
+        }
+
+        document.getElementById('eventForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const eventDate = formData.get('eventDate') + 'T' + formData.get('eventTime');
+
+            const eventData = {
+                Title: formData.get('title'),
+                EventDate: eventDate,
+                SportsType: formData.get('sportsType'),
+                Duration: formData.get('duration'),
+                Location: formData.get('location'),
+                Description: formData.get('description')
+            };
+
+            $.ajax({
+                url: '@Url.Action("AddEvent", "TripHelper")',
+                type: 'POST',
+                data: eventData,
+                success: function(response) {
+                    if (response.success) {
+                        closeEventModal();
+                        location.reload();
+                    } else {
+                        alert('新增失敗，請重試');
+                    }
+                }
+            });
+        });
+
+        // 點擊模態框外部關閉
+        window.onclick = function(event) {
+            const modal = document.getElementById('eventModal');
+            if (event.target == modal) {
+                closeEventModal();
+            }
+        }
+    </script>
+}

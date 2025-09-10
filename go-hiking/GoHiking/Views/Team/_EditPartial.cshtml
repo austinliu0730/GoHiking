@@ -1,0 +1,369 @@
+﻿@model GoHiking.ViewModels.UsersDetailViewModel
+
+<div class="col-lg-9 pl-lg-5">
+    <div>
+        <!-- 標題 -->
+        <div class="text-center mb-4">
+            <div class="mb-3">
+                <i class="fas fa-user-edit fa-3x text-primary mb-3"></i>
+            </div>
+            <h2 class="heading mb-2">會員資料修改</h2>
+            <p class="text-muted text-muted-custom">更新您的個人資訊</p>
+            <hr class="title-divider">
+        </div>
+
+        <!-- 提示訊息 -->
+        <div class="alert alert-info border-0 mb-4 info-alert">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-info-circle text-info me-3 info-icon"></i>
+                <div>
+                    <strong>請確保資料正確性</strong><br>
+                    <small class="text-muted">帶有 <span class="text-danger">*</span> 符號的欄位為必填項目。</small>
+                </div>
+            </div>
+        </div>
+
+        @using (Html.BeginForm("_EditPartial", "Team", FormMethod.Post, new { @class = "form", @id = "frmAccount", enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <!-- 隱藏欄位 -->
+            @Html.HiddenFor(model => model.Id)
+            @Html.HiddenFor(model => model.UserId)
+
+            <div class="row">
+                <!-- 左半部：帳號設定 -->
+                <div class="col-md-6">
+                    <div class="pe-md-3">
+                        <div class="mb-4">
+                            <h4 class="section-title">
+                                <i class="fas fa-cog me-2 text-primary"></i>帳號設定
+                            </h4>
+                            <small class="text-muted"><span class="text-danger">*</span> 必填項目</small>
+                            <hr class="section-divider">
+                        </div>
+
+                        <!-- 電子郵件 -->
+                        <div class="mb-4">
+                            @Html.LabelFor(model => model.Email, new { @class = "form-label form-label-custom" })
+                            <label class="form-label form-label-custom">
+                                <i class="fas fa-envelope me-2 text-primary"></i>電子郵件 <span class="text-danger">*</span>
+                            </label>
+                            @Html.TextBoxFor(model => model.Email, new
+                            {
+                                @class = "form-control form-control-lg form-control-readonly",
+                                @readonly = "readonly",
+                                @type = "email"
+                            })
+                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                        </div>
+
+                        <!-- 使用者名稱 (如果需要) -->
+                        <div class="mb-4">
+                            <label for="UserName" class="form-label form-label-custom">
+                                <i class="fas fa-user-circle me-2 text-primary"></i>使用者名稱 <span class="text-danger">*</span>
+                            </label>
+                            @Html.TextBoxFor(model => model.UserName, new
+                            {
+                                @class = "form-control form-control-lg form-control-custom"
+                            })
+                            @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                        </div>
+
+                        <!-- 密碼 -->
+                        <div class="mb-4">
+                            <label for="Password" class="form-label form-label-custom">
+                                <i class="fas fa-lock me-2 text-primary"></i>密碼 <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group password-input-group">
+                                @Html.PasswordFor(model => model.Password, new
+                                {
+                                    @class = "form-control form-control-lg border-0 form-control-borderless",
+                                    @placeholder = "8～16個字元數",
+                                    @maxlength = "16"
+                                })
+                                <button class="btn btn-outline-secondary border-0 password-toggle-btn" type="button"
+                                        onclick="togglePasswordVisibility('Password', 'passwordIcon1')">
+                                    <i class="fas fa-eye" id="passwordIcon1"></i>
+                                </button>
+                            </div>
+                            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                        </div>
+
+                        <!-- 確認密碼 -->
+                        <div class="mb-4">
+                            <label for="password2" class="form-label form-label-custom">
+                                <i class="fas fa-lock me-2 text-primary"></i>確認密碼 <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group password-input-group">
+                                <input type="password"
+                                       class="form-control form-control-lg border-0 form-control-borderless"
+                                       id="password2"
+                                       name="ConfirmPassword"
+                                       placeholder="8～16個字元數"
+                                       maxlength="16">
+                                <button class="btn btn-outline-secondary border-0 password-toggle-btn" type="button"
+                                        onclick="togglePasswordVisibility('password2', 'passwordIcon2')">
+                                    <i class="fas fa-eye" id="passwordIcon2"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右半部：會員資料 -->
+                <div class="col-md-6">
+                    <div class="ps-md-3">
+                        <div class="mb-4">
+                            <h4 class="section-title">
+                                <i class="fas fa-user me-2 text-primary"></i>會員資料
+                            </h4>
+                            <small class="text-muted"><span class="text-danger">*</span> 必填項目</small>
+                            <hr class="section-divider">
+                        </div>
+
+                        <!-- 中文姓名 -->
+                        <div class="mb-4">
+                            <label for="FullName" class="form-label form-label-custom">
+                                <i class="fas fa-id-card me-2 text-primary"></i>中文姓名 <span class="text-danger">*</span>
+                            </label>
+                            @Html.TextBoxFor(model => model.FullName, new
+                            {
+                                @class = "form-control form-control-lg form-control-custom"
+                            })
+                            @Html.ValidationMessageFor(model => model.FullName, "", new { @class = "text-danger" })
+                        </div>
+
+                        <!-- 性別 -->
+                        <div class="mb-4">
+                            <label class="form-label form-label-custom">
+                                <i class="fas fa-venus-mars me-2 text-primary"></i>性別 <span class="text-danger">*</span>
+                            </label>
+                            <div class="d-flex gap-4 mt-2">
+                                <div class="form-check">
+                                    @Html.RadioButtonFor(model => model.Gender, false, new { @class = "form-check-input", @id = "female" })
+                                    <label class="form-check-label gender-option-label" for="female">
+                                        <i class="fas fa-venus text-pink me-1"></i>小姐
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    @Html.RadioButtonFor(model => model.Gender, true, new { @class = "form-check-input", @id = "male" })
+                                    <label class="form-check-label gender-option-label" for="male">
+                                        <i class="fas fa-mars text-primary me-1"></i>先生
+                                    </label>
+                                </div>
+                            </div>
+                            @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
+                        </div>
+
+                        <!-- 生日 -->
+                        <div class="mb-4">
+                            <label for="Birthday" class="form-label form-label-custom">
+                                <i class="fas fa-birthday-cake me-2 text-primary"></i>生日 <span class="text-danger">*</span>
+                            </label>
+                            @Html.TextBoxFor(model => model.Birthday, "{0:yyyy-MM-dd}", new
+                            {
+                                @class = "form-control form-control-lg form-control-custom",
+                                @type = "date"
+                            })
+                            @Html.ValidationMessageFor(model => model.Birthday, "", new { @class = "text-danger" })
+                        </div>
+
+                        <!-- 聯絡電話 -->
+                        <div class="mb-4">
+                            <label for="Phone" class="form-label form-label-custom">
+                                <i class="fas fa-phone me-2 text-primary"></i>聯絡電話 <span class="text-danger">*</span>
+                            </label>
+                            @Html.TextBoxFor(model => model.Phone, new
+                            {
+                                @class = "form-control form-control-lg form-control-custom",
+                                @placeholder = "請輸入您的聯絡電話",
+                                @type = "tel"
+                            })
+                            @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+                        </div>
+
+                        <!-- 頭像上傳 -->
+                        <div class="mb-4">
+                            <label class="form-label form-label-custom">
+                                <i class="fas fa-user-circle me-2 text-primary"></i>頭像照片
+                            </label>
+                            <div class="profile-image-upload">
+                                <div class="current-image-preview mb-3 text-center">
+                                    @if (Model.ProfileImage != null)
+                                    {
+                                        <img src="data:image/*;base64,@Convert.ToBase64String(Model.ProfileImage)" 
+                                             class="profile-preview-img" alt="目前頭像" />
+                                    }
+                                    else
+                                    {
+                                        <div class="no-image-placeholder mx-auto">
+                                            <i class="fas fa-user fa-3x text-muted"></i>
+                                            <p class="text-muted mb-0 mt-2">尚無頭像</p>
+                                        </div>
+                                    }
+                                </div>
+                                <input type="file" 
+                                       name="ProfileImageFile" 
+                                       accept="image/*" 
+                                       class="form-control form-control-lg" 
+                                       id="profileImageInput">
+                                <small class="text-muted">支援 JPG、PNG 格式，檔案大小不超過 2MB</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 地址區域（跨兩欄） -->
+            <div class="mt-4">
+                <h5 class="section-title">
+                    <i class="fas fa-map-marker-alt me-2 text-primary"></i>地址資訊 <span class="text-danger">*</span>
+                </h5>
+                <hr class="address-divider">
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <select name="County" class="form-select form-select-lg address-select" id="County">
+                            <option value="">請選擇縣市</option>
+                            <option value="基隆市">基隆市</option>
+                            <option value="臺北市">臺北市</option>
+                            <option value="新北市">新北市</option>
+                            <option value="宜蘭縣">宜蘭縣</option>
+                            <option value="新竹市">新竹市</option>
+                            <option value="新竹縣">新竹縣</option>
+                            <option value="桃園市">桃園市</option>
+                            <option value="苗栗縣">苗栗縣</option>
+                            <option value="臺中市">臺中市</option>
+                            <option value="彰化縣">彰化縣</option>
+                            <option value="南投縣">南投縣</option>
+                            <option value="嘉義市">嘉義市</option>
+                            <option value="嘉義縣">嘉義縣</option>
+                            <option value="雲林縣">雲林縣</option>
+                            <option value="臺南市">臺南市</option>
+                            <option value="高雄市">高雄市</option>
+                            <option value="屏東縣">屏東縣</option>
+                            <option value="臺東縣">臺東縣</option>
+                            <option value="花蓮縣">花蓮縣</option>
+                            <option value="金門縣">金門縣</option>
+                            <option value="連江縣">連江縣</option>
+                            <option value="澎湖縣">澎湖縣</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text"
+                               name="District"
+                               class="form-control form-control-lg address-select"
+                               placeholder="請輸入鄉鎮市區"
+                               id="District">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text"
+                               name="ZipCode"
+                               class="form-control form-control-lg form-control-custom"
+                               placeholder="郵遞區號"
+                               id="ZipCode">
+                    </div>
+                    <div class="col-12">
+                        @Html.TextBoxFor(model => model.Address, new
+                        {
+                            @class = "form-control form-control-lg form-control-custom",
+                            @placeholder = "請輸入詳細地址"
+                        })
+                        @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <!-- 提交按鈕 -->
+            <div class="mt-5 btn-center-container">
+                <button type="submit" class="btn btn-primary btn-lg submit-btn">
+                    <i class="fas fa-save me-2"></i>儲存變更
+                </button>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- JavaScript for password toggle -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function togglePasswordVisibility(inputId, iconId) {
+        var passwordInput = document.getElementById(inputId);
+        var icon = document.getElementById(iconId);
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            icon.classList.remove("fa-eye");
+            icon.classList.add("fa-eye-slash");
+        } else {
+            passwordInput.type = "password";
+            icon.classList.remove("fa-eye-slash");
+            icon.classList.add("fa-eye");
+        }
+    }
+
+    document.getElementById('frmAccount').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        Swal.fire({
+            title: '確認修改',
+            text: '您確定要修改這些資料嗎？',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#007bff',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: '確定修改',
+            cancelButtonText: '取消'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // 實際提交表單
+                e.target.submit();
+            }
+        });
+    });
+
+    // 圖片預覽功能
+    document.getElementById('profileImageInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewContainer = document.querySelector('.current-image-preview');
+                previewContainer.innerHTML = '<img src="' + e.target.result + '" class="profile-preview-img" alt="預覽頭像" />';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+
+<style>
+    .profile-image-upload .profile-preview-img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #dee2e6;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .no-image-placeholder {
+        width: 150px;
+        height: 150px;
+        border: 2px dashed #dee2e6;
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: #f8f9fa;
+    }
+
+    .profile-image-upload {
+        border: 1px solid #e9ecef;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        background-color: #f8f9fa;
+    }
+</style>
