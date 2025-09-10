@@ -176,6 +176,38 @@ hr {
     margin: 40px 0;
 }
 
+/* meta-icon 基本樣式 - 保持原本符號顯示 */
+.meta-icon {
+    display: inline-block;
+    margin-right: 5px;
+    font-size: 16px;
+}
+
+/* 星星圖示特殊樣式 - 圓形黃色 */
+.meta-icon.star-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #ffc107;
+    color: transparent;
+    text-align: center;
+    line-height: 20px;
+    border: 2px solid #ffc107;
+    position: relative;
+}
+
+.meta-icon.star-icon::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background-color: #fff;
+    border-radius: 50%;
+}
+
 /* 難易度星級顯示 */
 .difficulty-stars {
     display: flex;
@@ -184,14 +216,19 @@ hr {
 }
 
     .difficulty-stars .star {
-        font-size: 30px;
-        color: #ffc107;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: #ffc107;
+        display: inline-block;
+        border: 2px solid #ffc107;
+        transition: all 0.2s ease;
     }
 
-        .difficulty-stars .star.inactive {
-            color: #dee2e6;
-        }
-
+    .difficulty-stars .star.inactive {
+        background-color: #dee2e6;
+        border: 2px solid #dee2e6;
+    }
 
 .timeline p {
     background: #ecf0f1;

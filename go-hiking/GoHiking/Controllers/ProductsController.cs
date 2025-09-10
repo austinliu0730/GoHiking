@@ -15,12 +15,14 @@ namespace GoHiking.Controllers
     {
         private HikingDBEntities1 _db = new HikingDBEntities1();
 
+        // GET: Products (主畫面)
         public ActionResult Index()
         {
             var products = _db.TripActivities.ToList();
             return View(products);
         }
 
+        // GET: Products/Details/5 (產品詳細頁面)
         public ActionResult Details(int id)
         {
 
@@ -35,6 +37,7 @@ namespace GoHiking.Controllers
         }
 
 
+        // GET: Products/Details/5 (我要報名)
         public ActionResult Join(int id)
         {
 
@@ -49,6 +52,8 @@ namespace GoHiking.Controllers
         }
 
 
+        // GET: Products/Create?mt_id=1(我要開團)
+        // http://localhost:55176/Products/Create?mt_id=1
         public ActionResult Create(int mt_id)
         {
             var user = Session["UserLogin"] as GoHiking.data.User;
@@ -133,6 +138,7 @@ namespace GoHiking.Controllers
                     }
                 }
 
+                // 直接拋出錯誤，會顯示在黃色錯誤頁面上
                 throw new Exception("驗證錯誤：\n" + string.Join("\n", errors));
             }
 

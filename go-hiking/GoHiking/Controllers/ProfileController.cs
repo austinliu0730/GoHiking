@@ -12,11 +12,14 @@ namespace GoHiking.Views
     {
 
         private HikingDBEntities1 _db = new HikingDBEntities1();
+        // GET: Profile
         public ActionResult Index()
         {
             return View();
         }
 
+        // GET: UserProfile/Create
+        //http://localhost:55176/UserProfile/Create/ActivityId=9
 
         public ActionResult Create(int ActivityId, bool? is_creator)
         {
@@ -37,6 +40,7 @@ namespace GoHiking.Views
             return View(viewModel);
         }
 
+        // POST: UserProfile/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(UserProfileViewModel viewModel)
@@ -53,6 +57,7 @@ namespace GoHiking.Views
                     }
                 }
 
+                // 直接拋出錯誤，會顯示在黃色錯誤頁面上
                 throw new Exception("驗證錯誤：\n" + string.Join("\n", errors));
             }
 

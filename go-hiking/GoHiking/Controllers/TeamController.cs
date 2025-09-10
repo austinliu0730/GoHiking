@@ -17,6 +17,9 @@ namespace GoHiking.Controllers
         public ActionResult Index()
         {
 
+            // 測試用
+            //var user = _db.Users.FirstOrDefault(x => x.UserName == "Tony");
+            //Session["UserLogin"] = user;
 
             var user = Session["UserLogin"] as GoHiking.data.User;
             if (user == null)
@@ -156,6 +159,9 @@ namespace GoHiking.Controllers
         //GET: /Team/Trip
         public ActionResult Trip()
         {
+            // 測試用
+            //var user = _db.Users.FirstOrDefault(x => x.UserName == "Tony");
+            //Session["UserLogin"] = user;
 
 
             var user = Session["UserLogin"] as GoHiking.data.User;

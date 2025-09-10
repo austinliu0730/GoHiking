@@ -191,7 +191,7 @@ namespace GoHiking.Controllers
 
             double fillRate = (double)activity.participants / (activity.max_participants ?? 1);
 
-            if (fillRate >= 0.8)
+            if (fillRate >= 0.6)
                 return "即將成團";
             else if (fillRate >= 0.5)
                 return "招募穩定";

@@ -12,6 +12,7 @@ namespace GoHiking.Controllers
     {
         private HikingDBEntities1 _db = new HikingDBEntities1();
 
+        // GET: Home
         public ActionResult Index()
         {
 
@@ -53,7 +54,7 @@ namespace GoHiking.Controllers
                                         walk_days = t.walk_days,
                                         mt_id = t.mt_id,
                                     })
-                                    .Take(4)
+                                    .Take(4) // 
                                     .ToList();
 
             viewModel.IntermediateActivities = _db.TripActivities

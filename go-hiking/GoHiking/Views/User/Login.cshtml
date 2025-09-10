@@ -5,6 +5,7 @@
 
 
 
+
 @if (TempData["AccountCreated"] != null)
 {
     <!-- 成功建立帳號的 Modal -->
@@ -136,6 +137,13 @@
                             </button>
                         </div>
 
+                        <!-- 範例資料按鈕 -->
+                        <div class="text-center mb-4">
+                            <button type="button" class="btn btn-sample btn-lg px-5" id="fillLoginSampleBtn">
+                                <i class="fas fa-magic me-2"></i>填入範例資料
+                            </button>
+                        </div>
+
 
 
                         <hr class="my-4" style="border-top: 1px solid #e9ecef;">
@@ -181,9 +189,7 @@
         </div>
     </div>
 }
-
-
-@section MyJS{
+@section MyCSS{
     <style>
         .validation-summary-errors {
             font-size: 1rem;
@@ -192,16 +198,44 @@
             .validation-summary-errors ul {
                 margin: 0;
             }
+
+        /* 預設樣式 */
+        .btn-sample {
+            opacity: 0;
+            background: #6c757d;
+            border: none;
+            color: white;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        /* 滑鼠移到外層才顯示 */
+        .text-center:hover .btn-sample {
+            opacity: 1;
+        }
+
+        /* 滑鼠移到按鈕本身變色 */
+        .btn-sample:hover {
+            background: #5a6268;
+            color: white;
+        }
     </style>
+
+}
+
+
+@section MyJS{
+
 
     <script>
         // 登入表單驗證
         function validateLoginForm() {
             let isValid = true;
-            
+
             // 清除所有錯誤訊息
             clearAllErrors();
-            
+
             // 驗證使用者名稱
             const username = document.getElementById('username').value.trim();
             if (!username) {
@@ -211,7 +245,7 @@
                 showError('username', '使用者名稱至少需要2個字符');
                 isValid = false;
             }
-            
+
             // 驗證密碼
             const password = document.getElementById('password').value.trim();
             if (!password) {
@@ -221,20 +255,20 @@
                 showError('password', '密碼至少需要4個字符');
                 isValid = false;
             }
-            
+
             return isValid;
         }
-        
+
         // 顯示錯誤訊息
         function showError(fieldId, message) {
             const errorElement = document.getElementById(fieldId + '-error');
             const inputElement = document.getElementById(fieldId);
-            
+
             if (errorElement) {
                 errorElement.textContent = message;
                 errorElement.style.display = 'block';
             }
-            
+
             // 將輸入框邊框變紅
             if (inputElement) {
                 if (inputElement.parentNode.classList.contains('input-group')) {
@@ -244,16 +278,16 @@
                 }
             }
         }
-        
+
         // 清除特定錯誤訊息
         function clearError(fieldId) {
             const errorElement = document.getElementById(fieldId + '-error');
             const inputElement = document.getElementById(fieldId);
-            
+
             if (errorElement) {
                 errorElement.style.display = 'none';
             }
-            
+
             // 恢復輸入框邊框顏色
             if (inputElement) {
                 if (inputElement.parentNode.classList.contains('input-group')) {
@@ -263,14 +297,14 @@
                 }
             }
         }
-        
+
         // 清除所有錯誤訊息
         function clearAllErrors() {
             const errorElements = document.querySelectorAll('[id$="-error"]');
             errorElements.forEach(element => {
                 element.style.display = 'none';
             });
-            
+
             // 恢復所有輸入框邊框顏色
             const inputElements = document.querySelectorAll('#loginForm input');
             inputElements.forEach(input => {
@@ -286,7 +320,7 @@
         function togglePasswordVisibility() {
             const passwordInput = document.getElementById('password');
             const passwordIcon = document.getElementById('passwordIcon');
-            
+
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
                 passwordIcon.classList.remove('fa-eye');
@@ -297,5 +331,16 @@
                 passwordIcon.classList.add('fa-eye');
             }
         }
+
+        // 填入登入範例資料功能
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('fillLoginSampleBtn').addEventListener('click', function () {
+                document.getElementById('username').value = 'demouser123';
+                document.getElementById('password').value = 'demo123456';
+
+                // 清除所有錯誤訊息
+                clearAllErrors();
+            });
+        });
     </script>
 }

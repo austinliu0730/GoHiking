@@ -115,9 +115,7 @@
                                                             <div class="difficulty-stars">
                                                                 @for (int a = 1; a <= 5; a++)
                                                                 {
-                                                                    <span class="star @(a <= Math.Max(1, activity.diff) ? "" : "inactive")">
-                                                                        @(a <= Math.Max(1, activity.diff) ? "●" : "○")
-                                                                    </span>
+                                                                    <span class="star @(a <= Math.Max(1, activity.diff) ? "" : "inactive")"></span>
                                                                 }
                                                             </div>
                                                         </div>
@@ -230,9 +228,7 @@
                                                             <div class="difficulty-stars">
                                                                 @for (int a = 1; a <= 5; a++)
                                                                 {
-                                                                    <span class="star @(a <= Math.Max(1, activity.diff) ? "" : "inactive")">
-                                                                        @(a <= Math.Max(1, activity.diff) ? "●" : "○")
-                                                                    </span>
+                                                                    <span class="star @(a <= Math.Max(1, activity.diff) ? "" : "inactive")"></span>
                                                                 }
                                                             </div>
                                                         </div>

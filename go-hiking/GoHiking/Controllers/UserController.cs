@@ -11,6 +11,7 @@ namespace GoHiking.Controllers
     public class UserController : Controller
     {
         private HikingDBEntities1 _db = new HikingDBEntities1();
+        // GET: User
         public ActionResult Index()
         {
             List<User> model = _db.Users.ToList();
@@ -138,8 +139,10 @@ namespace GoHiking.Controllers
         public ActionResult Edit(User model)
         {
 
+            //先把DB舊資料找回來
             User oldData = _db.Users.FirstOrDefault(x => x.Id == model.Id);
 
+            //改成網頁送回來的資料
             oldData.UserName = model.UserName;
             oldData.Password = model.Password;
             oldData.Email = model.Email;
@@ -148,12 +151,42 @@ namespace GoHiking.Controllers
             return RedirectToAction("Index");
         }
 
+        //GET:User/Delete/?
         public ActionResult Delete(int id)
         {
             User users = _db.Users.FirstOrDefault(x => x.Id == id);
 
             if (users != null)
             {
+                // 刪除相關聯的 UserProfile 記錄
+                var userProfiles = _db.UserProfiles.Where(up => up.UserId == id).ToList();
+                if (userProfiles.Any())
+                {
+                    _db.UserProfiles.RemoveRange(userProfiles);
+                }
+
+                // 刪除相關聯的 UserDetails 記錄
+                var userDetails = _db.UserDetails.Where(ud => ud.UserId == id).ToList();
+                if (userDetails.Any())
+                {
+                    _db.UserDetails.RemoveRange(userDetails);
+                }
+
+                // 刪除相關聯的 TripActivities 記錄
+                var tripActivities = _db.TripActivities.Where(ta => ta.user_id == id).ToList();
+                if (tripActivities.Any())
+                {
+                    _db.TripActivities.RemoveRange(tripActivities);
+                }
+
+                // 刪除相關聯的 TripGroup 記錄
+                var tripGroups = _db.TripGroups.Where(tg => tg.user_id == id).ToList();
+                if (tripGroups.Any())
+                {
+                    _db.TripGroups.RemoveRange(tripGroups);
+                }
+
+                // 最後刪除 User
                 _db.Users.Remove(users);
                 _db.SaveChanges();
             }

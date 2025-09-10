@@ -19,6 +19,9 @@ namespace GoHiking.Controllers
         public ActionResult Index(int id)
         {
 
+            // 測試用
+            //var user = _db.Users.FirstOrDefault(x => x.UserName == "Tony");
+            //Session["UserLogin"] = user;
 
             var user = Session["UserLogin"] as GoHiking.data.User;
             if (user == null)
@@ -47,6 +50,9 @@ namespace GoHiking.Controllers
 
         public ActionResult Comment(int id)
         {
+            // 測試用
+            //var user = _db.Users.FirstOrDefault(x => x.UserName == "Tony");
+            //Session["UserLogin"] = user;
 
 
             var user = Session["UserLogin"] as GoHiking.data.User;
@@ -225,6 +231,9 @@ namespace GoHiking.Controllers
         public ActionResult Gear(int id)
         {
 
+            // 測試用
+            //var user = _db.Users.FirstOrDefault(x => x.UserName == "Tony");
+            //Session["UserLogin"] = user;
 
             var user = Session["UserLogin"] as GoHiking.data.User;
             if (user == null)
@@ -244,10 +253,33 @@ namespace GoHiking.Controllers
         }
 
 
+        //// 裝備選擇
+        //public ActionResult Equipment(int id)
+        //{
+
+        //    // 測試用
+        //    //var user = _db.Users.FirstOrDefault(x => x.UserName == "Tony");
+        //    //Session["UserLogin"] = user;
+
+        //    var user = Session["UserLogin"] as GoHiking.data.User;
+        //    if (user == null)
+        //    {
+        //        return RedirectToAction("Login", "User");
+        //    }
+
+        //    var GroupMember = _db.UserProfiles
+        //                      .Where(t => t.activity_id == id)
+        //                      .ToList();
+
+
+
+        //    return View(GroupMember);
+        //}
 
 
         // 日曆
 
+        //private static List<SportsEvent> events = new List<SportsEvent>();
 
         private static List<SportsEvent> events = new List<SportsEvent>
           {
@@ -291,12 +323,17 @@ namespace GoHiking.Controllers
         // 整合的 Calendar 和 Schedule 頁面
         public ActionResult CalendarIntegrated(int id, string view = "calendar")
         {
+            // 測試用
+            //var user = _db.Users.FirstOrDefault(x => x.UserName == "Tony");
+
+
             var user = Session["UserLogin"] as GoHiking.data.User;
             if (user == null)
             {
                 return RedirectToAction("Login", "User");
             }
 
+            Session["UserLogin"] = user;
 
             var GroupMember = _db.UserProfiles
                               .Include("User")
@@ -304,16 +341,39 @@ namespace GoHiking.Controllers
                               .Where(t => t.activity_id == id)
                               .ToList();
 
+            // 權限檢查：判斷當前用戶是否為創建者
+            var creator = GroupMember.FirstOrDefault(m => m.is_creator == true);
+            var isCreator = creator != null && creator.UserId == user.Id;
+
             ViewBag.CurrentView = view;
             ViewBag.ActivityId = id;
             ViewBag.Events = events;
+            ViewBag.IsCreator = isCreator;
 
             return View(GroupMember);
         }
 
         [HttpPost]
-        public JsonResult AddEvent(SportsEvent newEvent)
+        public JsonResult AddEvent(SportsEvent newEvent, int activityId = 0)
         {
+            var user = Session["UserLogin"] as GoHiking.data.User;
+            if (user == null)
+            {
+                return Json(new { success = false, message = "請先登入" });
+            }
+
+            // 權限檢查：只有創建者可以新增事件
+            if (activityId > 0)
+            {
+                var creator = _db.UserProfiles
+                    .FirstOrDefault(up => up.activity_id == activityId && up.is_creator == true);
+                
+                if (creator == null || creator.UserId != user.Id)
+                {
+                    return Json(new { success = false, message = "您沒有權限執行此操作" });
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 newEvent.Id = events.Count + 1;
@@ -324,8 +384,26 @@ namespace GoHiking.Controllers
         }
 
         [HttpPost]
-        public JsonResult UpdateEvent(int id, string newDate, int newHour, int newMinute = 0)
+        public JsonResult UpdateEvent(int id, string newDate, int newHour, int newMinute = 0, int activityId = 0)
         {
+            var user = Session["UserLogin"] as GoHiking.data.User;
+            if (user == null)
+            {
+                return Json(new { success = false, message = "請先登入" });
+            }
+
+            // 權限檢查：只有創建者可以更新事件
+            if (activityId > 0)
+            {
+                var creator = _db.UserProfiles
+                    .FirstOrDefault(up => up.activity_id == activityId && up.is_creator == true);
+                
+                if (creator == null || creator.UserId != user.Id)
+                {
+                    return Json(new { success = false, message = "您沒有權限執行此操作" });
+                }
+            }
+
             try
             {
                 var eventItem = events.FirstOrDefault(e => e.Id == id);
@@ -343,15 +421,33 @@ namespace GoHiking.Controllers
         }
 
         [HttpPost]
-        public JsonResult DeleteEvent(int id)
+        public JsonResult DeleteEvent(int id, int activityId = 0)
         {
+            var user = Session["UserLogin"] as GoHiking.data.User;
+            if (user == null)
+            {
+                return Json(new { success = false, message = "請先登入" });
+            }
+
+            // 權限檢查：只有創建者可以刪除事件
+            if (activityId > 0)
+            {
+                var creator = _db.UserProfiles
+                    .FirstOrDefault(up => up.activity_id == activityId && up.is_creator == true);
+                
+                if (creator == null || creator.UserId != user.Id)
+                {
+                    return Json(new { success = false, message = "您沒有權限執行此操作" });
+                }
+            }
+
             var eventItem = events.FirstOrDefault(e => e.Id == id);
             if (eventItem != null)
             {
                 events.Remove(eventItem);
                 return Json(new { success = true });
             }
-            return Json(new { success = false });
+            return Json(new { success = false, message = "事件不存在" });
         }
 
         [HttpGet]

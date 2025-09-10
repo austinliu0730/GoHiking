@@ -3,6 +3,7 @@
     ViewBag.Title = "日曆管理";
     var currentView = ViewBag.CurrentView as string ?? "calendar";
     var activityId = ViewBag.ActivityId ?? 0;
+    var isCreator = ViewBag.IsCreator ?? false;
     var activeId = Model.FirstOrDefault().activity_id;
     var mountainName = Model.FirstOrDefault().User.TripActivities.FirstOrDefault(m => m.activity_id == activeId)?.mt_name;
 }
@@ -76,9 +77,12 @@
                                             <i class="fas fa-chevron-right">>></i>
                                         </button>
                                     </div>
-                                    <button class="btn btn-primary" onclick="openAddEventModal()">
-                                        <i class="fas fa-plus"></i> 新增活動
-                                    </button>
+                                    @if (isCreator)
+                                    {
+                                        <button class="btn btn-primary" onclick="openAddEventModal()">
+                                            <i class="fas fa-plus"></i> 新增活動
+                                        </button>
+                                    }
                                 </div>
 
                                 <div class="calendar-container">
@@ -107,9 +111,12 @@
                                 <!-- 列表檢視 -->
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                                     <h2><i class="fas fa-list"></i> 活動列表</h2>
-                                    <button class="btn btn-primary" onclick="openAddEventModal()">
-                                        <i class="fas fa-plus"></i> 新增活動
-                                    </button>
+                                    @if (isCreator)
+                                    {
+                                        <button class="btn btn-primary" onclick="openAddEventModal()">
+                                            <i class="fas fa-plus"></i> 新增活動
+                                        </button>
+                                    }
                                 </div>
 
                                 <div class="events-grid" id="eventsGrid">
@@ -121,9 +128,12 @@
                                 <!-- 月份總覽 -->
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                                     <h2><i class="fas fa-calendar-alt"></i> 月份總覽</h2>
-                                    <button class="btn btn-primary" onclick="openAddEventModal()">
-                                        <i class="fas fa-plus"></i> 新增活動
-                                    </button>
+                                    @if (isCreator)
+                                    {
+                                        <button class="btn btn-primary" onclick="openAddEventModal()">
+                                            <i class="fas fa-plus"></i> 新增活動
+                                        </button>
+                                    }
                                 </div>
 
                                 <div id="monthOverview">
@@ -228,6 +238,7 @@
         var events = [];
         var draggedEvent = null;
         var currentView = '@currentView';
+        var isCreator = @Html.Raw(isCreator.ToString().ToLower());
 
         // 初始化
         $(document).ready(function() {
@@ -239,6 +250,14 @@
                 renderScheduleList();
             } else if (currentView === 'month') {
                 renderMonthOverview();
+            }
+
+            // 根據權限控制功能顯示
+            if (!isCreator) {
+                // 隱藏所有刪除按鈕
+                $('.delete-btn').hide();
+                // 禁用拖拽功能
+                $('.event-item').attr('draggable', 'false');
             }
 
             // 側邊欄hover效果
@@ -263,6 +282,12 @@
                         renderScheduleList();
                     } else if (currentView === 'month') {
                         renderMonthOverview();
+                    }
+                    
+                    // 根據權限控制功能顯示
+                    if (!isCreator) {
+                        // 隱藏所有刪除按鈕
+                        $('.delete-btn').hide();
                     }
                 }
             });
@@ -305,9 +330,11 @@
                     dayDiv.html('<div class="day-number">' + cellDate.getDate() + '</div>' +
                         '<div class="day-events">' + renderDayEvents(cellDate) + '</div>');
 
-                    dayDiv.find('.day-events').dblclick(function() {
-                        openAddEventModal($(this).parent().data('date'));
-                    });
+                    if (isCreator) {
+                        dayDiv.find('.day-events').dblclick(function() {
+                            openAddEventModal($(this).parent().data('date'));
+                        });
+                    }
 
                     setupDragAndDrop(dayDiv[0]);
                     weekDiv.append(dayDiv);
@@ -331,7 +358,8 @@
                     hour12: false
                 });
 
-                return '<div class="event-item" draggable="true" data-event-id="' + event.id + '" data-sports-type="' + event.sportsType + '">' +
+                var draggableAttr = isCreator ? 'true' : 'false';
+                return '<div class="event-item" draggable="' + draggableAttr + '" data-event-id="' + event.id + '" data-sports-type="' + event.sportsType + '">' +
                     '<div class="event-time">' + eventTime + '</div>' +
                     '<div class="event-title">' + event.title + '</div>' +
                     '</div>';
@@ -366,7 +394,7 @@
                         ${event.description ? `<p class="event-description">${event.description}</p>` : ''}
                     </div>
                     <div class="event-actions">
-                        <button class="btn btn-sm btn-danger" onclick="deleteEvent(${event.id})" title="刪除">
+                        <button class="btn btn-sm btn-danger delete-btn" onclick="deleteEvent(${event.id})" title="刪除">
                             <i class="bi bi-trash"></i> 刪除
                         </button>
                     </div>
@@ -414,7 +442,7 @@
                             </div>
                             <div>
 
-                                <button class="btn btn-sm btn-danger " onclick="deleteEvent(${event.id})" title="刪除">
+                                <button class="btn btn-sm btn-danger delete-btn" onclick="deleteEvent(${event.id})" title="刪除">
                                     <i class="fas fa-trash"></i>刪除
                                 </button>
                             </div>
@@ -488,7 +516,8 @@
                     id: eventId,
                     newDate: newDate,
                     newHour: hours,
-                    newMinute: minutes
+                    newMinute: minutes,
+                    activityId: @activityId
                 },
                 success: function(response) {
                     if (response.success) {
@@ -542,6 +571,8 @@
                 return;
             }
 
+            formData.activityId = @activityId;
+            
             $.ajax({
                 url: '@Url.Action("AddEvent", "TripHelper")',
                 type: 'POST',
@@ -551,7 +582,7 @@
                         closeEventModal();
                         loadEvents();
                     } else {
-                        alert('新增失敗，請重試');
+                        alert('新增失敗：' + (response.message || '請重試'));
                     }
                 }
             });
@@ -562,12 +593,15 @@
                 $.ajax({
                     url: '@Url.Action("DeleteEvent", "TripHelper")',
                     type: 'POST',
-                    data: { id: id },
+                    data: { 
+                        id: id, 
+                        activityId: @activityId 
+                    },
                     success: function(response) {
                         if (response.success) {
                             loadEvents();
                         } else {
-                            alert('刪除失敗，請重試');
+                            alert('刪除失敗：' + (response.message || '請重試'));
                         }
                     }
                 });

@@ -136,6 +136,13 @@
                                 <i class="fas fa-user-plus me-2"></i>建立帳號
                             </button>
 
+                            <!-- 範例資料按鈕 -->
+                            <div class="text-center mb-3">
+                                <button type="button" class="btn btn-sample btn-lg px-5" id="fillCreateSampleBtn">
+                                    <i class="fas fa-magic me-2"></i>填入範例資料
+                                </button>
+                            </div>
+
                             <div class="text-center">
                                 <small class="text-muted">
                                     已經有帳號了？
@@ -161,7 +168,35 @@
     </div>
 </div>
 
+@section MyCSS
+{
+    <style>
+        /* 預設按鈕樣式 */
+        .btn-sample {
+            opacity: 0;
+            background: #6c757d;
+            border: none;
+            color: white;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        /* 滑鼠移到外層才顯示按鈕 */
+        .text-center:hover .btn-sample {
+            opacity: 1;
+        }
+
+        /* 滑鼠移到按鈕本身，改變背景色 */
+        .btn-sample:hover {
+            background: #5a6268;
+            color: white;
+        }
+    </style>
+}
+
 @section MyJS{
+
 
     @if (TempData["AccountCreated"] != null)
     {
@@ -193,10 +228,10 @@
         // 註冊表單驗證
         function validateCreateForm() {
             let isValid = true;
-            
+
             // 清除所有錯誤訊息
             clearAllErrors();
-            
+
             // 驗證使用者名稱
             const username = document.getElementById('name').value.trim();
             if (!username) {
@@ -212,7 +247,7 @@
                 showError('name', '使用者名稱只能包含英文、數字、中文、底線和連字號');
                 isValid = false;
             }
-            
+
             // 驗證密碼
             const password = document.getElementById('password').value.trim();
             if (!password) {
@@ -225,7 +260,7 @@
                 showError('password', '密碼不能超過100個字符');
                 isValid = false;
             }
-            
+
             // 驗證確認密碼
             const confirmPassword = document.getElementById('ConfirmPassword').value.trim();
             if (!confirmPassword) {
@@ -235,7 +270,7 @@
                 showError('ConfirmPassword', '密碼與確認密碼不相符');
                 isValid = false;
             }
-            
+
             // 驗證 Email
             const email = document.getElementById('Email').value.trim();
             if (!email) {
@@ -254,20 +289,20 @@
                     isValid = false;
                 }
             }
-            
+
             return isValid;
         }
-        
+
         // 顯示錯誤訊息
         function showError(fieldId, message) {
             const errorElement = document.getElementById(fieldId + '-error');
             const inputElement = document.getElementById(fieldId);
-            
+
             if (errorElement) {
                 errorElement.textContent = message;
                 errorElement.style.display = 'block';
             }
-            
+
             // 將輸入框邊框變紅
             if (inputElement) {
                 if (inputElement.parentNode.classList.contains('input-group')) {
@@ -277,16 +312,16 @@
                 }
             }
         }
-        
+
         // 清除特定錯誤訊息
         function clearError(fieldId) {
             const errorElement = document.getElementById(fieldId + '-error');
             const inputElement = document.getElementById(fieldId);
-            
+
             if (errorElement) {
                 errorElement.style.display = 'none';
             }
-            
+
             // 恢復輸入框邊框顏色
             if (inputElement) {
                 if (inputElement.parentNode.classList.contains('input-group')) {
@@ -296,14 +331,14 @@
                 }
             }
         }
-        
+
         // 清除所有錯誤訊息
         function clearAllErrors() {
             const errorElements = document.querySelectorAll('[id$="-error"]');
             errorElements.forEach(element => {
                 element.style.display = 'none';
             });
-            
+
             // 恢復所有輸入框邊框顏色
             const inputElements = document.querySelectorAll('#createForm input');
             inputElements.forEach(input => {
@@ -319,7 +354,7 @@
         function togglePasswordVisibility() {
             const passwordInput = document.getElementById('password');
             const passwordIcon = document.getElementById('passwordIcon');
-            
+
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
                 passwordIcon.classList.remove('fa-eye');
@@ -335,7 +370,7 @@
         function toggleConfirmPasswordVisibility() {
             const confirmPasswordInput = document.getElementById('ConfirmPassword');
             const confirmPasswordIcon = document.getElementById('confirmPasswordIcon');
-            
+
             if (confirmPasswordInput.type === 'password') {
                 confirmPasswordInput.type = 'text';
                 confirmPasswordIcon.classList.remove('fa-eye');
@@ -351,7 +386,7 @@
         function toggleEmailVisibility() {
             const emailInput = document.getElementById('Email');
             const emailIcon = document.getElementById('EmailIcon');
-            
+
             if (emailInput.type === 'email' || emailInput.type === 'Email') {
                 emailInput.type = 'text';
                 emailIcon.classList.remove('fa-eye');
@@ -362,6 +397,19 @@
                 emailIcon.classList.add('fa-eye');
             }
         }
+
+        // 填入註冊範例資料功能
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('fillCreateSampleBtn').addEventListener('click', function () {
+                document.getElementById('name').value = 'demouser123';
+                document.getElementById('password').value = 'demo123456';
+                document.getElementById('ConfirmPassword').value = 'demo123456';
+                document.getElementById('Email').value = 'demo@example.com';
+
+                // 清除所有錯誤訊息
+                clearAllErrors();
+            });
+        });
     </script>
 
 }
