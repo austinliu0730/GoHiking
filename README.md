@@ -227,24 +227,4 @@ dotnet clean
 - ✅ 活動管理功能完成
 - ✅ 響應式前端設計完成
 
-### 改進建議
-
-- 🔄 考慮升級至 .NET Core/.NET 5+
-- 🔄 實作 Repository Pattern 解耦資料存取
-- 🔄 加入單元測試專案
-- 🔄 實作 API 層支援行動應用
-- 🔄 加入快取機制提升效能
-- 🔄 實作記錄系統 (Logging)
-
-## 🤝 貢獻指南
-
-我們歡迎任何形式的貢獻！請遵循以下步驟：
-
-1. Fork 本專案
-2. 建立 feature 分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交變更 (`git commit -m 'Add some AmazingFeature'`)
-4. Push 到分支 (`git push origin feature/AmazingFeature`)
-5. 建立 Pull Request
-
-
 **感謝使用 GoHiking！讓我們一起探索美麗的山林世界 🏔️**
